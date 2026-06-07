@@ -14,6 +14,7 @@ export interface CaseFrontmatter {
   order: number; // /work 정렬 (작을수록 먼저)
   tags: string[];
   metrics: CaseMetric[];
+  demo?: "column-pager"; // 상세 페이지에 라이브 데모 임베드 (지원 데모만)
   date?: string;
 }
 
@@ -57,6 +58,7 @@ export function parseFrontmatter(slug: string, data: Record<string, unknown>): C
     order: typeof data.order === "number" ? data.order : 999,
     tags: tagsRaw as string[],
     metrics,
+    demo: data.demo === "column-pager" ? "column-pager" : undefined,
     date: typeof data.date === "string" ? data.date : undefined,
   };
 }

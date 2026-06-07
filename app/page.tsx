@@ -2,18 +2,14 @@
 // 실제 수치/케이스 본문은 NDA(T0) 후 교체. column-pager 라이브 데모는 T4.
 
 import Link from "next/link";
-import { getAllCases, getFeaturedCase } from "@/lib/cases";
+import { getAllCases } from "@/lib/cases";
 import { CaseCard } from "@/components/case-card";
-import { FeaturedCase } from "@/components/featured-case";
-import { FeaturedDemo } from "@/components/demos/featured-demo";
 
 const CURATED_LIMIT = 6;
 
 export default function Home() {
-  const featured = getFeaturedCase();
-  const curated = getAllCases()
-    .filter((c) => c.slug !== featured?.slug)
-    .slice(0, CURATED_LIMIT);
+  // 리스트 하나. 정렬상 featured가 맨 위 → CaseCard가 자동 강조.
+  const curated = getAllCases().slice(0, CURATED_LIMIT);
 
   return (
     <div className="max-w-[1080px] mx-auto px-5 sm:px-8">
@@ -35,14 +31,7 @@ export default function Home() {
         </p>
       </section>
 
-      {/* FEATURED */}
-      {featured && (
-        <section aria-label="Featured" className="py-16 border-b border-hairline">
-          <FeaturedCase entry={featured} demoSlot={<FeaturedDemo />} />
-        </section>
-      )}
-
-      {/* 큐레이션 목록 */}
+      {/* SELECTED WORK — 리스트 하나 (featured 항목은 맨 위에서 자동 강조 + 데모 미끼) */}
       <section aria-label="Selected Work" className="py-16 border-b border-hairline">
         <div className="flex items-baseline gap-3 font-mono text-xs text-gray-2 uppercase tracking-widest">
           Selected Work
@@ -58,7 +47,7 @@ export default function Home() {
         ) : (
           <div className="mt-8 flex flex-col gap-6">
             {curated.map((entry, i) => (
-              <CaseCard key={entry.slug} entry={entry} index={i + 1} />
+              <CaseCard key={entry.slug} entry={entry} index={i} />
             ))}
           </div>
         )}

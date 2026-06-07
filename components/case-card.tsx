@@ -1,24 +1,40 @@
 import Link from "next/link";
 import type { CaseEntry } from "@/lib/cases.schema";
 
-// "문제 한 장" 카드 — 정적, SSR. /work 인덱스와 (후속) 랜딩 큐레이션에서 재사용.
+// "문제 한 장" 카드 — 정적, SSR. /work 인덱스 + 랜딩 리스트 공용.
+// featured 항목은 자동으로 강조(배지·액센트 테두리·큰 제목) + 데모 미끼로 클릭률↑.
 export function CaseCard({ entry, index }: { entry: CaseEntry; index: number }) {
   const { slug, frontmatter } = entry;
+  const boosted = frontmatter.featured;
   const no = String(index + 1).padStart(2, "0");
 
   return (
     <Link
       href={`/work/${slug}`}
-      className="group relative block border border-hairline rounded-[4px] bg-surface px-11 py-10 transition-colors hover:border-accent"
+      className={`group relative block rounded-[4px] bg-surface transition-colors hover:border-accent ${
+        boosted
+          ? "border-[1.5px] border-accent px-8 py-9 sm:px-11 sm:py-10"
+          : "border border-hairline px-8 py-7 sm:px-11"
+      }`}
     >
-      <div className="flex items-baseline justify-between font-mono text-xs text-gray-2 mb-6">
+      {boosted && (
+        <span className="inline-block font-mono text-[11px] text-white bg-accent rounded px-2.5 py-1 tracking-wide mb-4">
+          FEATURED — 창의적 해결
+        </span>
+      )}
+      <div className="flex items-baseline justify-between font-mono text-xs text-gray-2">
         <span className="text-accent">PROBLEM {no}</span>
         <span>{frontmatter.tags.join(" · ")}</span>
       </div>
-      <h3 className="font-display font-semibold text-2xl tracking-tight transition-colors group-hover:text-accent">
+      <h3
+        className={`font-display font-semibold tracking-tight mt-2 transition-colors group-hover:text-accent ${
+          boosted ? "text-2xl sm:text-[27px]" : "text-xl"
+        }`}
+      >
         {frontmatter.title}
       </h3>
       <p className="text-gray-1 mt-2.5 max-w-[60ch]">{frontmatter.summary}</p>
+
       {frontmatter.metrics.length > 0 && (
         <div className="font-mono text-sm mt-5 flex flex-wrap gap-x-6 gap-y-1">
           {frontmatter.metrics.map((m) => (
@@ -28,9 +44,13 @@ export function CaseCard({ entry, index }: { entry: CaseEntry; index: number }) 
           ))}
         </div>
       )}
-      <div className="mt-6 pt-3.5 border-t border-dashed border-hairline flex justify-between font-mono text-[11px] text-gray-2">
+
+      <div className="mt-6 pt-3.5 border-t border-dashed border-hairline flex justify-between items-center font-mono text-[11px] text-gray-2">
         <span>page {no}</span>
-        <span className="text-accent">자세히 →</span>
+        {/* 데모 보유 케이스는 미끼로 클릭 유도 (데모는 상세 페이지에서 작동) */}
+        <span className="text-accent">
+          {frontmatter.demo ? "▶ 라이브 데모 보기 →" : "자세히 →"}
+        </span>
       </div>
     </Link>
   );

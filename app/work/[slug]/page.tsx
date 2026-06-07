@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getAllCases, getCaseBySlug } from "@/lib/cases";
+import { FeaturedDemo } from "@/components/demos/featured-demo";
 
 export function generateStaticParams() {
   return getAllCases().map((c) => ({ slug: c.slug }));
@@ -60,6 +61,15 @@ export default async function CaseDetail({ params }: { params: Promise<{ slug: s
             </div>
           ))}
         </dl>
+      )}
+
+      {/* 라이브 데모 — 데모 보유 케이스만, 상세에서 전체 무대로 작동 */}
+      {frontmatter.demo === "column-pager" && (
+        <section aria-label="라이브 데모" className="mt-10">
+          <h2 className="font-display font-semibold text-xl tracking-tight mb-1">라이브 데모</h2>
+          <p className="text-gray-1 text-sm">직접 토글하며 "남들 방법 vs 내 방법"을 비교해 보세요.</p>
+          <FeaturedDemo />
+        </section>
       )}
 
       <div className="mt-10">
