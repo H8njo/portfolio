@@ -49,7 +49,12 @@ export default function Home() {
           <span className="flex-1 h-px bg-hairline" />
         </div>
         {curated.length === 0 ? (
-          <p className="text-gray-1 mt-6">준비 중입니다.</p>
+          <div className="mt-6">
+            <p className="text-gray-1">케이스를 정리해 곧 올릴 예정이에요.</p>
+            <a href="#contact" className="inline-block mt-3 text-accent text-sm hover:underline underline-offset-4">
+              먼저 자세히 듣고 싶으시면 연락 주세요 →
+            </a>
+          </div>
         ) : (
           <div className="mt-8 flex flex-col gap-6">
             {curated.map((entry, i) => (

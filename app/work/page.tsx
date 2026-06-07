@@ -16,7 +16,12 @@ export default function WorkIndex() {
       <p className="text-gray-1 mt-3">문제 한 장씩. {cases.length}개 케이스.</p>
 
       {cases.length === 0 ? (
-        <p className="text-gray-1 mt-10">곧 추가됩니다.</p>
+        <div className="mt-10">
+          <p className="text-gray-1">아직 공개된 케이스가 없어요. 곧 추가됩니다.</p>
+          <Link href="/#contact" className="inline-block mt-3 text-accent text-sm hover:underline underline-offset-4">
+            연락하기 →
+          </Link>
+        </div>
       ) : (
         <div className="mt-10 flex flex-col gap-7">
           {cases.map((entry, i) => (
