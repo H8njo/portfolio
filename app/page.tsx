@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getAllCases, getFeaturedCase } from "@/lib/cases";
 import { CaseCard } from "@/components/case-card";
 import { FeaturedCase } from "@/components/featured-case";
+import { FeaturedDemo } from "@/components/demos/featured-demo";
 
 const CURATED_LIMIT = 6;
 
@@ -37,7 +38,7 @@ export default function Home() {
       {/* FEATURED */}
       {featured && (
         <section aria-label="Featured" className="py-16 border-b border-hairline">
-          <FeaturedCase entry={featured} />
+          <FeaturedCase entry={featured} demoSlot={<FeaturedDemo />} />
         </section>
       )}
 
