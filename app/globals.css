@@ -1,0 +1,98 @@
+/* Fonts — Pretendard (KR/EN body), General Sans (display).
+   Geist Mono (metrics) is loaded via next/font in layout.tsx → --font-geist-mono.
+   TODO(T1.1): self-host these via next/font/local to remove CDN CLS risk. */
+@import "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css";
+@import "https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap";
+
+@import "tailwindcss";
+
+/* column-pager renders with Tailwind utility classes — keep them from being purged */
+@source "../node_modules/column-pager/dist";
+
+/* next-themes uses class strategy (attribute="class") */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* DESIGN.md tokens — light defaults */
+:root {
+  --ink: #0b0b0c;
+  --paper: #fafaf8;
+  --surface: #ffffff;
+  --accent: #2348ff;
+  --gray-1: #6b6b6e;
+  --gray-2: #9a9a9d;
+  --hairline: rgba(11, 11, 12, 0.12);
+}
+
+.dark {
+  --ink: #f2f2f0;
+  --paper: #0c0d0f;
+  --surface: #15171a;
+  --accent: #6b86ff;
+  --gray-1: #a2a2a6;
+  --gray-2: #6e6e72;
+  --hairline: rgba(242, 242, 240, 0.14);
+}
+
+/* Map CSS vars → Tailwind theme so bg-paper / text-ink / text-accent work and swap with .dark */
+@theme inline {
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-accent: var(--accent);
+  --color-gray-1: var(--gray-1);
+  --color-gray-2: var(--gray-2);
+  --color-hairline: var(--hairline);
+
+  --font-sans: "Pretendard", system-ui, sans-serif;
+  --font-display: "General Sans", "Pretendard", sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Accessibility: respect reduced-motion (Pass 6 decision) */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Visible keyboard focus (Pass 6) */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Skip link (Pass 6) */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--accent);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 6px;
+}
+.skip-link:focus {
+  left: 16px;
+  top: 16px;
+}
