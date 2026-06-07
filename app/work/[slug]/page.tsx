@@ -40,7 +40,7 @@ export default async function CaseDetail({ params }: { params: Promise<{ slug: s
   const { frontmatter, content } = entry;
 
   return (
-    <article className="max-w-[680px] mx-auto px-8 py-20">
+    <article className="max-w-[680px] mx-auto px-5 sm:px-8 py-20">
       <div className="font-mono text-xs text-gray-2 flex flex-wrap gap-x-3">
         {frontmatter.tags.map((t) => (
           <span key={t}>{t}</span>

@@ -13,13 +13,13 @@ export function SiteNav() {
           hoonjo<span className="text-accent">.</span>dev
         </Link>
         <div className="flex items-center gap-4 sm:gap-7">
-          <Link href="/work" className="text-sm text-gray-1 hover:text-accent transition-colors">
+          <Link href="/work" className="inline-flex items-center min-h-[44px] text-sm text-gray-1 hover:text-accent transition-colors">
             Work
           </Link>
-          <Link href="/#about" className="text-sm text-gray-1 hover:text-accent transition-colors">
+          <Link href="/#about" className="inline-flex items-center min-h-[44px] text-sm text-gray-1 hover:text-accent transition-colors">
             About
           </Link>
-          <Link href="/#contact" className="text-sm text-gray-1 hover:text-accent transition-colors">
+          <Link href="/#contact" className="inline-flex items-center min-h-[44px] text-sm text-gray-1 hover:text-accent transition-colors">
             Contact
           </Link>
           <ThemeToggle />

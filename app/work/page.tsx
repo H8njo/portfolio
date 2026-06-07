@@ -11,7 +11,7 @@ export default function WorkIndex() {
   const cases = getAllCases();
 
   return (
-    <div className="max-w-[820px] mx-auto px-8 py-20">
+    <div className="max-w-[820px] mx-auto px-5 sm:px-8 py-20">
       <h1 className="font-display font-semibold text-3xl tracking-tight">Work</h1>
       <p className="text-gray-1 mt-3">문제 한 장씩. {cases.length}개 케이스.</p>
 

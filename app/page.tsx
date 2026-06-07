@@ -16,7 +16,7 @@ export default function Home() {
     .slice(0, CURATED_LIMIT);
 
   return (
-    <div className="max-w-[1080px] mx-auto px-8">
+    <div className="max-w-[1080px] mx-auto px-5 sm:px-8">
       {/* HERO — placeholder metric until T0(NDA) cleared */}
       <section className="pt-24 pb-16 border-b border-hairline">
         <p className="font-mono text-sm text-accent mb-6">
