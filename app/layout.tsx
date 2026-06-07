@@ -12,9 +12,22 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  // TODO(T0): 실제 도메인으로 교체
+  metadataBase: new URL("https://hoonjo.dev"),
   title: "hoonjo — Frontend Engineer",
-  description:
-    "측정 가능한 임팩트로 어려운 프론트엔드 문제를 푸는 7년차 개발자.",
+  description: "측정 가능한 임팩트로 어려운 프론트엔드 문제를 푸는 7년차 개발자.",
+  openGraph: {
+    title: "hoonjo — Frontend Engineer",
+    description: "측정 가능한 임팩트로 어려운 프론트엔드 문제를 푸는 7년차 개발자.",
+    type: "website",
+    siteName: "hoonjo.dev",
+    locale: "ko_KR",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "hoonjo — Frontend Engineer",
+    description: "측정 가능한 임팩트로 어려운 프론트엔드 문제를 푸는 7년차 개발자.",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

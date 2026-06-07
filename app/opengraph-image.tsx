@@ -1,0 +1,49 @@
+import { ImageResponse } from "next/og";
+
+// 링크 공유 미리보기 카드. 한글 글리프 이슈 회피 위해 영문 카피 사용.
+export const alt = "hoonjo — Frontend Engineer";
+export const size = { width: 1200, height: 630 };
+export const contentType = "image/png";
+
+export default function OgImage() {
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          background: "#FAFAF8",
+          color: "#0B0B0C",
+          padding: 80,
+          fontFamily: "monospace",
+        }}
+      >
+        <div style={{ fontSize: 30, color: "#2348FF" }}>hoonjo.dev</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              fontSize: 72,
+              fontWeight: 700,
+              letterSpacing: -2,
+              maxWidth: 980,
+              lineHeight: 1.15,
+            }}
+          >
+            <div>Solving hard frontend problems</div>
+            <div style={{ color: "#2348FF" }}>with measurable impact.</div>
+          </div>
+          <div style={{ fontSize: 32, color: "#6B6B6E" }}>
+            Performance · complex state · tricky rendering
+          </div>
+        </div>
+        <div style={{ fontSize: 26, color: "#6B6B6E" }}>7-year Frontend Engineer</div>
+      </div>
+    ),
+    { ...size },
+  );
+}

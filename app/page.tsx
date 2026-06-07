@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { getAllCases } from "@/lib/cases";
 import { CaseCard } from "@/components/case-card";
+import { CountUp } from "@/components/count-up";
 
 const CURATED_LIMIT = 6;
 
@@ -16,12 +17,15 @@ export default function Home() {
       {/* HERO — placeholder metric until T0(NDA) cleared */}
       <section className="pt-24 pb-16 border-b border-hairline">
         <p className="font-mono text-sm text-accent mb-6">
-          {/* TODO(T0): 실제 수치로 교체 */}// 대용량 PDF 초기 로딩 개선
+          {/* TODO(T0): 실제 수치로 교체 (예: to={639000} → to={1310}) */}
+          // 대용량 PDF 초기 로딩 개선 <span className="text-gray-2">(예시 수치)</span>
         </p>
         <div className="font-mono font-medium tracking-tight leading-none text-[clamp(2.4rem,7vw,5.2rem)]">
-          <span className="text-gray-2">000,000ms</span>{" "}
+          <CountUp to={100000} className="text-gray-2" />
+          <span className="text-gray-2">ms</span>{" "}
           <span className="text-gray-2">→</span>{" "}
-          <span className="text-accent">0,000ms</span>
+          <CountUp to={1000} durationMs={1300} className="text-accent" />
+          <span className="text-accent">ms</span>
         </div>
         <h1 className="font-display font-semibold tracking-tight leading-snug mt-8 max-w-[760px] text-[clamp(1.4rem,3vw,2.1rem)]">
           측정 가능한 임팩트로 어려운 프론트엔드 문제를 푸는 7년차 개발자.
