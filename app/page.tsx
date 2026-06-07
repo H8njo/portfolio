@@ -4,7 +4,6 @@
 import Link from "next/link";
 import { getAllCases } from "@/lib/cases";
 import { CaseCard } from "@/components/case-card";
-import { CountUp } from "@/components/count-up";
 
 const CURATED_LIMIT = 6;
 
@@ -14,24 +13,17 @@ export default function Home() {
 
   return (
     <div className="max-w-[1080px] mx-auto px-5 sm:px-8">
-      {/* HERO — placeholder metric until T0(NDA) cleared */}
+      {/* HERO — 타입 중심 에디토리얼. 가짜 수치 대신 정직한 포지셔닝 + 아래 FEATURED가 증거. */}
       <section className="pt-24 pb-16 border-b border-hairline">
-        <p className="font-mono text-sm text-accent mb-6">
-          {/* TODO(T0): 실제 수치로 교체 (예: to={639000} → to={1310}) */}
-          // 대용량 PDF 초기 로딩 개선 <span className="text-gray-2">(예시 수치)</span>
+        <p className="font-mono text-sm text-gray-2 mb-6 tracking-wide">
+          FRONTEND ENGINEER <span className="text-accent">— 7 YEARS</span>
         </p>
-        <div className="font-mono font-medium tracking-tight leading-none text-[clamp(2.4rem,7vw,5.2rem)]">
-          <CountUp to={100000} className="text-gray-2" />
-          <span className="text-gray-2">ms</span>{" "}
-          <span className="text-gray-2">→</span>{" "}
-          <CountUp to={1000} durationMs={1300} className="text-accent" />
-          <span className="text-accent">ms</span>
-        </div>
-        <h1 className="font-display font-semibold tracking-tight leading-snug mt-8 max-w-[760px] text-[clamp(1.4rem,3vw,2.1rem)]">
-          측정 가능한 임팩트로 어려운 프론트엔드 문제를 푸는 7년차 개발자.
+        <h1 className="font-display font-semibold tracking-tight leading-[1.12] max-w-[15ch] text-[clamp(2.2rem,6vw,4.2rem)]">
+          측정 가능한 임팩트로 어려운 프론트엔드 문제를 푸는 개발자.
         </h1>
-        <p className="text-gray-1 mt-4 max-w-[560px] text-[17px]">
+        <p className="text-gray-1 mt-6 max-w-[560px] text-[17px]">
           성능, 복잡한 상태, 까다로운 렌더링. 남들이 멈춘 곳에서 구조를 찾습니다.
+          최근엔 브라우저가 못 하는 문제지 조판을 직접 만들어 오픈소스로 공개했습니다.
         </p>
       </section>
 
