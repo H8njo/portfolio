@@ -1,14 +1,25 @@
-// 랜딩 골격 (T1). 실제 수치·케이스는 NDA 공개범위 확정(T0) 후 교체.
-// 큐레이션 목록(T8)·featured 데모(T4)는 후속 태스크에서 채움.
+// 랜딩 (T8). 큐레이션 목록·featured는 데이터 레이어(lib/cases)에서.
+// 실제 수치/케이스 본문은 NDA(T0) 후 교체. column-pager 라이브 데모는 T4.
+
+import Link from "next/link";
+import { getAllCases, getFeaturedCase } from "@/lib/cases";
+import { CaseCard } from "@/components/case-card";
+import { FeaturedCase } from "@/components/featured-case";
+
+const CURATED_LIMIT = 6;
 
 export default function Home() {
+  const featured = getFeaturedCase();
+  const curated = getAllCases()
+    .filter((c) => c.slug !== featured?.slug)
+    .slice(0, CURATED_LIMIT);
+
   return (
     <div className="max-w-[1080px] mx-auto px-8">
       {/* HERO — placeholder metric until T0(NDA) cleared */}
       <section className="pt-24 pb-16 border-b border-hairline">
         <p className="font-mono text-sm text-accent mb-6">
-          {/* TODO(T0): 실제 수치로 교체 (NDA 공개범위 확정 후) */}
-          // 대용량 PDF 초기 로딩 개선
+          {/* TODO(T0): 실제 수치로 교체 */}// 대용량 PDF 초기 로딩 개선
         </p>
         <div className="font-mono font-medium tracking-tight leading-none text-[clamp(2.4rem,7vw,5.2rem)]">
           <span className="text-gray-2">000,000ms</span>{" "}
@@ -23,27 +34,34 @@ export default function Home() {
         </p>
       </section>
 
-      {/* FEATURED slot (T4: column-pager 데모) */}
-      <section aria-label="Featured" className="py-16 border-b border-hairline">
-        <p className="font-mono text-xs text-gray-2 uppercase tracking-widest">
-          Featured — 창의적 해결
-        </p>
-        <p className="text-gray-1 mt-4">{/* TODO(T4): featured 케이스 + column-pager 라이브 데모 */}곧 추가됩니다.</p>
-      </section>
+      {/* FEATURED */}
+      {featured && (
+        <section aria-label="Featured" className="py-16 border-b border-hairline">
+          <FeaturedCase entry={featured} />
+        </section>
+      )}
 
-      {/* 큐레이션 목록 slot (T8) */}
+      {/* 큐레이션 목록 */}
       <section aria-label="Selected Work" className="py-16 border-b border-hairline">
         <div className="flex items-baseline gap-3 font-mono text-xs text-gray-2 uppercase tracking-widest">
           Selected Work
           <span className="flex-1 h-px bg-hairline" />
         </div>
-        <p className="text-gray-1 mt-6">{/* TODO(T8): 큐레이션 4~6 책자 카드 */}준비 중입니다.</p>
-        <a href="/work" className="inline-block mt-6 text-accent text-sm hover:underline underline-offset-4">
+        {curated.length === 0 ? (
+          <p className="text-gray-1 mt-6">준비 중입니다.</p>
+        ) : (
+          <div className="mt-8 flex flex-col gap-6">
+            {curated.map((entry, i) => (
+              <CaseCard key={entry.slug} entry={entry} index={i + 1} />
+            ))}
+          </div>
+        )}
+        <Link href="/work" className="inline-block mt-8 text-accent text-sm hover:underline underline-offset-4">
           전체 작업 보기 →
-        </a>
+        </Link>
       </section>
 
-      {/* ABOUT (T8) */}
+      {/* ABOUT */}
       <section id="about" aria-label="About" className="py-16 border-b border-hairline scroll-mt-[80px]">
         <div className="flex items-baseline gap-3 font-mono text-xs text-gray-2 uppercase tracking-widest">
           About

@@ -7,12 +7,12 @@ export function SiteNav() {
     <header className="sticky top-0 z-50 backdrop-blur-sm bg-paper/80 border-b border-hairline">
       <nav
         aria-label="Primary"
-        className="max-w-[1080px] mx-auto px-8 h-[68px] flex items-center justify-between"
+        className="max-w-[1080px] mx-auto px-5 sm:px-8 h-[68px] flex items-center justify-between gap-3"
       >
-        <Link href="/" className="font-mono text-sm font-medium tracking-tight">
+        <Link href="/" className="font-mono text-sm font-medium tracking-tight shrink-0">
           hoonjo<span className="text-accent">.</span>dev
         </Link>
-        <div className="flex items-center gap-7">
+        <div className="flex items-center gap-4 sm:gap-7">
           <Link href="/work" className="text-sm text-gray-1 hover:text-accent transition-colors">
             Work
           </Link>
