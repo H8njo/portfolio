@@ -1,0 +1,124 @@
+---
+title: 관제사가 코드 없이 탐지 모델을 학습시키는 마법사를 만들었다
+summary: 학습은 몇 분에서 몇 시간씩 걸리는 비동기 작업이다. 그래서 화면의 본질은 "지금 어느 단계가 돌고 있나"를 보여주는 상태머신이었다.
+featured: false
+order: 7
+demo: false
+tags: [ML, 상태머신, Elasticsearch]
+metrics:
+  - label: 학습 마법사
+    value: 5단계 GUI로 모델 1건 생성
+  - label: 파이프라인 상태
+    value: 5단계 × 4상태 추적
+  - label: 워커 분배
+    value: Java/Python 이종 큐
+date: 2026-06-08
+---
+
+{/* 참고: [확인] 표시는 NDA 공개범위 정한 뒤 실제 수치로 교체하세요. */}
+
+AI 기반 보안관제 시스템의 어드민을 맡았다. 보안 관제사가 네트워크 공격을 자동으로 탐지하는 머신러닝 모델을, 코드 한 줄 안 쓰고 GUI만으로 직접 학습시키는 화면이다. 처음엔 "그냥 폼 몇 개 모은 마법사겠지" 했다. 그게 이 프로젝트에서 제일 오래 붙잡은 화면이 됐다.
+
+마법사는 5단계다. 데이터 선택 → 특징 추출 → 알고리즘 학습 → 테스트 → 요약. 관제사는 각 단계에서 설정만 채우고 마지막에 실행을 누른다. 그러면 뒤에서 수집·전처리·정규화·학습·테스트가 줄줄이 돌아간다. 화면으로 보면 폼이지만, 실제로는 ML 파이프라인 하나를 통째로 운영하는 콘솔이었다.
+
+## 문제
+
+마법사라는 게 단순한 듯 안 단순하다. 사용자는 5단계를 앞뒤로 들락거린다. Step1에서 데이터를 고르고 Step3까지 갔다가, "아 데이터 잘못 골랐네" 하고 Step1로 돌아온다. 새로고침도 누르고, 뒤로가기도 누르고, 링크를 북마크해놓고 다음날 다시 들어오기도 한다.
+
+여기서 두 가지가 동시에 깨지기 쉽다. 하나는 **뒤로 갔을 때 앞서 입력한 게 남아 있어야** 한다는 것. 다른 하나는 그 반대로, **앞 단계를 바꾸면 그에 의존하던 뒤 단계는 무효가 돼야** 한다는 것. Step1의 수집 데이터를 갈아끼웠는데 Step2의 특징·Step3의 알고리즘이 옛 데이터 기준으로 남아 있으면, 관제사는 모르고 그대로 학습을 돌린다. 그러면 몇 시간짜리 워커 작업이 엉뚱한 조합으로 낭비된다.
+
+그리고 더 근본적인 문제. 학습은 비동기다. 실행을 누른다고 결과가 바로 안 나온다. 수집이 끝나야 특징을 뽑고, 특징이 나와야 학습을 돌리고. 각 단계가 몇 분에서 몇 시간씩 걸린다. 그동안 화면은 "지금 어디까지 됐는지"를 정직하게 보여줘야 했다. 안 그러면 관제사는 멈춘 건지 도는 건지 몰라서 계속 새로고침만 한다.
+
+## 트레이드오프 결정
+
+마법사 상태를 어디에 둘지부터 정해야 했다. 보통은 그냥 React state에 `currentStep`을 들고 간다. 쉽다. 근데 그러면 새로고침하면 날아가고, 뒤로가기는 마법사를 빠져나가버리고, 딥링크는 안 된다.
+
+그래서 **현재 단계는 React state가 아니라 URL(`router.query.step`)을 단일 소스로** 삼기로 했다. 단계 전환은 곧 `router.push`다.
+
+```js
+// context.js — 현재 step/substep은 URL에서 파생
+const currentStep = Number(router.query.step);
+
+const goToStep = ({ step, substep }) => {
+  if (step === currentStep && substep === currentSubstep) return;
+  const query = { step };
+  if (substep) query.substep = substep;
+  router.push({ pathname: router.pathname, query });
+};
+```
+
+이렇게 두니 새로고침·뒤로가기·딥링크가 공짜로 동작했다. 단계는 URL이 진실이고, 화면은 그걸 읽어서 그리기만 한다. 대신 입력 데이터 자체(수집명, 특징 목록, 알고리즘 파라미터)는 URL에 다 못 넣으니, 그건 따로 클라이언트 상태머신으로 들고 가기로 했다. 상태를 둘로 쪼개는 게 마음에 안 들긴 했는데, "내비게이션은 URL, 데이터는 리듀서"로 책임을 가르니 오히려 각자 단순해졌다.
+
+데이터 쪽은 `useImmerReducer`로 갔다. 단계별 객체가 중첩이 깊어서(`step3.algorithmOptions.explorationDatas.cvFold` 이런 식) 불변 갱신을 손으로 펼치면 코드가 지옥이 됐을 거다. immer로 "그냥 직접 바꾸듯" 쓰고 불변성은 라이브러리에 맡겼다.
+
+## 접근
+
+상태머신의 핵심 규칙은 "리소스 id가 생기면 그 단계가 완료된다"였다. 수집을 만들면 `collectId`가, 특징그룹을 만들면 `featureGroupId`가 백엔드에서 내려온다. 그 id가 세팅되는 순간 해당 단계 `completed`를 같이 켜는 패턴을 리듀서 전체에서 일관되게 박았다.
+
+```js
+case 'SET_COLLECT_ID':
+  state.collectId = action.payload;
+  state.step1.completed = !!action.payload; break;
+case 'SET_FEATURE_GROUP_ID':
+  state.featureGroupId = action.payload;
+  state.step2.completed = !!action.payload; break;
+```
+
+"앞이 바뀌면 뒤를 비운다"도 리듀서에 명시했다. Step1 데이터가 바뀌면 거기 의존하는 Step2·Step3 상태를 초기화한다. 이건 한 번 데여서 넣은 거다. 처음엔 데이터만 갈아끼우고 뒤 단계는 그대로 뒀더니, 화면상으론 멀쩡한데 안에선 옛 특징그룹 id가 살아 있었다. 생긴 게 같다고 같은 게 아니니까.
+
+완료 여부를 들고 있으니 네비게이션 헤더에서 바로 써먹을 수 있었다. **이미 지난 단계인데 미완료면 `error`로 표시**해서, 빠뜨린 설정을 즉시 빨갛게 드러냈다.
+
+```js
+const step1Status = step > 1 && !step1.completed && 'error';
+// description: step1Status === 'error' && '수집데이터 설정하세요.'
+```
+
+비동기 학습 추적은 별도 모델이 필요했다. 모델 1건은 **crawl → feature → normalize → train → test** 5단계를 거치고, 각 단계가 `S/R/C/E`(대기/실행중/완료/에러) 상태를 갖는다. 백엔드는 각 단계의 상태 컬럼을 한 글자씩 이어붙여 progress 문자열 하나로 만들어 내려줬다.
+
+```sql
+concat(
+  NVL(CONCAT('C', crawl_step), ''),     -- Crawl
+  NVL(CONCAT('F', feature_step), ''),   -- Feature
+  NVL(CONCAT('N', normalize_step), ''), -- Normalize
+  NVL(CONCAT('R', train_step), ''),     -- tRain
+  NVL(CONCAT('T', test_step), '')       -- Test
+) as progress_step
+```
+
+재밌었던 건 이 상태 조합만으로 "지금 어느 워커가 일하고 있나"까지 읽어낸다는 거였다. 수집·특징추출(crawl/feature)은 Java 워커가, 정규화·학습·테스트(normalize/train/test)는 Python 워커가 맡는 이종 분산 구조였다. 대시보드 작업 큐는 단계 상태의 조합만 보고 어느 큐에 일이 쌓였는지를 분류했다.
+
+```ts
+// 1: 대기 Java, 2: 작업중 Java, 3: 대기 Python, 4: 작업중 Python
+const workerCondition = {
+  1: "and crawl_step = 'S'",
+  2: "and ((crawl_step='R' or feature_step='R') or (crawl_step='E' and feature_step='R'))",
+  3: "and (crawl_step='C' and feature_step='C' and normalize_step is null and train_step is null and test_step is null)",
+  4: "and (normalize_step='R' or train_step='R' or test_step='R')",
+};
+```
+
+NestJS에서 Python 워커로 작업을 넘기는 다리는 Celery였다. RabbitMQ를 브로커로 두고 `celery-ts`로 작업을 디스패치했다. 마법사가 실행을 누르면 여기로 작업이 떨어지고, 화면은 그 진행률을 폴링해서 위 progress 문자열을 다시 그렸다.
+
+마법사 데이터의 범위 지정에는 Elasticsearch가 들어갔다. 관제사가 직접 ES 쿼리를 짤 순 없으니 `react-awesome-query-builder`를 ES 스키마에 물려서, GUI로 bool 쿼리를 조립하게 했다. 여기서 한 번 호되게 당했다. 검색 폼에서 기간(range) 조건을 줘도 필터가 안 먹고 전체가 나오는 버그가 있었는데, range를 `bool.should`에 넣고 있었던 거다.
+
+```js
+// should는 must가 있으면 '가점용 OR'일 뿐 필수 조건이 아니다
+query.bool.should.push({ range: { time: { gte, lte } } }); // ← 잘못
+```
+
+ES `bool`에서 `must`가 하나라도 있으면 `should`는 `minimum_should_match` 기본값이 0이라 "있으면 가점, 없어도 통과"가 된다. 그래서 기간 조건이 사실상 무시됐다. 솔직히 처음엔 ES가 고장난 줄 알고 한참 엉뚱한 데를 봤다. range를 `must`로 옮기니 바로 됐다. (지금 다시 짠다면 점수가 필요 없는 기간·동등 필터는 `filter`에 넣었을 거다. 캐시도 타고.)
+
+## 결과
+
+- 관제사가 코드 없이 5단계 GUI만으로 탐지 모델 1건을 끝까지 학습·배포할 수 있게 됐다. URL을 단일 소스로 둔 덕에 새로고침·뒤로가기·딥링크가 다 자연스럽게 동작한다.
+- "앞이 바뀌면 뒤를 무효화"를 리듀서에 명시하고, 지난 단계 미완료를 `error`로 드러내서, 옛 설정으로 몇 시간짜리 학습을 헛돌리는 일을 막았다.
+- 비동기 학습은 5단계 × 4상태 progress 문자열로 추적해, 관제사가 "멈춘 건지 도는 건지" 새로고침으로 확인할 필요가 없어졌다. 같은 상태 조합으로 Java/Python 워커 큐 현황까지 한 화면에 보여줬다.
+- ES 기간 필터 버그를 잡아 보안이벤트 검색이 의도대로 동작하게 됐다. (검색 정확도 변화 [확인])
+
+## 회고
+
+이 프로젝트로 "GUI로 비동기 파이프라인을 운영한다"는 게 뭔지 몸으로 알았다. 화면은 폼처럼 생겼지만, 본질은 백엔드에서 길게 도는 작업의 상태를 정직하게 비추는 거울이었다. 그래서 제일 신경 쓴 건 예쁜 UI가 아니라 "지금 어디까지 됐고, 뭐가 빠졌고, 어디서 깨졌나"를 거짓 없이 보여주는 거였다.
+
+습관도 몇 개 붙었다. 마법사·탭처럼 단계가 있는 화면은 그 단계를 URL에 둔다 — state로 들고 있으면 새로고침 한 방에 무너지니까. 그리고 한 단계의 데이터가 뒷단계를 무효화하는 의존이 있으면, 그 무효화를 UI가 아니라 상태 갱신 로직(리듀서)에 못 박는다. 화면에서만 가리면 안에선 옛 값이 살아 있다. 이건 한 번 당하고 막았다.
+
+ES `bool`의 `must`/`should`/`filter` 의미 차이는 그날 이후로 안 헷갈린다. 검색이 "필터를 줬는데 전부 다 나온다" 싶으면 제일 먼저 should에 잘못 넣었나부터 본다.

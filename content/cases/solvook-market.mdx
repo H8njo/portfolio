@@ -1,0 +1,118 @@
+---
+title: PDF 올리면 실물 교재로 제본되는 주문제작 플로우
+summary: 위저드로 빠르게 띄웠다가, 장바구니에 합치려고 통째로 단일 폼으로 갈아엎었다.
+featured: false
+order: 15
+demo: false
+tags: [React, Form, 파일업로드]
+metrics:
+  - label: PDF 파싱
+    value: 클라이언트
+  - label: 폼 구조
+    value: 위저드→단일폼
+  - label: 업로드
+    value: presigned 직PUT
+date: 2026-06-08
+---
+
+{/* [확인] 표시는 NDA 공개범위 정한 뒤 실제 수치/표현으로. */}
+
+PDF를 올리면 페이지 수를 그 자리에서 세서 가격을 띄워야 했다. 서버 한 번 안 거치고.
+
+교육 콘텐츠 마켓의 주문제작 도서 기능이었다. 학원 강사가 자기가 만든 교재 PDF를 올리면, 내지 컬러랑 제본 방식, 표지, 수량을 골라서 실물로 제본·배송받는다. 소량 인쇄 수요를 노린 거였다. 가격이 `페이지 수 × 컬러 단가 + 제본 단가`로 정해지니까, 업로드하자마자 페이지 수를 알아야 가격이 산다. 파일을 서버로 보내서 세고 받아오는 왕복은 느렸고, 어차피 브라우저에 파일이 있었다.
+
+그래서 `pdf.js`로 클라이언트에서 직접 셌다. 썸네일 만드는 코드에 페이지 수만 떼어내는 함수를 갈라놨다.
+
+```ts
+// src/lib/pdf-thumbnail/readPdf.ts
+export const countPdfPages = async (src) => {
+  const doc = await pdfjs.getDocument(src).promise
+  return doc.numPages
+}
+```
+
+검증은 세 단계였다. MIME 화이트리스트로 `application/pdf`만 받고, 용량을 막고(PDF 100MB), 마지막은 이 `countPdfPages`가 실패하면 손상된 파일로 쳤다. 확장자가 pdf라고 다 진짜 pdf는 아니니까, 실제로 열어보는 게 제일 확실했다.
+
+업로드는 S3 presigned URL로 브라우저가 직접 PUT 했다. 서버를 파일 중계기로 쓰지 않았다.
+
+```ts
+// src/api/file.ts
+export const fileUploadByPresignedUrl = (url, file, clientName) =>
+  fetch(url, { method: 'PUT', headers: { 'content-type': file.type }, body: file })
+```
+
+## 트레이드오프 결정
+
+제일 큰 결정은 폼 구조였다. 처음엔 3-step 위저드로 띄웠다. 제본신청 → 배송지 → 결제, 한 흐름. 빨리 내야 했고 위저드가 빨랐다.
+
+상태는 Zustand 전역 store가 아니라 Context로 들고 있었다. POD 상태는 페이지를 벗어나면 전부 버려져야 하는 페이지-스코프 상태였다. 전역에 두면 재진입할 때 이전 입력이 stale하게 남거나, 매번 리셋하는 보일러플레이트를 깔아야 한다. Provider는 페이지 트리에만 붙으니까 언마운트되면 알아서 비워진다. 라이프사이클이 그냥 맞았다. `usePODContext`에는 Provider 밖에서 부르면 터지는 가드를 넣어뒀다.
+
+근데 위저드 Provider가 단순 상태 통이 아니었다. `nextStep` 안에 검증이랑 파일 업로드랑 주문 생성 같은 부수효과를 다 욱여넣었다.
+
+```tsx
+// PODProvider.tsx
+const nextStep = async () => {
+  if (currentStep === STEP.REQUEST_BINDING) { /* 필수값 검증, 비면 스낵바 */ }
+  if (currentStep === STEP.DELIVERY_INFO) {
+    const url = await podUploadUrlMutation.mutateAsync({ ... })
+    await fileUploadByPresignedUrl(url, pdfFile, clientName)
+    const { id } = await podOrderMutation.mutateAsync({ ...settings, tempKey: clientName })
+    setPodId(id)
+  }
+  setCurrentStep((prev) => prev + 1)
+}
+```
+
+문제는 결제였다. 회사엔 이미 장바구니·쿠폰·포인트가 붙은 공통 결제 인프라가 있었는데, 위저드가 결제까지 자기 흐름으로 끌고 가버려서 그걸 못 썼다. 합치려면 POD를 "장바구니에 담기는 상품"으로 일반화하는 게 맞았다. 그래서 통째로 갈아엎었다. 결제 스텝을 떼서 공통 퍼널에 흘려보내고, POD 페이지는 옵션 입력만 하는 단일 폼이 됐다. `FormProvider` + `useForm`.
+
+위저드를 후회하진 않는다. 그게 있어서 일단 출시가 됐고, 통합이 필요해진 건 그다음 일이었다. 빨리 내는 도구랑 합치는 도구가 달랐을 뿐이다.
+
+## 접근
+
+리팩토링하면서 위저드 시절 손으로 짜둔 게 줄줄이 한 줄로 줄었다. 가장 인상 깊었던 건 에러 포커스였다.
+
+위저드 때는 첫 에러 필드로 점프시키려고 input ref를 네 개 박아놓고 우선순위대로 `focus()`에 `scrollIntoView()`를 돌렸다. 숨겨둔 file input은 포커스가 안 먹어서, 잠깐 `display:block`으로 보였다가 스크롤하고 다시 숨기는 트릭까지 썼다. 그게 RHF에선 `shouldFocusError: true` 한 줄이었다.
+
+```tsx
+// Content.tsx
+const methods = useForm<PODForm>({
+  mode: 'onTouched',
+  shouldFocusError: true, // 위저드 시절 ref 4개 + scrollIntoView가 이 한 줄
+  defaultValues: { color: '흑백', binding: '무선', quantity: 1, /* ... */ },
+})
+```
+
+폼이랑 API 타입은 갈라놨다. `PODForm`은 `File`이랑 한글 enum(`'흑백'`)을 그대로 들고, API로 보낼 땐 `design: Number(coverImage)`처럼 변환했다. 화면이 보는 모양이랑 서버가 받는 모양이 다른 게 자연스러웠다.
+
+업로드 컴포넌트도 PDF랑 커스텀 표지 양쪽에서 같이 쓰도록 `fileType: 'image' | 'pdf'`로 범용화하고, `forwardRef`로 RHF의 `field.ref`를 받게 했다.
+
+그러다 진짜 짜증나는 버그를 하나 만났다. 비로그인으로 옵션을 다 채워놓고 "다음"에서 로그인하면, 인증 리다이렉트로 페이지가 재마운트되면서 입력이 싹 날아갔다. 전부 메모리에만 있었으니 돌아올 길이 없었던 거다. `localStorage`에 동기화해서 복원하게 했는데, 여기에 함정이 하나 더 있었다.
+
+```tsx
+const [isLoaded, setIsLoaded] = useState(false)
+useEffect(() => {                 // ① 마운트 시 복원
+  const saved = localStorage.getItem('pod_draft_settings')
+  if (saved) setSettings(JSON.parse(saved))
+  setIsLoaded(true)
+}, [])
+useEffect(() => {                 // ② 변경 시 저장
+  if (!isLoaded) return           // 복원 전 빈 값으로 덮어쓰기 방지
+  localStorage.setItem('pod_draft_settings', JSON.stringify(settings))
+}, [settings, isLoaded])
+if (!isLoaded) return null        // 서버 렌더(빈값) vs 클라 복원값 hydration mismatch 차단
+```
+
+`isLoaded` 가드 하나가 두 개를 동시에 막는다. 없으면 서버가 그린 빈 값이랑 클라이언트 복원값이 달라서 hydration 에러가 나고, 또 복원 effect가 돌기 전에 저장 effect가 빈 값으로 덮어써버린다. 복원 끝났다는 플래그로 첫 렌더를 막아야 둘 다 안 난다. (한 번 당하고 막았다.)
+
+자잘한 것도 몇 개 있었다. 배송지 "수정" 버튼이 `nextStep`에 잘못 묶여서 누르면 다음 스텝으로 넘어가버렸고, 주문완료 가드 effect가 `router` 통째를 의존성에 물고 매 렌더 재실행됐다(`router.push`로 좁혔다). await 체인이 try/catch 없이 풀려 있어서 중간에 한 번 터지면 무한 로딩에 빠지는 것도.
+
+## 결과
+
+PDF를 올리면 페이지 수가 즉시 잡혀 가격이 실시간으로 갱신되고, 파일은 서버를 안 거치고 S3로 바로 올라간다. 로그인하러 떠났다 와도 입력은 그대로 남는다. 위저드로 출시했다가 단일 폼으로 갈아엎으면서 결제는 공통 인프라에 합쳐졌고, 손으로 짜둔 검증·포커스·상태 관리는 RHF로 넘어가 코드가 한참 줄었다. [확인: 주문 전환/이탈 수치, QA-1128~1150 처리 건수]
+
+## 회고
+
+이 기능은 회사 코드베이스의 축소판이었다. 전체가 레거시 스택에서 신규 스택으로 점진적으로 넘어가는 중이었는데, POD도 똑같이 위저드(Context, 수동 폼)에서 단일 폼(RHF)으로 넘어갔다. 마이그레이션이 왜 필요한지, ref 네 개가 한 줄이 되는 그 대비에서 직접 봤다.
+
+{/* 당신 진짜 회고로 — 아직 아쉬운 점, 다시 한다면 */}
+다시 한다면 [확인].
