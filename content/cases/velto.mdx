@@ -35,6 +35,20 @@ date: 2026-06-08
 
 PoC에서 본 건 딱 세 가지였다. 녹음 파일에 부모 소리가 새서 섞이는가, 이어폰 강제했을 때 깨끗하게 녹음되는가, 여러 기기에서 똑같이 되는가. 결과가 PARTIAL이면 — 음질이 떨어지거나 일부 기기만 되면 — 그때 bare로 갈지 폴백 갈지 정한다.
 
+찌르는 핵심은 audio session을 재생·녹음 공존 모드로 직접 박는 거다. `playAndRecord` + `mixWithOthers`를 안 주면 부모 sound를 트는 순간 세션이 비활성화되며 터진다.
+
+```ts
+import { Audio, InterruptionModeIOS } from 'expo-av'
+
+// 부모 클립 재생과 카메라 녹화를 한 세션에서 공존시킨다
+await Audio.setAudioModeAsync({
+  allowsRecordingIOS: true,                          // playAndRecord 카테고리
+  interruptionModeIOS: InterruptionModeIOS.MixWithOthers,
+  playsInSilentModeIOS: true,
+  staysActiveInBackground: false,
+})
+```
+
 그리고 PoC가 망할 경우를 대비해 폴백을 미리 설계해뒀다. **Async-Only 모드.** 동시 모니터링을 포기한다. 부모 클립을 끝까지 자동 재생하고, 재생이 끝나면 녹화 모드로 자동 진입한다. 녹화할 땐 부모의 길이랑 추정 BPM만 화면에 띄워준다. 합성은 시간축으로 단순 이어붙이기.
 
 이렇게 하면 "진짜 합주처럼 실시간으로 겹쳐 듣는 vibe"는 잃는다. 그건 인정. 근데 벨토의 1차 가치인 "작업 일상 공유"는 그대로 살고, 위에 덧붙이는 행동도, 7일 지나면 사라지는 캐주얼함도, 나중에 만들 화면분할 합성 영상도 다 산다. 핵심 가치의 80%가 남는다. 게다가 이 모드가 더 단순해서 토요일 일정은 오히려 빨라진다. 실패가 곧 지연은 아니게 설계해둔 거다.

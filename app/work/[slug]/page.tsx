@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getAllCases, getCaseBySlug } from "@/lib/cases";
 import { FeaturedDemo } from "@/components/demos/featured-demo";
+import { BlackholeDemo } from "@/components/demos/blackhole-demo";
 
 export function generateStaticParams() {
   return getAllCases().map((c) => ({ slug: c.slug }));
@@ -69,6 +70,14 @@ export default async function CaseDetail({ params }: { params: Promise<{ slug: s
           <h2 className="font-display font-semibold text-xl tracking-tight mb-1">라이브 데모</h2>
           <p className="text-gray-1 text-sm">직접 토글하며 "남들 방법 vs 내 방법"을 비교해 보세요.</p>
           <FeaturedDemo />
+        </section>
+      )}
+
+      {frontmatter.demo === "blackhole" && (
+        <section aria-label="라이브 데모" className="mt-10">
+          <h2 className="font-display font-semibold text-xl tracking-tight mb-1">라이브 데모</h2>
+          <p className="text-gray-1 text-sm">셰이더가 브라우저에서 실시간으로 도는 모습입니다. 클릭해 보세요.</p>
+          <BlackholeDemo />
         </section>
       )}
 
