@@ -14,6 +14,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "black-hole-effect": "github:H8njo/webgl-black-hole",
     "column-pager": "^1.0.2",
     "gray-matter": "^4.0.3",
     "next": "^15.3.0",
