@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useEffect, useRef, useState } from "react";
-import { Blackhole } from "black-hole-effect";
+import { useEffect, useRef, useState } from 'react';
+import { Blackhole } from 'black-hole-effect';
 
 // 임베드용 contained 블랙홀 데모.
 // 풀스크린이 아니라 고정 비율 박스(높이 ~420px, width 100%) 안에서 부모 컨테이너에 맞춰 렌더.
@@ -20,9 +20,8 @@ export default function BlackholeContained() {
     const handleChange = () => {
       setIsFullscreen(document.fullscreenElement === containerRef.current);
     };
-    document.addEventListener("fullscreenchange", handleChange);
-    return () =>
-      document.removeEventListener("fullscreenchange", handleChange);
+    document.addEventListener('fullscreenchange', handleChange);
+    return () => document.removeEventListener('fullscreenchange', handleChange);
   }, []);
 
   return (
@@ -30,9 +29,11 @@ export default function BlackholeContained() {
       <div
         ref={containerRef}
         className="relative w-full bg-black"
-        style={{ height: isFullscreen ? "100%" : 420 }}
+        style={{ height: isFullscreen ? '100%' : 420 }}
       >
+        {/* key가 전체화면 토글에 바뀌어 Blackhole이 새 크기로 remount → 캔버스 재측정 */}
         <Blackhole
+          key={isFullscreen ? 'fs' : 'box'}
           numStars={3500}
           cameraSpeed={0.3}
           radius={500}

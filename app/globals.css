@@ -4,6 +4,8 @@
 
 /* column-pager renders with Tailwind utility classes — keep them from being purged */
 @source "../node_modules/column-pager/dist";
+/* black-hole-effect(git 의존성)의 Tailwind 클래스(inset-0 등)가 purge되지 않게 스캔 */
+@source "../node_modules/black-hole-effect/src";
 
 /* next-themes uses class strategy (attribute="class") */
 @custom-variant dark (&:where(.dark, .dark *));
