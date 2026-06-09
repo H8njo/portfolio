@@ -23,9 +23,24 @@ const mdxComponents = {
   ),
   p: (p: React.ComponentProps<"p">) => <p className="text-ink/90 my-4" {...p} />,
   ul: (p: React.ComponentProps<"ul">) => <ul className="list-disc pl-5 my-4 text-ink/90" {...p} />,
-  code: (p: React.ComponentProps<"code">) => (
-    <code className="font-mono text-[0.9em] text-accent" {...p} />
+  // fenced 코드블록: <pre>에 박스 스타일. 가로 스크롤·모노·작은 글씨.
+  pre: (p: React.ComponentProps<"pre">) => (
+    <pre
+      className="my-5 overflow-x-auto rounded-lg border border-hairline bg-surface p-4 font-mono text-[13px] leading-relaxed"
+      {...p}
+    />
   ),
+  // 인라인 code는 accent pill, 블록 code(language-*)는 pre가 스타일하므로 plain.
+  code: ({ className, ...p }: React.ComponentProps<"code">) => {
+    const isBlock = typeof className === "string" && className.startsWith("language-");
+    if (isBlock) return <code className={`${className} font-mono`} {...p} />;
+    return (
+      <code
+        className="font-mono text-[0.9em] rounded bg-hairline/50 px-1.5 py-0.5 text-accent"
+        {...p}
+      />
+    );
+  },
   a: (p: React.ComponentProps<"a">) => (
     <a className="text-accent underline underline-offset-4" {...p} />
   ),
