@@ -5,6 +5,7 @@ import rehypePrettyCode from "rehype-pretty-code";
 import { getAllCases, getCaseBySlug } from "@/lib/cases";
 import { FeaturedDemo } from "@/components/demos/featured-demo";
 import { BlackholeDemo } from "@/components/demos/blackhole-demo";
+import RangeEditorDemo from "@/components/demos/range-editor-demo";
 
 export function generateStaticParams() {
   return getAllCases().map((c) => ({ slug: c.slug }));
@@ -86,6 +87,17 @@ export default async function CaseDetail({ params }: { params: Promise<{ slug: s
           <h2 className="font-display font-semibold text-xl tracking-tight mb-1">라이브 데모</h2>
           <p className="text-gray-1 text-sm">셰이더가 브라우저에서 실시간으로 도는 모습입니다. 클릭해 보세요.</p>
           <BlackholeDemo />
+        </section>
+      )}
+
+      {frontmatter.demo === "range-editor" && (
+        <section aria-label="라이브 데모" className="mt-10">
+          <h2 className="font-display font-semibold text-xl tracking-tight mb-1">라이브 데모</h2>
+          <p className="text-gray-1 text-sm">
+            단어를 클릭(시작) → 다시 클릭(끝)으로 범위를 잡아 보세요. 끝을 먼저 찍어도{" "}
+            <code>[min, max]</code>로 정규화됩니다. 종류를 바꿔 같은 단어 위에 겹쳐 보세요.
+          </p>
+          <RangeEditorDemo />
         </section>
       )}
 
