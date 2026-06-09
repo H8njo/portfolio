@@ -19,6 +19,7 @@
   --gray-1: #6b6b6e;
   --gray-2: #9a9a9d;
   --hairline: rgba(11, 11, 12, 0.12);
+  --code-chip: #3f3f46; /* 인라인 코드 — 중립 그래파이트(블루 링크와 구분) */
 }
 
 .dark {
@@ -29,6 +30,7 @@
   --gray-1: #a2a2a6;
   --gray-2: #6e6e72;
   --hairline: rgba(242, 242, 240, 0.14);
+  --code-chip: #d4d4d8;
 }
 
 /* Map CSS vars → Tailwind theme so bg-paper / text-ink / text-accent work and swap with .dark */
@@ -55,8 +57,8 @@ html {
    본문 중간에 검은 알약처럼 튀는 걸, 옅은 배경·본문색·작은 크기로 덮어쓴다.
    (shiki는 인라인 style을 쓰므로 !important로 이긴다. 블록 코드는 pre가 감싸므로 영향 없음.) */
 :not(pre) > code {
-  background: color-mix(in srgb, var(--accent) 11%, transparent) !important;
-  color: var(--accent) !important;
+  background: color-mix(in srgb, var(--ink) 7%, transparent) !important;
+  color: var(--code-chip) !important;
   font-family: var(--font-mono);
   font-size: 0.85em;
   font-weight: 500;
