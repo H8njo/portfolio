@@ -50,6 +50,25 @@ html {
   scroll-behavior: smooth;
 }
 
+/* 인라인 코드 — 에디토리얼하게 조용히.
+   rehype-pretty-code(github-dark)가 인라인 코드에까지 다크 배경+토큰색을 입혀
+   본문 중간에 검은 알약처럼 튀는 걸, 옅은 배경·본문색·작은 크기로 덮어쓴다.
+   (shiki는 인라인 style을 쓰므로 !important로 이긴다. 블록 코드는 pre가 감싸므로 영향 없음.) */
+:not(pre) > code {
+  background: color-mix(in srgb, var(--ink) 6%, transparent) !important;
+  color: var(--ink) !important;
+  font-family: var(--font-mono);
+  font-size: 0.82em;
+  font-weight: 500;
+  padding: 0.05em 0.32em;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+:not(pre) > code span {
+  color: inherit !important;
+  background: transparent !important;
+}
+
 body {
   background: var(--paper);
   color: var(--ink);

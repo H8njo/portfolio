@@ -28,21 +28,12 @@ const mdxComponents = {
   // 항상 다크라 라이트/다크 양쪽에서 대비가 높다.
   pre: (p: React.ComponentProps<"pre">) => (
     <pre
-      className="my-5 overflow-x-auto rounded-lg border border-hairline p-4 text-[13px] leading-relaxed"
+      className="font-mono my-5 overflow-x-auto rounded-lg border border-hairline p-4 text-[13.5px] leading-7"
       {...p}
     />
   ),
-  // 인라인 code는 accent pill, 블록 code(language-*)는 pre가 스타일하므로 plain.
-  code: ({ className, ...p }: React.ComponentProps<"code">) => {
-    const isBlock = typeof className === "string" && className.startsWith("language-");
-    if (isBlock) return <code className={`${className} font-mono`} {...p} />;
-    return (
-      <code
-        className="font-mono text-[0.9em] rounded bg-hairline/50 px-1.5 py-0.5 text-accent"
-        {...p}
-      />
-    );
-  },
+  // 인라인 코드는 globals.css(:not(pre) > code)가 옅은 칩으로, 블록 코드는 pre+shiki가 스타일.
+  code: (p: React.ComponentProps<"code">) => <code {...p} />,
   a: (p: React.ComponentProps<"a">) => (
     <a className="text-accent underline underline-offset-4" {...p} />
   ),
