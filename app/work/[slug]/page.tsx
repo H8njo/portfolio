@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import rehypePrettyCode from "rehype-pretty-code";
 import { getAllCases, getCaseBySlug } from "@/lib/cases";
 import { FeaturedDemo } from "@/components/demos/featured-demo";
 import { BlackholeDemo } from "@/components/demos/blackhole-demo";
@@ -23,10 +24,11 @@ const mdxComponents = {
   ),
   p: (p: React.ComponentProps<"p">) => <p className="text-ink/90 my-4" {...p} />,
   ul: (p: React.ComponentProps<"ul">) => <ul className="list-disc pl-5 my-4 text-ink/90" {...p} />,
-  // fenced 코드블록: <pre>에 박스 스타일. 가로 스크롤·모노·작은 글씨.
+  // fenced 코드블록: shiki가 다크 배경+토큰색을 inline으로 넣고, 여기선 박스(테두리·둥금·스크롤)만.
+  // 항상 다크라 라이트/다크 양쪽에서 대비가 높다.
   pre: (p: React.ComponentProps<"pre">) => (
     <pre
-      className="my-5 overflow-x-auto rounded-lg border border-hairline bg-surface p-4 font-mono text-[13px] leading-relaxed"
+      className="my-5 overflow-x-auto rounded-lg border border-hairline p-4 text-[13px] leading-relaxed"
       {...p}
     />
   ),
@@ -97,7 +99,20 @@ export default async function CaseDetail({ params }: { params: Promise<{ slug: s
       )}
 
       <div className="mt-10">
-        <MDXRemote source={content} components={mdxComponents} />
+        <MDXRemote
+          source={content}
+          components={mdxComponents}
+          options={{
+            mdxOptions: {
+              rehypePlugins: [
+                [
+                  rehypePrettyCode,
+                  { theme: "github-dark", keepBackground: true, defaultLang: "txt" },
+                ],
+              ],
+            },
+          }}
+        />
       </div>
 
       {/* 다음 케이스 던지기 (Pass 3 끌림 구조) */}
