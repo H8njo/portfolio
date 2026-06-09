@@ -1,0 +1,81 @@
+---
+title: 수백 페이지 PDF가 탭을 얼리던 걸, 메모리를 청크에 묶어 풀었다
+summary: 전 페이지를 한 번에 메모리에 올리던 구조가 대용량에서 탭을 얼렸다. peak를 페이지 수가 아니라 청크 크기에 묶었다.
+featured: false
+order: 2
+demo: false
+tags: [Performance, Memory, PDF, OpenCV]
+metrics:
+  - label: peak 메모리
+    value: 페이지 수 비례 → 청크 고정
+  - label: 처리 단위
+    value: 전체 동시 → 5페이지 청크
+  - label: 자동선택
+    value: 전체 로드 대기 → 즉시
+date: 2026-06-08
+---
+
+대용량 교재 PDF에서 "전체 페이지 자동 영역 선택"을 누르면, 메모리가 치솟고 탭이 그대로 얼었다.
+
+이건 서버에서 PDF를 굽는 일이 아니라, 브라우저 쪽 PDF 뷰어였다. 교재 PDF의 각 페이지를 canvas로 래스터해서 그 위에서 사용자가 "문제 영역"을 잡게 하는 도구. 자동 선택은 페이지 이미지를 OpenCV로 넘겨 문제 경계를 크롭해 준다. 문제는 그 페이지 이미지들이었다.
+
+## 문제
+
+원래 코드는 **모든 페이지를 미리 이미지로 렌더해 통째로 state에 들고 있었다.** 각 페이지는 `scale = 3 × dpr`로 `canvas.toDataURL()`한 거대한 base64다. 화질을 위해 키워둔 건데, 페이지가 수백 장이면 그걸 전부 동시에 메모리에 올리는 꼴이라 페이지 수에 비례해서 그냥 무너졌다.
+
+게다가 "페이지 선택" UI는 **전 페이지가 다 렌더될 때까지 막혀** 있었다. 사용자는 큰 교재일수록 더 오래, 아무것도 못 하고 기다려야 했다.
+
+## 청크에 묶기
+
+자동 선택 쪽이 제일 심했다. `addFullPageRects`가 전체 페이지 이미지를 한 번에 `Promise.all`로 돌리면서, 모든 페이지의 풀해상도 이미지와 OpenCV 크롭 결과를 **동시에** 메모리에 쌓았다. 안 죽는 게 이상했다.
+
+```ts
+// before — 전체 페이지를 한 번에
+const results = await Promise.all(
+  pageImages.map((img) => splitRectsByPage(img, ...)),
+);
+```
+
+그래서 5페이지씩 청크로 묶어 순차 처리하고, 각 페이지는 래스터한 직후 `page.cleanup()`으로 pdf.js 리소스를 바로 버렸다. peak 메모리가 전체 N이 아니라 청크 크기에 묶이게.
+
+```ts
+// 의도적 for문 — 병렬 map으로 "고치지" 말 것.
+const makeImage = async (pdf, n) => {
+  const page = await pdf.getPage(n);
+  const img = await getViewportImage(page, scale ?? devicePixelRatio, true);
+  page.cleanup();                 // 래스터 후 페이지 해제 (누수 차단)
+  return img;
+};
+for (const c of chunk(pageNumbers, CHUNK_LENGTH /* 5 */)) {
+  const results = await Promise.all(c.map((n) => makeImage(pdf, n)));
+  setPageImages((prev) => [...prev, ...results]); // 점진 push → 진행률 계산
+}
+```
+
+여기서 한 번 욕심을 부렸다. 청크 재렌더 품질을 `0.2`까지 낮추면 메모리를 더 아낄 수 있겠다 싶어서. 했더니 저해상도라 OpenCV가 문제 경계를 제대로 못 잡았다. 메모리 다이얼이랑 정확도 다이얼이 따로 노는 줄 알았는데 아니었던 거다. 게다가 결과물을 봐야만 알 수 있는 종류라 더 짜증났고. 결국 품질을 `1`로 도로 올렸다. 어차피 청크화만으로 탭은 안 죽었으니까.
+
+## 막지 말고, 되게
+
+"전 페이지가 다 렌더될 때까지 못 누르게" 막던 gate도 손봤다. 처음엔 그게 제일 쉬운 방어였다. 근데 사용자를 기다리게 하는 게 본질이 아니었다. 캐시에 없는 페이지만 그 시점에 즉석 렌더하면, 일찍 눌러도 그냥 된다.
+
+```ts
+let image = imgElement;            // 배경 캐시에 있으면 그대로
+if (!imgElement) {                 // 구멍이면 지금 렌더
+  const page = await pdf.getPage(pageNumberStart + pageIndex + 1);
+  image = await getViewportImage(page, RENDER_IMAGE_QUALITY, true);
+}
+```
+
+슬라이더로 페이지를 넘길 때도 같은 원리로 갔다. 보이는 페이지만 온디맨드로 렌더하되, 이미 렌더된 건 그대로 쓰고 없을 때만 그린다. gate를 막던 코드와 관련 prop을 다 지웠다. 막는 쪽보다 그냥 되게 만드는 쪽이 코드도 더 적게 들었다. 진작 이렇게 할 걸.
+
+## 결과
+
+- **메모리**: 전 페이지 동시 처리 → 5페이지 청크 + 즉시 해제. peak가 페이지 수에 비례하던 게 청크 크기로 고정돼, 대용량 PDF에서 탭이 죽지 않게 됐다.
+- **자동선택 UX**: 전체 로드를 기다리는 단계 자체가 사라졌다. 캐시 미스만 just-in-time으로 메운다.
+- **정확도**: 품질을 1로 유지해 OpenCV 경계 인식은 그대로.
+
+## 회고
+
+여기서 배운 건 두 가지다. 하나, 일괄 처리는 청크로 묶어서 peak를 잡는다 — `Promise.all(전체)`는 편하지만 입력이 커지는 순간 그게 그대로 폭탄이 된다. 둘, 메모리를 줄였으면 그 자리에서 결과물부터 다시 본다. 안 그러면 OpenCV가 조용히 엉뚱한 경계를 잡고 있다(이건 품질 낮췄다 한 번 당하고 배웠다).
+
+그리고 "사용자를 막는 방어"는 대체로 게으른 답이더라. 막던 gate를 걷어내고 just-in-time으로 바꾸니 코드도 줄고 경험도 나아졌다. 막을 수 있다고 막는 게 항상 옳은 건 아니다.
