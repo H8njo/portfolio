@@ -95,7 +95,7 @@ export default async function CaseDetail({ params }: { params: Promise<{ slug: s
           <h2 className="font-display font-semibold text-xl tracking-tight mb-1">라이브 데모</h2>
           <p className="text-gray-1 text-sm">
             단어를 클릭(시작) → 다시 클릭(끝)으로 범위를 잡아 보세요. 끝을 먼저 찍어도{" "}
-            <code>[min, max]</code>로 정규화됩니다. 종류를 바꿔 같은 단어 위에 겹쳐 보세요.
+            <code>[min, max]</code>로 정규화됩니다.
           </p>
           <RangeEditorDemo />
         </section>
