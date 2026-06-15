@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { LuArrowLeft } from "react-icons/lu";
 
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
@@ -19,8 +20,8 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
         <button onClick={reset} className="text-accent hover:underline underline-offset-4">
           다시 시도
         </button>
-        <a href="/" className="text-accent hover:underline underline-offset-4">
-          ← 홈으로
+        <a href="/" className="inline-flex items-center gap-1 text-accent hover:underline underline-offset-4">
+          <LuArrowLeft aria-hidden className="size-3.5" /> 홈으로
         </a>
       </div>
     </div>

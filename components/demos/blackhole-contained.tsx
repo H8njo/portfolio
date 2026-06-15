@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Blackhole } from 'black-hole-effect';
+import { LuMaximize } from 'react-icons/lu';
 
 const BG_URL =
   'https://images.unsplash.com/photo-1516331138075-f3adc1e149cd?q=80&w=2708&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
@@ -84,9 +85,9 @@ export default function BlackholeContained() {
         <button
           type="button"
           onClick={enterFullscreen}
-          className="absolute right-2 top-2 z-10 rounded border border-hairline/60 bg-black/40 px-2 py-1 font-mono text-[11px] text-gray-2 backdrop-blur transition-colors hover:text-white"
+          className="absolute right-2 top-2 z-10 inline-flex items-center gap-1 rounded border border-hairline/60 bg-black/40 px-2 py-1 font-mono text-[11px] text-gray-2 backdrop-blur transition-colors hover:text-white"
         >
-          ⛶ 전체화면
+          <LuMaximize aria-hidden className="size-3" /> 전체화면
         </button>
       </div>
       <p className="px-4 py-2 font-mono text-[11px] text-gray-2">

@@ -6,6 +6,7 @@ import { getAllCases, getCaseBySlug } from "@/lib/cases";
 import { FeaturedDemo } from "@/components/demos/featured-demo";
 import { BlackholeDemo } from "@/components/demos/blackhole-demo";
 import RangeEditorDemo from "@/components/demos/range-editor-demo";
+import { LuArrowLeft, LuArrowRight } from "react-icons/lu";
 
 export function generateStaticParams() {
   return getAllCases().map((c) => ({ slug: c.slug }));
@@ -122,14 +123,14 @@ export default async function CaseDetail({ params }: { params: Promise<{ slug: s
 
       {/* 다음 케이스 던지기 (Pass 3 끌림 구조) */}
       <nav className="mt-16 pt-8 border-t border-hairline flex items-center justify-between" aria-label="케이스 이동">
-        <Link href="/" className="font-mono text-sm text-gray-1 hover:text-accent">
-          ← 홈
+        <Link href="/" className="inline-flex items-center gap-1 font-mono text-sm text-gray-1 hover:text-accent">
+          <LuArrowLeft aria-hidden className="size-3.5" /> 홈
         </Link>
         {next && next.slug !== slug && (
           <Link href={`/work/${next.slug}`} className="text-right group">
             <span className="font-mono text-xs text-gray-2 block">다음 케이스</span>
-            <span className="font-display font-medium group-hover:text-accent transition-colors">
-              {next.frontmatter.title} →
+            <span className="inline-flex items-center gap-1 font-display font-medium group-hover:text-accent transition-colors">
+              {next.frontmatter.title} <LuArrowRight aria-hidden className="size-3.5" />
             </span>
           </Link>
         )}

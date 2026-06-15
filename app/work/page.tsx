@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getAllCases } from "@/lib/cases";
 import { CaseCard } from "@/components/case-card";
+import { LuArrowLeft, LuArrowRight } from "react-icons/lu";
 
 export const metadata = {
   title: "Work — hoonjo",
@@ -18,8 +19,8 @@ export default function WorkIndex() {
       {cases.length === 0 ? (
         <div className="mt-10">
           <p className="text-gray-1">아직 공개된 케이스가 없어요. 곧 추가됩니다.</p>
-          <Link href="/#contact" className="inline-block mt-3 text-accent text-sm hover:underline underline-offset-4">
-            연락하기 →
+          <Link href="/#contact" className="mt-3 inline-flex items-center gap-1 text-accent text-sm hover:underline underline-offset-4">
+            연락하기 <LuArrowRight aria-hidden className="size-3.5" />
           </Link>
         </div>
       ) : (
@@ -30,8 +31,8 @@ export default function WorkIndex() {
         </div>
       )}
 
-      <Link href="/" className="inline-block mt-12 text-accent text-sm hover:underline underline-offset-4">
-        ← 홈으로
+      <Link href="/" className="mt-12 inline-flex items-center gap-1 text-accent text-sm hover:underline underline-offset-4">
+        <LuArrowLeft aria-hidden className="size-3.5" /> 홈으로
       </Link>
     </div>
   );

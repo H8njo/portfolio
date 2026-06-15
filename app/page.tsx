@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { getAllCases } from "@/lib/cases";
 import { CaseCard } from "@/components/case-card";
+import { LuArrowRight } from "react-icons/lu";
 
 const CURATED_LIMIT = 6;
 
@@ -36,8 +37,8 @@ export default function Home() {
         {curated.length === 0 ? (
           <div className="mt-6">
             <p className="text-gray-1">케이스를 정리해 곧 올릴 예정이에요.</p>
-            <a href="#contact" className="inline-block mt-3 text-accent text-sm hover:underline underline-offset-4">
-              먼저 자세히 듣고 싶으시면 연락 주세요 →
+            <a href="#contact" className="mt-3 inline-flex items-center gap-1 text-accent text-sm hover:underline underline-offset-4">
+              먼저 자세히 듣고 싶으시면 연락 주세요 <LuArrowRight aria-hidden className="size-3.5" />
             </a>
           </div>
         ) : (
@@ -47,8 +48,8 @@ export default function Home() {
             ))}
           </div>
         )}
-        <Link href="/work" className="inline-block mt-8 text-accent text-sm hover:underline underline-offset-4">
-          전체 작업 보기 →
+        <Link href="/work" className="mt-8 inline-flex items-center gap-1 text-accent text-sm hover:underline underline-offset-4">
+          전체 작업 보기 <LuArrowRight aria-hidden className="size-3.5" />
         </Link>
       </section>
 
