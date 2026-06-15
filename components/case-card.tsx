@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LuPlay } from "react-icons/lu";
+import { FaPlay } from "react-icons/fa6";
 import type { CaseEntry } from "@/lib/cases.schema";
 
 // "문제 한 장" 카드 — 정적, SSR. /work 인덱스 + 랜딩 리스트 공용.
@@ -52,7 +52,9 @@ export function CaseCard({ entry, index }: { entry: CaseEntry; index: number }) 
         <span className="text-accent inline-flex items-center gap-1.5">
           {frontmatter.demo ? (
             <>
-              <LuPlay aria-hidden="true" className="h-3 w-3" />
+              <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-accent text-white">
+                <FaPlay aria-hidden="true" className="translate-x-[0.5px] text-[7px]" />
+              </span>
               라이브 데모 보기 →
             </>
           ) : (
