@@ -77,7 +77,9 @@ export default async function CaseDetail({ params }: { params: Promise<{ slug: s
       {frontmatter.demo === "column-pager" && (
         <section aria-label="라이브 데모" className="mt-10">
           <h2 className="font-display font-semibold text-xl tracking-tight mb-1">라이브 데모</h2>
-          <p className="text-gray-1 text-sm">직접 토글하며 "남들 방법 vs 내 방법"을 비교해 보세요.</p>
+          <p className="text-gray-1 text-sm">
+            탭으로 column-pager의 실제 동작을 확인해 보세요 — 긴 카드 슬라이스, 컬럼 수 변경, 재배치 애니메이션.
+          </p>
           <FeaturedDemo />
         </section>
       )}
