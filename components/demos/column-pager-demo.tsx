@@ -15,52 +15,39 @@ type ItemInfo = { id?: string; sliced: boolean; pageNumber: number; children: Re
 
 type CardDatum = { number: number; title: string; lines: string[] };
 
+const L1 = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.";
+const L2 = "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.";
+const L3 = "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.";
+
 const CARDS: CardDatum[] = [
-  { number: 1, title: "다항식의 연산", lines: ["다음 식을 간단히 하시오.", "전개 후 동류항을 정리하는 과정에서 부호에 주의한다.", "결과를 표준형으로 나타낸다."] },
-  { number: 2, title: "함수의 극한", lines: ["x가 한없이 커질 때 함숫값의 거동을 관찰한다.", "좌극한과 우극한이 일치하는지 확인한다."] },
-  { number: 3, title: "확률과 통계", lines: ["주머니에서 공을 꺼내는 사건의 확률을 구하라.", "복원과 비복원에 따라 표본공간이 달라진다.", "조건부확률로 다시 따져 본다."] },
-  { number: 4, title: "기하 — 벡터", lines: ["두 벡터의 내적으로 사잇각을 구하라.", "성분 계산 후 크기로 나누어 코사인 값을 얻는다."] },
-  { number: 5, title: "수열의 합", lines: ["시그마의 성질로 식을 분해한다.", "부분합의 규칙을 찾아 일반항을 추정한다."] },
-  { number: 6, title: "미분계수", lines: ["평균변화율의 극한으로 정의한다.", "접선의 기울기로 해석한다.", "도함수와의 관계를 확인한다."] },
-  { number: 7, title: "정적분", lines: ["구간을 나눠 넓이로 해석한다.", "치환으로 식을 단순화한다."] },
-  { number: 8, title: "삼각함수", lines: ["단위원 위에서 값을 읽는다.", "주기와 대칭을 이용해 식을 정리한다."] },
+  { number: 1, title: "Lorem ipsum dolor", lines: [L1, L2] },
+  { number: 2, title: "Consectetur elit", lines: [L3, L1] },
+  { number: 3, title: "Sed do eiusmod", lines: [L2, L3, L1] },
+  { number: 4, title: "Tempor incididunt", lines: [L1, L2] },
+  { number: 5, title: "Ut labore dolore", lines: [L3, L2] },
+  { number: 6, title: "Magna aliqua enim", lines: [L1, L3, L2] },
+  { number: 7, title: "Quis nostrud", lines: [L2, L1] },
+  { number: 8, title: "Ullamco laboris", lines: [L3, L1] },
 ];
 
 // 한 컬럼 높이를 확실히 넘겨 여러 컬럼·페이지로 슬라이스되도록 충분히 긴 카드.
 const TALL_CARD: CardDatum = {
   number: 9,
-  title: "긴 지문 — 독해",
-  lines: [
-    "다음 글을 읽고 물음에 답하시오. 이 지문은 의도적으로 길게 작성되어 한 컬럼의 높이를 넘긴다.",
-    "단락이 길어지면 순진한 CSS 멀티컬럼은 글을 컬럼 경계에서 잘라 읽기를 망가뜨린다.",
-    "column-pager는 같은 상황에서 조각을 자연스럽게 다음 컬럼으로 이어 붙여 잘림 없이 흐르게 한다.",
-    "측정은 실제 브라우저 레이아웃에 의존한다. 폰트가 로드되고 줌이 바뀌어도 같은 결과를 내도록 정수배 보정을 둔다.",
-    "긴 지문일수록 이 차이가 뚜렷하다. 마지막 줄까지 잘리지 않고 다음 컬럼으로 흐르는지 확인해 보라.",
-    "글의 구조를 먼저 잡는다. 도입에서 화제를 제시하고, 전개에서 근거를 쌓고, 결론에서 주장을 분명히 한다.",
-    "문장과 문장 사이의 논리적 연결을 표시어로 파악한다. 그러나, 따라서, 예를 들어 같은 말에 주목한다.",
-    "지시어가 무엇을 가리키는지 앞 문장에서 되짚는다. 대명사의 선행사를 놓치면 의미가 흔들린다.",
-    "필자의 태도가 긍정인지 비판인지, 객관적 서술인지 주관적 평가인지 구분한다.",
-    "예시는 주장을 뒷받침하기 위한 장치다. 예시 자체가 아니라 그것이 받치는 주장을 읽어야 한다.",
-    "한 단락의 중심 문장을 찾고, 나머지를 그 문장에 대한 부연으로 묶어 본다.",
-    "어휘의 사전적 의미와 문맥적 의미가 다를 수 있다. 문맥이 항상 우선한다.",
-    "글 전체를 한 문장으로 요약해 본다. 요약이 막히면 아직 구조를 못 잡은 것이다.",
-    "이 카드는 한 컬럼에 다 들어가지 않으므로 여러 컬럼과 페이지에 걸쳐 슬라이스되어 표현된다.",
-    "조각의 경계에서 글자가 잘리지 않고 줄 단위로 자연스럽게 이어지는 것이 핵심이다.",
-    "바로 이 지점이, 사내외 여러 사람이 시도했다가 멈췄던 부분이다.",
-  ],
+  title: "Excepteur sint occaecat",
+  lines: [L1, L2, L3, L1, L2, L3, L1, L2, L3, L1, L2, L3, L1, L2, L3, L1, L2, L3],
 };
 
 // 스토리북 ui/Card와 동일 스타일: 번호(파란 모노) → 파란 볼드 타이틀 → 회색 본문.
 function Card({ number, title, lines }: CardDatum) {
   return (
-    <article className="flex flex-col gap-2.5 rounded-2xl bg-gray-100 p-6">
-      <span className="font-mono text-xs font-medium tracking-wider text-blue-600">
+    <article className="flex flex-col gap-1.5 rounded-xl bg-gray-100 p-4">
+      <span className="font-mono text-[10px] font-medium tracking-wider text-blue-600">
         {String(number).padStart(2, "0")}
       </span>
-      <h3 className="text-xl font-bold leading-tight text-blue-600">{title}</h3>
-      <div className="flex flex-col gap-1.5">
+      <h3 className="text-[15px] font-bold leading-snug text-blue-600">{title}</h3>
+      <div className="flex flex-col gap-1">
         {lines.map((l, i) => (
-          <p key={i} className="text-[13px] leading-relaxed text-gray-500">
+          <p key={i} className="text-[11.5px] leading-relaxed text-gray-500">
             {l}
           </p>
         ))}
