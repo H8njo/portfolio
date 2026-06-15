@@ -48,8 +48,17 @@ export function CaseCard({ entry, index }: { entry: CaseEntry; index: number }) 
       <div className="mt-6 pt-3.5 border-t border-dashed border-hairline flex justify-between items-center font-mono text-[11px] text-gray-2">
         <span>page {no}</span>
         {/* 데모 보유 케이스는 미끼로 클릭 유도 (데모는 상세 페이지에서 작동) */}
-        <span className="text-accent">
-          {frontmatter.demo ? "▶ 라이브 데모 보기 →" : "자세히 →"}
+        <span className="text-accent inline-flex items-center gap-1.5">
+          {frontmatter.demo ? (
+            <>
+              <svg viewBox="0 0 10 10" aria-hidden="true" className="h-2.5 w-2.5 fill-current">
+                <path d="M2 1.5v7l6-3.5z" />
+              </svg>
+              라이브 데모 보기 →
+            </>
+          ) : (
+            "자세히 →"
+          )}
         </span>
       </div>
     </Link>
