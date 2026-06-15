@@ -1,12 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { ReactNode } from "react";
 import { ColumnPager } from "column-pager";
-import { LayoutGroup, motion } from "framer-motion";
-
-// renderItem 콜백 인자(라이브러리 RenderItemInfo의 사용 부분만).
-type ItemInfo = { id?: string; sliced: boolean; pageNumber: number; children: ReactNode };
 
 // 시그니처 라이브 데모 — ~/Projects/column-pager의 Storybook 예제를 탭으로 옮겨온 것.
 // 룩도 스토리북과 동일하게: 회색 배경 위 흰 페이지 시트(PageSheet 기본 bg-white),
@@ -127,70 +122,12 @@ function DynamicColumns({ onReady }: DemoProps) {
   );
 }
 
-function AnimatedReorder({ onReady }: DemoProps) {
-  const [order, setOrder] = useState<CardDatum[]>(() => CARDS);
-
-  const move = (num: number, dir: -1 | 1) =>
-    setOrder((prev) => {
-      const i = prev.findIndex((c) => c.number === num);
-      const j = i + dir;
-      if (i < 0 || j < 0 || j >= prev.length) return prev;
-      const next = prev.slice();
-      [next[i], next[j]] = [next[j], next[i]];
-      return next;
-    });
-
-  const arrow =
-    "flex h-7 w-7 items-center justify-center rounded-full bg-blue-600 text-white text-sm shadow " +
-    "transition hover:bg-blue-700 disabled:opacity-30 disabled:cursor-not-allowed";
-
-  return (
-    <LayoutGroup>
-      <ColumnPager
-        {...common(onReady)}
-        columnCount={2}
-        showDividers
-        clipOverflow={false}
-        renderItem={({ id, sliced, pageNumber, children }: ItemInfo) => {
-          if (!id || sliced) return children;
-          const index = order.findIndex((c) => String(c.number) === id);
-          return (
-            <motion.div
-              layout
-              layoutId={`${id}-p${pageNumber}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ type: "tween", duration: 0.4 }}
-              className="relative"
-            >
-              <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
-                <button type="button" aria-label="위로" className={arrow} disabled={index <= 0} onClick={() => move(Number(id), -1)}>
-                  ↑
-                </button>
-                <button type="button" aria-label="아래로" className={arrow} disabled={index >= order.length - 1} onClick={() => move(Number(id), 1)}>
-                  ↓
-                </button>
-              </div>
-              {children}
-            </motion.div>
-          );
-        }}
-      >
-        {order.map((c) => (
-          <Card key={c.number} {...c} />
-        ))}
-      </ColumnPager>
-    </LayoutGroup>
-  );
-}
-
 // ── 탭 셸 ──────────────────────────────────────────────────
 
 const TABS = [
   { key: "slice", label: "긴 카드 슬라이스", render: TallSlice, note: "한 컬럼 높이를 넘는 긴 카드(09)가 잘리지 않고 다음 컬럼·페이지로 이어진다 — 모두가 실패했던 지점." },
   { key: "two", label: "2컬럼", render: TwoColumns, note: "여러 카드가 컬럼을 채우다 넘치면 다음 컬럼·페이지로 흐른다." },
   { key: "dynamic", label: "컬럼 수 변경", render: DynamicColumns, note: "PageBreak로 페이지마다 컬럼 수를 1 → 2 → 3으로 바꾼다." },
-  { key: "reorder", label: "순서 변경 (v1.1)", render: AnimatedReorder, note: "↑↓로 카드를 옮기면 재배치가 애니메이션된다. 라이브러리는 framer-motion에 의존하지 않고 renderItem 훅만 노출한다." },
 ] as const;
 
 export default function ColumnPagerDemo() {
