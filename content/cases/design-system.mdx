@@ -19,7 +19,7 @@ date: 2026-06-08
 
 사내 디자인 시스템을 맡았다. 처음엔 컴포넌트만 잘 만들면 되는 줄 알았다.
 
-막상 해보니 일의 절반은 그게 아니었다. 컴포넌트를 잘 만드는 거랑, 다음 사람이 그 위에서 안 헷갈리게 굴러가게 깔아두는 건 다른 일이더라. 여기서 컨벤션 하나 잘못 정하면 그게 소비 프로젝트마다 그대로 복제된다. 그래서 사소한 것도 함부로 못 정했다.
+막상 해보니 일의 절반은 그게 아니었다. 컴포넌트를 잘 만드는 거랑, 다음 사람이 그 위에서 안 헷갈리게 굴러가게 깔아두는 건 다른 일이더라. 여기서 컨벤션 하나 잘못 정하면 그게 소비 프로젝트마다 그대로 복제되거든. 그래서 사소한 것도 함부로 못 정했다.
 
 여러 프론트엔드 제품이 같은 UI·접근성을 공유해야 했다. React 컴포넌트 라이브러리를 Radix primitive + Tailwind + CVA 위에 올리고, Storybook으로 문서화해 사내 패키지로 배포하는 구조다. 이 글은 그중 제일 오래 붙들었던 두 가지 — Select API를 두 엔진으로 가른 일이랑, 아이콘 코드젠하다 빌드가 두 번 죽은 일 — 얘기다.
 
@@ -27,7 +27,7 @@ date: 2026-06-08
 
 ## Select: API는 하나, 엔진은 둘
 
-기존 `Select`가 Radix Select 위에 multi-select를 흉내 내고 있었다. Radix Select는 본질적으로 단일 값이다. 그걸로 multi를 만들겠다고 `value`를 빈 문자열로 비우고 `shouldKeepOpenRef`로 자동 닫힘을 가로채는 우회를 쓰고 있었다. 컴포넌트가 정작 뭐가 선택됐는지를 모른다. 진짜 선택 집합도, 체크박스도, `aria-checked`도 없었다.
+기존 `Select`가 Radix Select 위에 multi-select를 흉내 내고 있었다. 근데 Radix Select는 본질적으로 단일 값이라, 그걸로 multi를 만들겠다고 `value`를 빈 문자열로 비우고 `shouldKeepOpenRef`로 자동 닫힘을 가로채는 우회를 쓰고 있었다. 그러니 컴포넌트가 정작 뭐가 선택됐는지를 모른다. 진짜 선택 집합도, 체크박스도, `aria-checked`도 없었다.
 
 single이랑 multi를 한 엔진에 억지로 욱여넣는 대신, API는 통합하되 내부는 두 엔진으로 갈랐다. single은 Radix Select를 그대로 래핑해서 폼 바인딩(`name`/`required`/hidden input/자동 닫힘)을 공짜로 가져온다. multi는 Radix Popover 위에 선택 모델·키보드 내비·체크박스를 직접 짰다. 소비자가 쓰는 JSX는 양쪽이 똑같다.
 
@@ -41,13 +41,13 @@ export type SelectV2Props = SelectV2SingleProps | SelectV2MultiProps
 
 ## 아이콘 코드젠, 그리고 빌드가 두 번 죽은 얘기
 
-아이콘이 수작업이었다. 디자이너가 Figma에서 뽑은 SVG를 누가 손으로 컴포넌트로 옮기고 export를 모아두는 파일에 한 줄씩 추가하는 식. 160개쯤 되니까 이건 일이 아니라 사고 대기다.
+아이콘이 수작업이었다. 디자이너가 Figma에서 뽑은 SVG를 누가 손으로 컴포넌트로 옮기고 export를 모아두는 파일에 한 줄씩 추가하는 식이었는데, 160개쯤 되니까 이건 일이 아니라 사고 대기더라.
 
 코드젠으로 뒤집었다. 디자이너가 `assets/icons/design-system/`에 SVG를 드롭하고 `pnpm generate`를 돌리면, 디렉토리를 스캔해서 export 묶음을 통째로 다시 만든다. 파일을 지우면 export도 같이 사라진다. 폴더가 곧 진실인 셈. (폴더 구조 드리프트를 막으려고 따로 두던 컴포넌트 제너레이터도 결국 같은 제너레이터의 `icon` 분기로 합쳤다.)
 
 근데 여기서 빌드가 두 번 죽었다.
 
-처음엔 `?react` 한 줄이면 끝날 줄 알았다. export 묶음이 `'...Alert_1px.svg?react'`로 import하는데, Storybook(Vite)에선 멀쩡하고 라이브러리 빌드(Rollup)만 죽었다. 원인 찾는 데 한참 헤맸다. 알고 보니 `?react`는 vite-plugin-svgr가 만든 규칙이라 Vite에서만 의미가 있는 거였다. Rollup의 `@svgr/rollup`은 그 쿼리를 못 읽고, `Alert_1px.svg?react`라는 디스크에 없는 파일을 찾다가 경로를 풀지 못해 질식했다. export 묶음을 두 벌로 가르는 대신, 쿼리를 떼고 실제 경로로 넘겨주는 작은 Rollup 플러그인을 끼웠다.
+처음엔 `?react` 한 줄이면 끝날 줄 알았다. export 묶음이 `'...Alert_1px.svg?react'`로 import하는데, Storybook(Vite)에선 멀쩡하고 라이브러리 빌드(Rollup)만 죽더라. 원인 찾는 데 한참 헤맸는데, 알고 보니 `?react`는 vite-plugin-svgr가 만든 규칙이라 Vite에서만 의미가 있는 거였다. Rollup의 `@svgr/rollup`은 그 쿼리를 못 읽고, `Alert_1px.svg?react`라는 디스크에 없는 파일을 찾다가 경로를 풀지 못해 질식했다. export 묶음을 두 벌로 가르는 대신, 쿼리를 떼고 실제 경로로 넘겨주는 작은 Rollup 플러그인을 끼웠다.
 
 ```js
 {
