@@ -23,7 +23,7 @@ date: 2026-06-08
 
 여러 프론트엔드 제품이 같은 UI·접근성을 공유해야 했다. React 컴포넌트 라이브러리를 Radix primitive + Tailwind + CVA 위에 올리고, Storybook으로 문서화해 사내 패키지로 배포하는 구조다. 이 글은 그중 제일 오래 붙들었던 두 가지 — Select API를 두 엔진으로 가른 일이랑, 아이콘 코드젠하다 빌드가 두 번 죽은 일 — 얘기다.
 
-그 전에 태도 얘기 하나. Button 초기 버전에 솔직히 욕심을 부려서, async `onClick`이 promise를 반환하면 가로채서 로딩 상태를 알아서 켜고 꺼주게 만들었다. 데모로는 그럴듯했는데 primitive로는 그냥 틀린 설계였다 — 상태 주도권을 호출자한테서 뺏어온다. controlled `isLoading`으로 되돌렸다. primitive에서는 마법보다 예측 가능한 쪽이 거의 항상 맞더라. 아래 두 결정도 다 그 자리에서 나왔다.
+그 전에 태도 얘기 하나. Button 초기 버전에 솔직히 욕심을 부려서, async `onClick`이 promise를 반환하면 가로채서 로딩 상태를 알아서 켜고 꺼주게 만들었다. 데모로는 그럴듯했는데 기본 컴포넌트로는 그냥 틀린 설계였다 — 상태 주도권을 호출자한테서 뺏어온다. controlled `isLoading`으로 되돌렸다. 기본 컴포넌트에서는 마법보다 예측 가능한 쪽이 거의 항상 맞더라. 아래 두 결정도 다 그 자리에서 나왔다.
 
 ## Select: API는 하나, 엔진은 둘
 
@@ -41,13 +41,13 @@ export type SelectV2Props = SelectV2SingleProps | SelectV2MultiProps
 
 ## 아이콘 코드젠, 그리고 빌드가 두 번 죽은 얘기
 
-아이콘이 수작업이었다. 디자이너가 Figma에서 뽑은 SVG를 누가 손으로 컴포넌트로 옮기고 barrel에 export를 한 줄씩 추가하는 식. 160개쯤 되니까 이건 일이 아니라 사고 대기다.
+아이콘이 수작업이었다. 디자이너가 Figma에서 뽑은 SVG를 누가 손으로 컴포넌트로 옮기고 export를 모아두는 파일에 한 줄씩 추가하는 식. 160개쯤 되니까 이건 일이 아니라 사고 대기다.
 
-코드젠으로 뒤집었다. 디자이너가 `assets/icons/design-system/`에 SVG를 드롭하고 `pnpm generate`를 돌리면, 디렉토리를 스캔해서 barrel을 통째로 다시 만든다. 파일을 지우면 export도 같이 사라진다. 폴더가 곧 진실인 셈. (폴더 구조 드리프트를 막으려고 따로 두던 컴포넌트 제너레이터도 결국 같은 제너레이터의 `icon` 분기로 합쳤다.)
+코드젠으로 뒤집었다. 디자이너가 `assets/icons/design-system/`에 SVG를 드롭하고 `pnpm generate`를 돌리면, 디렉토리를 스캔해서 export 묶음을 통째로 다시 만든다. 파일을 지우면 export도 같이 사라진다. 폴더가 곧 진실인 셈. (폴더 구조 드리프트를 막으려고 따로 두던 컴포넌트 제너레이터도 결국 같은 제너레이터의 `icon` 분기로 합쳤다.)
 
 근데 여기서 빌드가 두 번 죽었다.
 
-처음엔 `?react` 한 줄이면 끝날 줄 알았다. barrel이 `'...Alert_1px.svg?react'`로 import하는데, Storybook(Vite)에선 멀쩡하고 라이브러리 빌드(Rollup)만 죽었다. 원인 찾는 데 한참 헤맸다. 알고 보니 `?react`는 vite-plugin-svgr가 만든 컨벤션이라 Vite에서만 의미가 있는 거였다. Rollup의 `@svgr/rollup`은 그 쿼리를 못 읽고, `Alert_1px.svg?react`라는 디스크에 없는 파일을 찾다가 resolution에서 질식했다. barrel을 두 벌로 가르는 대신, 쿼리를 떼고 실제 경로로 넘겨주는 작은 Rollup 플러그인을 끼웠다.
+처음엔 `?react` 한 줄이면 끝날 줄 알았다. export 묶음이 `'...Alert_1px.svg?react'`로 import하는데, Storybook(Vite)에선 멀쩡하고 라이브러리 빌드(Rollup)만 죽었다. 원인 찾는 데 한참 헤맸다. 알고 보니 `?react`는 vite-plugin-svgr가 만든 규칙이라 Vite에서만 의미가 있는 거였다. Rollup의 `@svgr/rollup`은 그 쿼리를 못 읽고, `Alert_1px.svg?react`라는 디스크에 없는 파일을 찾다가 경로를 풀지 못해 질식했다. export 묶음을 두 벌로 가르는 대신, 쿼리를 떼고 실제 경로로 넘겨주는 작은 Rollup 플러그인을 끼웠다.
 
 ```js
 {
@@ -62,15 +62,15 @@ export type SelectV2Props = SelectV2SingleProps | SelectV2MultiProps
 }
 ```
 
-결과적으로 단일 barrel이 Vite(네이티브)랑 Rollup(투명 rewrite) 양쪽에서 돈다. 개발 toolchain이랑 배포 toolchain이 다를 땐 둘 중 하나에 맞춰 소스를 갈라치는 것보다 얇은 어댑터 하나 끼우는 게 나았다.
+결과적으로 export 묶음 하나가 Vite랑 Rollup 양쪽에서 돈다. 개발 빌드 도구랑 배포 빌드 도구가 다를 땐 둘 중 하나에 맞춰 소스를 갈라치는 것보다 얇은 어댑터 하나 끼우는 게 나았다.
 
-두 번째 죽음은 더 음흉했다. 빌드는 통과하는데 화면에서 아이콘이 잘렸다. `className="h-7 w-7"`로 키우면 스케일이 안 되고 클리핑된다. 범인은 SVGO였다. `width`/`height`랑 `viewBox`가 둘 다 있으면 `removeViewBox`가 viewBox를 redundant로 보고 지워버린다. viewBox가 없어지면 좌표계가 사라져서 CSS 스케일이 path를 잘라먹는다. 이것도 한참 째려봤다. Figma를 viewBox-only로 다시 뽑고, 빌드 쪽 SVGO 설정에 `removeViewBox: false`로 못을 박았다. 소스랑 빌드 두 층 다 막아둬야 입력이 흔들려도 안 터진다.
+두 번째 죽음은 더 음흉했다. 빌드는 통과하는데 화면에서 아이콘이 잘렸다. `className="h-7 w-7"`로 키우면 크기가 안 커지고 잘려나간다. 범인은 SVGO였다. `width`/`height`랑 `viewBox`가 둘 다 있으면 `removeViewBox`가 viewBox를 불필요한 것으로 보고 지워버린다. viewBox가 없어지면 좌표계가 사라져서 CSS 스케일이 path를 잘라먹는다. 이것도 한참 째려봤다. Figma를 viewBox-only로 다시 뽑고, 빌드 쪽 SVGO 설정에 `removeViewBox: false`로 못을 박았다. 소스랑 빌드 두 층 다 막아둬야 입력이 흔들려도 안 터진다.
 
-`?react` 쪽은 타입 체크만으론 안 잡혔다(ambient `*.svg` 선언이 그냥 통과시킨다). 그래서 push 전에 type-check + 실제 Rollup 빌드를 강제하는 게이트를 걸었다. 같은 부류 실패는 이제 내 로컬을 못 벗어난다.
+`?react` 쪽은 타입 체크만으론 안 잡혔다(타입 선언이 그냥 통과시킨다). 그래서 push 전에 type-check + 실제 Rollup 빌드를 강제하는 게이트를 걸었다. 같은 부류 실패는 이제 내 로컬을 못 벗어난다.
 
 ## 결과
 
-Select는 multi-select가 우회가 아니라 일급 모델이 됐다. 아이콘은 export 보일러플레이트가 통째로 사라져서, 디자이너가 폴더에 드롭하면 타입 있는 아이콘 컴포넌트가 나오고 Storybook 갤러리에 바로 뜬다.
+Select는 multi-select가 우회가 아니라 일급 모델이 됐다. 아이콘은 손으로 쓰던 export 코드가 통째로 사라져서, 디자이너가 폴더에 드롭하면 타입 있는 아이콘 컴포넌트가 나오고 Storybook 갤러리에 바로 뜬다.
 
 역할로 보면, 설정상 모든 PR의 코드오너라 리뷰·머지를 도맡았고 릴리스도 직접 cut했다. 누가 와도 같은 규율로 굴러가게 PR 템플릿이랑 리뷰어 로테이션, commit/pr/ship 컨벤션을 박아뒀다.
 

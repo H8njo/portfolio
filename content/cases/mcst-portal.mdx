@@ -75,7 +75,7 @@ module.exports = {
 
 감사 정책은 `makeCollectionHistoryHooks` 한 함수에 모여 있고, 모델은 그걸 배열 첫 칸에 끼워넣기만 한다. board, 진단 결과, 자산 같은 20개 모델에 이 패턴으로 감사+도메인을 동시에 걸었다. 감사 로그 형식을 바꾸고 싶으면 헬퍼 한 곳만 손대면 20개가 같이 따라온다.
 
-다만 이 헬퍼엔 함정이 있다. 시그니처를 `(result, params, data)`로 통일했는데, 정작 Strapi 훅은 이벤트마다 인자 모양이 다르다. `afterCreate`는 `(result, data)`인데 `afterUpdate`는 `(result, params, data)`다. 통일된 시그니처로 흘리다 보면 위치가 한 칸씩 어긋날 수 있다. 그래서 각 콜백 안에서 인자를 쓸 때 조심해야 했다. 게다가 `forEach`로 fire-and-forget이라 Promise를 await하지 않는다. 순서가 중요한 훅엔 못 쓴다. 알면서 둔 한계다. 감사+알림처럼 서로 독립적인 부수효과엔 충분했으니까.
+다만 이 헬퍼엔 함정이 있다. 시그니처를 `(result, params, data)`로 통일했는데, 정작 Strapi 훅은 이벤트마다 인자 모양이 다르다. `afterCreate`는 `(result, data)`인데 `afterUpdate`는 `(result, params, data)`다. 통일된 시그니처로 흘리다 보면 위치가 한 칸씩 어긋날 수 있다. 그래서 각 콜백 안에서 인자를 쓸 때 조심해야 했다. 게다가 `forEach`로 그냥 호출만 하고 결과를 기다리지 않는다. 순서가 중요한 훅엔 못 쓴다. 알면서 둔 한계다. 감사+알림처럼 서로 독립적인 부수효과엔 충분했으니까.
 
 ## 결과
 
