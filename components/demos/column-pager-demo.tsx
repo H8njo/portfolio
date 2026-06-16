@@ -122,12 +122,45 @@ function DynamicColumns({ onReady }: DemoProps) {
   );
 }
 
+function EditableDemo({ onReady }: DemoProps) {
+  const [text, setText] = useState("Lorem ipsum dolor sit amet.\nConsectetur adipiscing elit, sed do eiusmod tempor.");
+  const lines = text.trim() ? text.split("\n") : ["(빈 내용)"];
+  const editable: CardDatum = { number: 5, title: "편집되는 카드", lines };
+
+  return (
+    <>
+      {/* 편집 패널 — 스크롤해도 항상 보이게 sticky */}
+      <div className="sticky top-0 z-10 mb-3 rounded-lg bg-white/90 p-3 shadow backdrop-blur">
+        <label className="mb-1.5 block font-mono text-[11px] text-gray-600">
+          05번 카드 내용 — 입력하면 그 카드만 재측정돼 즉시 재배치됩니다
+        </label>
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          rows={3}
+          className="w-full rounded border border-gray-300 p-2 text-[12px] leading-relaxed text-gray-700 outline-none focus:border-blue-500"
+        />
+      </div>
+      <ColumnPager {...common(onReady)} columnCount={2} showDividers>
+        {CARDS.slice(0, 4).map((c) => (
+          <Card key={c.number} {...c} />
+        ))}
+        <Card key="edit" {...editable} />
+        {CARDS.slice(5, 8).map((c) => (
+          <Card key={c.number} {...c} />
+        ))}
+      </ColumnPager>
+    </>
+  );
+}
+
 // ── 탭 셸 ──────────────────────────────────────────────────
 
 const TABS = [
   { key: "slice", label: "긴 카드 슬라이스", render: TallSlice, note: "한 컬럼 높이를 넘는 긴 카드(09)가 잘리지 않고 다음 컬럼·페이지로 이어진다 — 모두가 실패했던 지점." },
   { key: "two", label: "2컬럼", render: TwoColumns, note: "여러 카드가 컬럼을 채우다 넘치면 다음 컬럼·페이지로 흐른다." },
   { key: "dynamic", label: "컬럼 수 변경", render: DynamicColumns, note: "PageBreak로 페이지마다 컬럼 수를 1 → 2 → 3으로 바꾼다." },
+  { key: "editable", label: "데이터 수정", render: EditableDemo, note: "위 입력창에서 05번 카드 내용을 바꿔 보세요. 편집된 카드만 재측정되어 거의 즉시 재배치됩니다." },
 ] as const;
 
 export default function ColumnPagerDemo() {
@@ -163,7 +196,7 @@ export default function ColumnPagerDemo() {
       {/* 무대 — 스토리북처럼 회색 배경 위 흰 페이지 시트. 높이 제한 + 스크롤로 컨테인. */}
       <div className="rounded-lg border border-hairline overflow-hidden">
         <div
-          className="max-h-[640px] overflow-y-auto bg-[#b6b6b6] p-5 transition-opacity duration-500"
+          className="h-[640px] overflow-y-auto bg-[#b6b6b6] p-5 transition-opacity duration-500"
           style={{ opacity: ready ? 1 : 0 }}
         >
           <Demo key={tab} onReady={() => setReady(true)} />
