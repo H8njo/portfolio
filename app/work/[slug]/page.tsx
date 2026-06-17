@@ -39,6 +39,14 @@ const mdxComponents = {
   a: (p: React.ComponentProps<"a">) => (
     <a className="text-accent underline underline-offset-4" {...p} />
   ),
+  // 본문 이미지(스크린샷 등): alt를 그림 아래 캡션으로도 보여준다.
+  img: ({ alt, ...p }: React.ComponentProps<"img">) => (
+    <figure className="my-6">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img className="w-full rounded-lg border border-hairline" alt={alt} {...p} />
+      {alt && <figcaption className="mt-2 text-center font-mono text-xs text-gray-2">{alt}</figcaption>}
+    </figure>
+  ),
 };
 
 export default async function CaseDetail({ params }: { params: Promise<{ slug: string }> }) {
