@@ -53,7 +53,7 @@ export function Nav() {
         <nav className="hoonjo-nav-links" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
           {NAV_LINKS.map(([label, id]) => (
             <a key={id} href={sectionHref(id)} onClick={onHome ? (e) => scrollTo(e, id) : undefined} style={{
-              fontFamily: 'var(--font-sans)', fontSize: 15, color: 'var(--text-secondary)', padding: '8px 12px',
+              fontFamily: 'var(--font-sans)', fontSize: 15, color: 'var(--text-secondary)', padding: '10px 12px',
               textDecoration: 'none', borderRadius: 'var(--radius-md)', transition: 'color 150ms ease, background 150ms ease',
             }}
               onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.background = 'var(--cloud)'; }}
@@ -62,7 +62,7 @@ export function Nav() {
           ))}
           {NAV_ROUTES.map(({ label, href, external }) => (
             <a key={href} href={href} {...(external ? { target: '_blank', rel: 'noreferrer' } : {})} style={{
-              fontFamily: 'var(--font-sans)', fontSize: 15, color: 'var(--text-secondary)', padding: '8px 12px',
+              fontFamily: 'var(--font-sans)', fontSize: 15, color: 'var(--text-secondary)', padding: '10px 12px',
               textDecoration: 'none', borderRadius: 'var(--radius-md)', transition: 'color 150ms ease, background 150ms ease',
             }}
               onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.background = 'var(--cloud)'; }}
@@ -118,7 +118,8 @@ function Portrait() {
       <img
         src={portrait}
         alt={profile.nameKo}
-        style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 32%', filter: 'saturate(0.92)' }}
+        // 대체 사진이 없어 배경(초록 벽)이 시선을 뺏는 걸 채도↓+살짝 그레이스케일로 눅임
+        style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 32%', filter: 'saturate(0.62) grayscale(0.18) contrast(1.02)' }}
       />
     </div>
   );
@@ -163,7 +164,7 @@ export function Hero() {
               <div key={s.k} style={{ padding: '22px 24px', borderRight: i < 2 ? '1px solid var(--line)' : 'none' }}>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>{s.k}</div>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: 13, color: 'var(--text-muted)', textDecoration: 'line-through', textDecorationColor: 'var(--steel)', marginTop: 10 }}>{s.before}</div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums', fontSize: 21, fontWeight: 600, color: 'var(--text)', letterSpacing: '-0.01em', marginTop: 3 }}>{s.after}</div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums', fontSize: 21, fontWeight: 600, color: 'var(--text)', letterSpacing: '-0.01em', marginTop: 3 }}><span aria-hidden style={{ color: 'var(--blue)', fontWeight: 400, marginRight: 7 }}>→</span>{s.after}</div>
               </div>
             ))}
           </div>
@@ -224,8 +225,10 @@ function ImpactStrip({ c }: { c: WorkCase }) {
 
 function CodePanel({ code }: { code: { caption: string; lines: string } }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
-      <div className="hoonjo-code" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', fontFamily: 'var(--font-mono)', fontSize: 13.5, lineHeight: 1.95, background: 'var(--ink)', border: '1px solid var(--ink-soft)', borderRadius: 'var(--radius-md)', padding: 'clamp(26px, 3vw, 34px)', overflowX: 'auto' }}>
+    // 콘텐츠 높이로 두고(스트레치 X) 부모 셀이 세로 중앙 정렬 — 코드가 6줄뿐이라
+    // flex:1로 늘리면 다크 패널 위아래로 빈 공간이 크게 생겨 휑해 보였음.
+    <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, width: '100%' }}>
+      <div className="hoonjo-code" style={{ fontFamily: 'var(--font-mono)', fontSize: 13.5, lineHeight: 1.95, background: 'var(--ink)', border: '1px solid var(--ink-soft)', borderRadius: 'var(--radius-md)', padding: 'clamp(26px, 3vw, 34px)', overflowX: 'auto' }}>
         {code.lines.split('\n').map((ln, i) => {
           const t = ln.trim();
           const color = t.startsWith('//') ? 'var(--on-ink-muted)' : t.startsWith('$') ? 'var(--blue-bright)' : 'var(--on-ink)';
@@ -278,7 +281,7 @@ export function Work() {
           </h3>
           <p style={{ fontFamily: 'var(--font-sans)', fontSize: 15.5, lineHeight: 1.65, color: 'var(--text-secondary)', margin: '18px 0 0', maxWidth: '46ch' }}>{blackHole.body}</p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 24 }}>
-            {blackHole.tags.map((t) => <Tag key={t} variant="blue">{t}</Tag>)}
+            {blackHole.tags.map((t) => <Tag key={t}>{t}</Tag>)}
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 26 }}>
             <Button variant="outline" as="a" href={blackHole.postUrl} iconRight="→">전체 글 읽기</Button>
@@ -329,7 +332,7 @@ export function Career() {
 export function Expertise() {
   return (
     <section id="stack" style={{ ...CONTAINER, padding: `${SECTION_Y} 24px` }}>
-      <SectionHeader index={3} eyebrow="EXPERTISE" title="어디서 강한가" />
+      <SectionHeader index={3} eyebrow="EXPERTISE" title="어디서 강한가" lead="렌더링·성능, 시스템 설계, 복잡한 상태 — 각 강점은 증명한 작업으로 이어집니다." />
       <div className="hoonjo-stack-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 28, marginTop: 48 }}>
         {capabilities.map((c) => (
           <div key={c.label} style={{ paddingTop: 18, borderTop: '2px solid var(--text)' }}>
@@ -400,7 +403,7 @@ export function OpenSource() {
                 <Button variant="primary" as="a" href={oss.href} target="_blank" rel="noreferrer" iconRight="→">GitHub에서 보기</Button>
               </div>
             </div>
-            <div style={{ padding: 'clamp(24px, 4vw, 36px)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 28 }}>
+            <div style={{ padding: 'clamp(24px, 4vw, 36px)', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 28 }}>
               <div className="hoonjo-code" style={{ fontFamily: 'var(--font-mono)', fontSize: 13, lineHeight: 1.7, color: 'var(--on-ink)', background: 'var(--ink-deep)', border: '1px solid rgba(246,244,238,0.12)', borderRadius: 'var(--radius-md)', padding: '16px 18px', overflowX: 'auto' }}>
                 <div style={{ color: 'var(--on-ink-muted)' }}><span style={{ color: 'var(--blue-bright)' }}>$</span> {oss.install}</div>
                 <div style={{ marginTop: 10 }}>

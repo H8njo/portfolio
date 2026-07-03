@@ -98,7 +98,7 @@ export function Tag({ variant = 'outline', children, style = {} }: { variant?: T
     outline: { bg: 'transparent', color: 'var(--text-secondary)', border: 'var(--line)' },
     solid: { bg: 'var(--ink)', color: 'var(--on-ink)', border: 'var(--ink)' },
     blue: { bg: 'var(--blue-soft)', color: 'var(--blue-deep)', border: 'var(--blue-line)' },
-    ghost: { bg: 'var(--cloud)', color: 'var(--text-secondary)', border: 'transparent' },
+    ghost: { bg: 'var(--paper)', color: 'var(--text-secondary)', border: 'var(--line)' },
   };
   const p = palettes[variant];
   return (
@@ -260,6 +260,7 @@ export function MetricRow({ stats }: { stats: Metric[] }) {
           <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>{s.label}</div>
           <div style={{ fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums', marginTop: 8, display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap' }}>
             {s.before != null && <span style={{ fontSize: 13, color: 'var(--text-muted)', textDecoration: 'line-through', textDecorationColor: 'var(--steel)' }}>{s.before}</span>}
+            {s.before != null && <span aria-hidden style={{ fontSize: 14, color: 'var(--text-faint)' }}>→</span>}
             <span style={{ fontSize: 26, fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.015em', whiteSpace: 'nowrap' }}>
               {s.after}{s.unit && <span style={{ fontSize: 13, fontWeight: 400, color: 'var(--text-muted)', marginLeft: 2 }}>{s.unit}</span>}
             </span>

@@ -42,9 +42,9 @@
   --green-soft: #e6f5ec;
   --green-line: #b6e3c8;
 
-  /* Surface — white. Canvas is pure white; bands/panels sit a whisper under it
-     so they're told apart by hairlines, not by any visible gray fill. */
-  --canvas: #ffffff;
+  /* Surface — 캔버스(페이지 바탕)를 살짝 틴트해 흰 카드(--paper)가 그 위로
+     떠오르게 한다. 순백-온-순백은 톤차가 0이라 입체감이 없었음(Linear/Vercel식). */
+  --canvas: #f4f8ff;
   --paper: #ffffff;
   --cloud: #fcfdfe;
   --fog: #f6f8fa;
