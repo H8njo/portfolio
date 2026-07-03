@@ -27,7 +27,7 @@ export function Flagship() {
             {TAGS.map((t) => <Tag key={t}>{t}</Tag>)}
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 24 }}>
-            <Button variant="outline" as="a" href={f.postUrl} target="_blank" rel="noreferrer" iconRight="↗">전체 글 읽기</Button>
+            <Button variant="outline" as="a" href={f.postUrl} iconRight="→">전체 글 읽기</Button>
             <Button variant="text" as="a" href={f.link.href} target="_blank" rel="noreferrer">GitHub ↗</Button>
           </div>
         </div>

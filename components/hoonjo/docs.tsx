@@ -189,7 +189,6 @@ function ResumeHeader() {
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 16px', marginTop: 12, fontFamily: 'var(--font-mono)', fontSize: 12.5 }}>
             <a href={`mailto:${profile.email}`} style={{ color: 'var(--blue-deep)' }}>{profile.email}</a>
             <a href={profile.github} target="_blank" rel="noreferrer" style={{ color: 'var(--blue-deep)' }}>{profile.githubHandle}</a>
-            <a href="https://h8njo.vercel.app" target="_blank" rel="noreferrer" style={{ color: 'var(--blue-deep)' }}>h8njo.vercel.app</a>
           </div>
         </div>
         <img src={portrait} alt={profile.nameKo} style={{ flex: 'none', width: 104, height: 124, objectFit: 'cover', objectPosition: 'center 22%', borderRadius: 'var(--radius-lg)', border: '1px solid var(--line)' }} />

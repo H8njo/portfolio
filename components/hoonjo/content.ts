@@ -11,9 +11,6 @@ const kisti3 = '/hoonjo/kisti-3.png';
 const colpager1 = '/hoonjo/colpager-1.jpg';
 const colpager2 = '/hoonjo/colpager-2.jpg';
 
-/* The real site each "전체 글 읽기" links out to (per-project URLs can override
-   via WorkCase.postUrl). */
-export const SITE_URL = 'https://h8njo.vercel.app';
 export type ProjImage = { src: string; alt: string };
 
 /* All copy + data for the Hoonjo portfolio, grounded in his real résumé and
@@ -26,7 +23,7 @@ export const profile = {
   nameKo: '조영훈',
   role: '7년차 프론트엔드 엔지니어',
   since: '2019',
-  email: 'jaiem9@gmail.com',
+  email: 'jaiemf@gmail.com',
   github: 'https://github.com/H8njo',
   githubHandle: 'github.com/H8njo',
   tagline: ['안 되던 화면을', '되게 만듭니다.'],
@@ -56,23 +53,58 @@ export const flagship = {
   problem:
     '교육 콘텐츠 편집기에서 문제들을 A4 두 칸(2단) 레이아웃으로 배치해야 했는데, 기존 구현은 한 칸 높이를 넘는 긴 카드(긴 본문)를 처리하지 못했다. 만든 문제지는 인쇄돼 학생에게 가는 거라, 문장이 중간에 잘리면 그대로 불량품 — 주력 서비스에서 2년 가까이 환불 문의가 이어졌다. 여러 명이 붙었지만 다들 같은 벽에서 멈췄다.',
   attempts: [
-    { n: '01', head: '긴 카드를 이미지로 캡처해 잘라내기', miss: '픽셀 단위로 자르니 글자가 중간에 깨졌다. 줄 간격을 감지하려니 이미지 연산이 너무 무거웠다.' },
-    { n: '02', head: 'CSS column-count에 통째로 맡기기', miss: '다음 페이지로 넘길 방법이 없어 페이지마다 전체를 렌더 → 카드 1,000개 × 10p = 1만 개 렌더로 화면이 멈췄다.' },
-    { n: '03', head: '높이 측정 + 잘린 지점 직접 탐지', miss: '이진 탐색으로도 연산이 무거웠고, 카드 여백 탓에 “진짜 마지막 글자”를 정확히 못 짚었다.' },
-    { n: '04', head: '1번의 줄 자르기를 2번으로 메우기', miss: '긴 카드가 있는 페이지에만 column-count. 짧은 카드까지 다음 페이지에 복제해야 해, 페이지가 늘수록 비효율적이었다.' },
-    { n: '05', head: '카드마다 column-count:1 + 클립 + 복제', miss: '정답. 잘린 조각만 다음 열에 복제하고 translateX로 이어 붙였다. 짧은 카드는 그대로 둔다.', win: true },
+    {
+      n: '01',
+      head: '긴 카드를 이미지로 캡처해 잘라내기',
+      miss: '픽셀 단위로 자르니 글자가 중간에 깨졌다. 줄 간격을 감지하려니 이미지 연산이 너무 무거웠다.',
+    },
+    {
+      n: '02',
+      head: 'CSS column-count에 통째로 맡기기',
+      miss: '다음 페이지로 넘길 방법이 없어 페이지마다 전체를 렌더 → 카드 1,000개 × 10p = 1만 개 렌더로 화면이 멈췄다.',
+    },
+    {
+      n: '03',
+      head: '높이 측정 + 잘린 지점 직접 탐지',
+      miss: '이진 탐색으로도 연산이 무거웠고, 카드 여백 탓에 “진짜 마지막 글자”를 정확히 못 짚었다.',
+    },
+    {
+      n: '04',
+      head: '1번의 줄 자르기를 2번으로 메우기',
+      miss: '긴 카드가 있는 페이지에만 column-count. 짧은 카드까지 다음 페이지에 복제해야 해, 페이지가 늘수록 비효율적이었다.',
+    },
+    {
+      n: '05',
+      head: '카드마다 column-count:1 + 클립 + 복제',
+      miss: '정답. 잘린 조각만 다음 열에 복제하고 translateX로 이어 붙였다. 짧은 카드는 그대로 둔다.',
+      win: true,
+    },
   ],
   insight:
     '새로 발명한 게 아니라, 망한 시도를 버리지 않고 각도만 바꿔 합쳤다 — 1번이 실패한 “자연스러운 줄 자르기”를 2번의 column-count가 공짜로 해준다는 걸, 카드 단위 크롭 도구로만 끌어 썼다.',
   generations: [
     ['v1', '솔북 문제 에디터', '다섯 번을 거쳐, 도메인에 박힌 채 동작한 원형'],
     ['v2', '솔북 다른 제품', '임의 콘텐츠로 일반화. 핵심 훅이 210줄까지 비대'],
-    ['v3', 'npm · column-pager', '앱에서 분리 → 순수 코어 / 측정 / 렌더 3계층 재설계'],
+    [
+      'v3',
+      'npm · column-pager',
+      '앱에서 분리 → 순수 코어 / 측정 / 렌더 3계층 재설계',
+    ],
   ] as [string, string, string][],
   results: [
     { label: '환불 문의', after: '대폭 감소', gain: '2년 이어지던 불량 환불' },
-    { label: '100장 재배치', after: '55–66', unit: 'ms', gain: '변경 없는 항목은 재측정 생략' },
-    { label: '결정적 테스트', after: '49', unit: '개', gain: '측정부를 교체 가능하게 추상화' },
+    {
+      label: '100장 재배치',
+      after: '55–66',
+      unit: 'ms',
+      gain: '변경 없는 항목은 재측정 생략',
+    },
+    {
+      label: '결정적 테스트',
+      after: '49',
+      unit: '개',
+      gain: '측정부를 교체 가능하게 추상화',
+    },
   ] as Metric[],
   resultNote:
     '재사용성을 확보한 덕에 후속 저작 도구, 나아가 AI 문제 생성 서비스(현재 메인 매출의 한 축)로 이어졌다 — 그즈음 매출이 전년의 약 150%가 됐다.',
@@ -82,8 +114,11 @@ export const flagship = {
     { src: colpager1, alt: 'column-pager 결과 — 본문분석 PDF 자동 조판' },
     { src: colpager2, alt: 'column-pager 결과 — 변형문제 PDF 자동 조판' },
   ] as ProjImage[],
-  postUrl: 'https://h8njo.vercel.app/work/column-count-layout',
-  link: { label: 'GitHub · H8njo/column-pager', href: 'https://github.com/H8njo/column-pager' },
+  postUrl: '/work/column-count-layout',
+  link: {
+    label: 'GitHub · H8njo/column-pager',
+    href: 'https://github.com/H8njo/column-pager',
+  },
 };
 
 export type WorkCase = {
@@ -123,17 +158,32 @@ export const cases: WorkCase[] = [
     ],
     tags: ['React', 'GraphQL', '메타데이터 구동', 'RBAC', 'Fullstack'],
     metrics: [
-      { label: '화면 양산 · 1벌 정의', after: '59', unit: '개', gain: '두 명이 도메인 100여 개' },
-      { label: '신규 CRUD 화면', after: '정의 + 쿼리', gain: '버그도 한 곳에서 수정' },
-      { label: '내 커밋 · 프론트 개발', after: '696', unit: '/1,299', gain: '약 2년' },
+      {
+        label: '화면 양산 · 1벌 정의',
+        after: '59',
+        unit: '개',
+        gain: '두 명이 도메인 100여 개',
+      },
+      {
+        label: '신규 CRUD 화면',
+        after: '정의 + 쿼리',
+        gain: '버그도 한 곳에서 수정',
+      },
+      {
+        label: '내 커밋 · 프론트 개발',
+        after: '696',
+        unit: '/1,299',
+        gain: '약 2년',
+      },
     ],
-    metricsNote: '이 Table 컴포넌트는 이후 다른 프로젝트에서도 컬럼 배열만 교체해 재사용.',
+    metricsNote:
+      '이 Table 컴포넌트는 이후 다른 프로젝트에서도 컬럼 배열만 교체해 재사용.',
     images: [
       { src: mojImg, alt: '법무부 보안관제 포털 — 일간 보고서' },
       { src: moj2, alt: '법무부 보안관제 포털 — 근무·업무 일정' },
       { src: moj3, alt: '법무부 보안관제 포털 — 목록 화면' },
     ],
-    postUrl: 'https://h8njo.vercel.app/work/security-portal',
+    postUrl: '/work/security-portal',
   },
   {
     id: 'work-design-system',
@@ -153,8 +203,16 @@ export const cases: WorkCase[] = [
     ],
     tags: ['Radix', 'Tailwind · CVA', '코드젠', 'Storybook', 'Rollup/Vite'],
     metrics: [
-      { label: 'multi-select', after: '일급 모델', gain: '우회 → 체크박스·aria 정상' },
-      { label: '아이콘 추가', after: '폴더 드롭', gain: '손으로 쓰던 export 0' },
+      {
+        label: 'multi-select',
+        after: '일급 모델',
+        gain: '우회 → 체크박스·aria 정상',
+      },
+      {
+        label: '아이콘 추가',
+        after: '폴더 드롭',
+        gain: '손으로 쓰던 export 0',
+      },
       { label: '역할', after: '코드오너', gain: '모든 PR 리뷰·머지·릴리스' },
     ],
     code: {
@@ -169,7 +227,7 @@ export const cases: WorkCase[] = [
         '$ pnpm generate   // 160개 export, 손작업 0',
       ].join('\n'),
     },
-    postUrl: 'https://h8njo.vercel.app/work/design-system',
+    postUrl: '/work/design-system',
   },
   {
     id: 'work-ml',
@@ -188,19 +246,39 @@ export const cases: WorkCase[] = [
       '비동기 학습 5×4 상태를 progress로 추적',
       'Java/Python 이종 워커 큐 현황까지 한 화면',
     ],
-    tags: ['상태머신', 'URL-as-state', 'immer', 'NestJS · Celery', 'Elasticsearch'],
-    metrics: [
-      { label: '모델 학습', after: '5단계 GUI', gain: '코드 없이 1건 학습·배포' },
-      { label: '파이프라인 상태', after: '5×4', unit: '추적', gain: '멈춤/진행 구분' },
-      { label: 'ES 기간 필터 버그', after: 'should→must', gain: '무시되던 필터 정상화' },
+    tags: [
+      '상태머신',
+      'URL-as-state',
+      'immer',
+      'NestJS · Celery',
+      'Elasticsearch',
     ],
-    metricsNote: '시작할 땐 ML 지식이 없어, 화면을 제대로 짜려고 crawl→feature→train 파이프라인까지 직접 익혔다.',
+    metrics: [
+      {
+        label: '모델 학습',
+        after: '5단계 GUI',
+        gain: '코드 없이 1건 학습·배포',
+      },
+      {
+        label: '파이프라인 상태',
+        after: '5×4',
+        unit: '추적',
+        gain: '멈춤/진행 구분',
+      },
+      {
+        label: 'ES 기간 필터 버그',
+        after: 'should→must',
+        gain: '무시되던 필터 정상화',
+      },
+    ],
+    metricsNote:
+      '시작할 땐 ML 지식이 없어, 화면을 제대로 짜려고 crawl→feature→train 파이프라인까지 직접 익혔다.',
     images: [
       { src: kistiImg, alt: 'KISTI AI 관제 — 학습 특징 설정' },
       { src: kisti2, alt: 'KISTI AI 관제 — 모델 테스트' },
       { src: kisti3, alt: 'KISTI AI 관제 — 페이로드 특징 추가' },
     ],
-    postUrl: 'https://h8njo.vercel.app/work/security-ai',
+    postUrl: '/work/security-ai',
   },
 ];
 
@@ -210,8 +288,7 @@ export const blackHole = {
   eyebrow: 'SIDE PROJECT · GRAPHICS',
   company: '개인 프로젝트',
   title: ['빛이 휘는 블랙홀을', '셰이더로 직접 구현'],
-  body:
-    '중력이 빛을 휘게 하는 효과를 그래픽 라이브러리 없이 직접 구현. Canvas 별 수천 개 위에 WebGL 셰이더로 빛의 굴절을 표현.',
+  body: '중력이 빛을 휘게 하는 효과를 그래픽 라이브러리 없이 직접 구현. Canvas 별 수천 개 위에 WebGL 셰이더로 빛의 굴절을 표현.',
   aside: '옆 화면은 지금 브라우저에서 실시간으로 도는 결과입니다.',
   tags: ['WebGL', 'GLSL 셰이더', 'Canvas 2D', '좌표 수학'],
   stats: [
@@ -220,10 +297,17 @@ export const blackHole = {
     ['외부 라이브러리', '없음'],
   ] as [string, string][],
   repo: 'https://github.com/H8njo/webgl-black-hole',
-  postUrl: 'https://h8njo.vercel.app/work/webgl-blackhole',
+  postUrl: '/work/webgl-blackhole',
 };
 
-export type Timeline = { period: string; role: string; org: string; description: string; tags: string[]; current?: boolean };
+export type Timeline = {
+  period: string;
+  role: string;
+  org: string;
+  description: string;
+  tags: string[];
+  current?: boolean;
+};
 
 export const timeline: Timeline[] = [
   {
@@ -264,10 +348,19 @@ export const timeline: Timeline[] = [
 /* Expertise — a capability map; each strength links to the work that proves it
    (proof items scroll to the matching work-* anchor). */
 export type ProofLink = { label: string; target: string };
-export const capabilities: { label: string; skills: string[]; proof: ProofLink[] }[] = [
+export const capabilities: {
+  label: string;
+  skills: string[];
+  proof: ProofLink[];
+}[] = [
   {
     label: '렌더링 · 성능',
-    skills: ['Canvas 2D / WebGL', '측정-우선 레이아웃', '대용량 가상화', '메모리 바운드 처리'],
+    skills: [
+      'Canvas 2D / WebGL',
+      '측정-우선 레이아웃',
+      '대용량 가상화',
+      '메모리 바운드 처리',
+    ],
     proof: [
       { label: 'column-pager', target: 'work-column-pager' },
       { label: '블랙홀', target: 'work-blackhole' },
@@ -275,7 +368,12 @@ export const capabilities: { label: string; skills: string[]; proof: ProofLink[]
   },
   {
     label: '시스템 설계 · 추상화',
-    skills: ['메타데이터 구동 UI', '디자인 시스템 / 라이브러리', 'RBAC', 'API 타입 설계'],
+    skills: [
+      '메타데이터 구동 UI',
+      '디자인 시스템 / 라이브러리',
+      'RBAC',
+      'API 타입 설계',
+    ],
     proof: [
       { label: '59개 화면 포털', target: 'work-portal' },
       { label: '디자인 시스템 자동화', target: 'work-design-system' },
@@ -283,7 +381,12 @@ export const capabilities: { label: string; skills: string[]; proof: ProofLink[]
   },
   {
     label: '복잡한 상태 · 풀스택',
-    skills: ['상태머신 / URL-as-state', 'NestJS BFF', 'GraphQL · 이중 데이터소스', '비동기 파이프라인'],
+    skills: [
+      '상태머신 / URL-as-state',
+      'NestJS BFF',
+      'GraphQL · 이중 데이터소스',
+      '비동기 파이프라인',
+    ],
     proof: [
       { label: 'ML 학습 마법사', target: 'work-ml' },
       { label: '보안 포털', target: 'work-portal' },
@@ -299,24 +402,71 @@ export const capabilities: { label: string; skills: string[]; proof: ProofLink[]
 
 /* 짧고 강약이 있는 줄로 — 역할(lead) · 한 줄 강점(hook) · 마무리(close)에
    시선이 걸리고, 세부는 가볍게 받친다. 긴 문장으로 접히지 않게 짧게 끊는다. */
-export const resumeSummary: { t: string; kind: 'lead' | 'hook' | 'body' | 'close' }[] = [
+export const resumeSummary: {
+  t: string;
+  kind: 'lead' | 'hook' | 'body' | 'close';
+}[] = [
   { t: '7년차 프론트엔드 엔지니어', kind: 'lead' },
   { t: '남들이 막힌 화면을 직접 측정해 되게 만듭니다.', kind: 'hook' },
-  { t: '성능 · 대용량 렌더링 · 복잡한 상태를 풀고, 반복을 재사용 가능한 구조·라이브러리로.', kind: 'body' },
-  { t: '보안관제 SI 풀스택부터 교육 플랫폼 사내 엔진 오픈소스화까지 : 도메인이 바뀌어도 문제를 구조로 푸는 방식은 같습니다.', kind: 'close' },
+  {
+    t: '성능 · 대용량 렌더링 · 복잡한 상태를 풀고, 반복을 재사용 가능한 구조·라이브러리로.',
+    kind: 'body',
+  },
+  {
+    t: '보안관제 SI 풀스택부터 교육 플랫폼 사내 엔진 오픈소스화까지 : 도메인이 바뀌어도 문제를 구조로 푸는 방식은 같습니다.',
+    kind: 'close',
+  },
 ];
 
 /* 텍스트 뭉치가 아니라 뱃지로 스캔되게 항목을 배열로 둔다. */
 export const resumeSkills: { label: string; items: string[] }[] = [
-  { label: '렌더링 · 성능', items: ['Canvas 2D / WebGL', '측정-우선 PDF 조판', '대용량 가상화', '메모리 바운드 처리'] },
-  { label: '시스템 설계 · 추상화', items: ['메타데이터 구동 UI', '디자인 시스템 / 라이브러리', 'RBAC 권한', '타입 안전 API 설계'] },
-  { label: '복잡한 상태 · 풀스택', items: ['상태머신 / URL-as-state', 'NestJS BFF', 'GraphQL · 이중 데이터소스', '비동기 파이프라인'] },
-  { label: '주요 스택', items: ['TypeScript', 'React 18/19', 'Next.js', 'NestJS', 'Vite / Rollup', 'semantic-release'] },
+  {
+    label: '렌더링 · 성능',
+    items: [
+      'Canvas 2D / WebGL',
+      '측정-우선 PDF 조판',
+      '대용량 가상화',
+      '메모리 바운드 처리',
+    ],
+  },
+  {
+    label: '시스템 설계 · 추상화',
+    items: [
+      '메타데이터 구동 UI',
+      '디자인 시스템 / 라이브러리',
+      'RBAC 권한',
+      '타입 안전 API 설계',
+    ],
+  },
+  {
+    label: '복잡한 상태 · 풀스택',
+    items: [
+      '상태머신 / URL-as-state',
+      'NestJS BFF',
+      'GraphQL · 이중 데이터소스',
+      '비동기 파이프라인',
+    ],
+  },
+  {
+    label: '주요 스택',
+    items: [
+      'TypeScript',
+      'React 18/19',
+      'Next.js',
+      'NestJS',
+      'Vite / Rollup',
+      'semantic-release',
+    ],
+  },
 ];
 
 /* 성과는 문장이 아니라 불릿 포인트로 — 한눈에 스캔되게.
    results는 임팩트 수치라 숨기지 않고 칩으로 강조한다. */
-export type ExpHighlight = { head: string; points: string[]; results?: string[] };
+export type ExpHighlight = {
+  head: string;
+  points: string[];
+  results?: string[];
+};
 export type ExpCompany = {
   period: string;
   company: string;
@@ -334,7 +484,15 @@ export const resumeExperience: ExpCompany[] = [
     product: 'Solvook · 교육 콘텐츠 플랫폼',
     role: '프론트엔드 엔지니어',
     current: true,
-    stack: ['Next.js', 'React', 'TypeScript', 'Zustand', 'TanStack Query', 'Tailwind', 'Vite'],
+    stack: [
+      'Next.js',
+      'React',
+      'TypeScript',
+      'Zustand',
+      'TanStack Query',
+      'Tailwind',
+      'Vite',
+    ],
     highlights: [
       {
         head: '사내 페이지네이션 엔진을 오픈소스로 공개 — column-pager (npm · MIT)',
@@ -343,7 +501,12 @@ export const resumeExperience: ExpCompany[] = [
           '같은 문제를 세 번 푼 3세대 엔진 — 검증된 측정 로직은 이식, 아키텍처만 전면 재설계',
           '앱에서 분리해 독립 npm 패키지로 배포',
         ],
-        results: ['단독 개발', '결정적 테스트 49개', 'semantic-release 자동 배포', '2년 이어지던 인쇄 불량 환불 문의 해소'],
+        results: [
+          '단독 개발',
+          '결정적 테스트 49개',
+          'semantic-release 자동 배포',
+          '2년 이어지던 인쇄 불량 환불 문의 해소',
+        ],
       },
       {
         head: '콘텐츠 제작 도구 프론트엔드 단독 개발 (Solvook Creator)',
@@ -402,7 +565,14 @@ export const resumeExperience: ExpCompany[] = [
     company: 'Zipida',
     product: '정부·기업 보안관제 SI · 풀스택',
     role: '프론트엔드 개발 · 풀스택',
-    stack: ['React', 'Apollo GraphQL', 'NestJS', 'Strapi', 'Elasticsearch', 'Redux'],
+    stack: [
+      'React',
+      'Apollo GraphQL',
+      'NestJS',
+      'Strapi',
+      'Elasticsearch',
+      'Redux',
+    ],
     highlights: [
       {
         head: '컬럼 정의 1벌로 59개 화면을 양산 (법무부 보안관제 포털)',
@@ -411,7 +581,12 @@ export const resumeExperience: ExpCompany[] = [
           '라우트 정의 1벌 → 메뉴·권한트리·체크키 동시 파생 (RBAC)',
           '정형 CRUD는 GraphQL, 통계·레거시 보안 데이터는 raw SQL로 분리',
         ],
-        results: ['프론트 개발', '59개 화면 재사용', '696 / 1,299 커밋', '약 2년'],
+        results: [
+          '프론트 개발',
+          '59개 화면 재사용',
+          '696 / 1,299 커밋',
+          '약 2년',
+        ],
       },
       {
         head: '코드 없이 탐지 ML을 학습시키는 마법사 (KISTI AI 관제) · 풀스택',
@@ -420,7 +595,11 @@ export const resumeExperience: ExpCompany[] = [
           'react-awesome-query-builder로 Elasticsearch bool 쿼리를 GUI 조립',
           '패킷 payload(HEX)를 디코딩 → 엔트로피 → TCP flag 추출해 ML 특징으로 변환',
         ],
-        results: ['풀스택 기여 54%', '비개발자용 5단계 GUI 학습', 'NestJS·Prisma+Knex'],
+        results: [
+          '풀스택 기여 54%',
+          '비개발자용 5단계 GUI 학습',
+          'NestJS·Prisma+Knex',
+        ],
       },
       {
         head: '현대오토에버 EDR 포털 · 풀스택 (BFF 보안 경계)',
@@ -459,14 +638,21 @@ export const resumeExperience: ExpCompany[] = [
 ];
 
 export const education: { school: string; period: string; detail: string }[] = [
-  { school: '스마트워킹 ICT 솔루션 개발자 과정', period: '2013', detail: 'Java · Spring Framework 기반 웹 통합 교육 (국비지원)' },
-  { school: '상일미디어고등학교', period: '2012 — 2014', detail: '스마트 소프트웨어 학과' },
+  {
+    school: '스마트워킹 ICT 솔루션 개발자 과정',
+    period: '2013',
+    detail: 'Java · Spring Framework 기반 웹 통합 교육 (국비지원)',
+  },
+  {
+    school: '상일미디어고등학교',
+    period: '2012 — 2014',
+    detail: '스마트 소프트웨어 학과',
+  },
 ];
 
 export const oss = {
   repo: 'H8njo/column-pager',
-  desc:
-    '어떤 React 화면이든 인쇄물처럼 “고정 크기 페이지”로 자동 분할하는 도구.\n페이지 나누기(레이아웃 계산)만 책임지고 PDF 변환 등은 사용처에 위임해 가볍게 유지.',
+  desc: '어떤 React 화면이든 인쇄물처럼 “고정 크기 페이지”로 자동 분할하는 도구.\n페이지 나누기(레이아웃 계산)만 책임지고 PDF 변환 등은 사용처에 위임해 가볍게 유지.',
   tags: ['TypeScript', 'React 18/19', 'Tree-shakeable'],
   install: 'npm i column-pager',
   importLine: "import { ColumnPager } from 'column-pager'",

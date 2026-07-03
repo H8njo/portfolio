@@ -26,6 +26,11 @@ function scrollTo(e: React.MouseEvent, id: string) {
 
 /* ---- Nav ---------------------------------------------------------------- */
 const NAV_LINKS: [string, string][] = [['프로젝트', 'work'], ['경력', 'career'], ['전문 영역', 'stack'], ['오픈소스', 'oss']];
+/* 인페이지 스크롤이 아니라 실제 페이지로 이동하는 링크. 블로그(작업·글 아카이브)는
+   내부 /work 라우트. external:true면 새 탭 + ↗ 표시(현재는 없음). */
+const NAV_ROUTES: { label: string; href: string; external?: boolean }[] = [
+  { label: '블로그', href: '/work' },
+];
 
 export function Nav() {
   const [open, setOpen] = useState(false);
@@ -51,6 +56,15 @@ export function Nav() {
               onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.background = 'transparent'; }}
             >{label}</a>
           ))}
+          {NAV_ROUTES.map(({ label, href, external }) => (
+            <a key={href} href={href} {...(external ? { target: '_blank', rel: 'noreferrer' } : {})} style={{
+              fontFamily: 'var(--font-sans)', fontSize: 15, color: 'var(--text-secondary)', padding: '8px 12px',
+              textDecoration: 'none', borderRadius: 'var(--radius-md)', transition: 'color 150ms ease, background 150ms ease',
+            }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.background = 'var(--cloud)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.background = 'transparent'; }}
+            >{label}{external && <span aria-hidden style={{ fontFamily: 'var(--font-mono)', fontSize: 12, marginLeft: 4 }}>↗</span>}</a>
+          ))}
           <span style={{ width: 1, height: 22, background: 'var(--line)', margin: '0 10px' }} />
           <Button variant="primary" size="sm" as="a" href="#contact" onClick={(e: React.MouseEvent) => scrollTo(e, 'contact')}>연락하기</Button>
         </nav>
@@ -68,6 +82,12 @@ export function Nav() {
               display: 'block', fontFamily: 'var(--font-sans)', fontSize: 18, color: 'var(--text)',
               padding: '12px 0', borderBottom: '1px solid var(--line)', textDecoration: 'none',
             }}>{label}</a>
+          ))}
+          {NAV_ROUTES.map(({ label, href, external }) => (
+            <a key={href} href={href} onClick={() => setOpen(false)} {...(external ? { target: '_blank', rel: 'noreferrer' } : {})} style={{
+              display: 'block', fontFamily: 'var(--font-sans)', fontSize: 18, color: 'var(--text)',
+              padding: '12px 0', borderBottom: '1px solid var(--line)', textDecoration: 'none',
+            }}>{label}{external && <span aria-hidden style={{ fontFamily: 'var(--font-mono)', fontSize: 13, marginLeft: 6 }}>↗</span>}</a>
           ))}
           <div style={{ marginTop: 16 }}>
             <Button variant="primary" as="a" href="#contact" onClick={(e: React.MouseEvent) => { scrollTo(e, 'contact'); setOpen(false); }} style={{ width: '100%' }}>연락하기</Button>
@@ -181,7 +201,7 @@ function CaseHeader({ c }: { c: WorkCase }) {
         {c.tags.map((t) => <Tag key={t}>{t}</Tag>)}
       </div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 24 }}>
-        <Button variant="outline" as="a" href={c.postUrl} target="_blank" rel="noreferrer" iconRight="↗">전체 글 읽기</Button>
+        <Button variant="outline" as="a" href={c.postUrl} iconRight="→">전체 글 읽기</Button>
         {c.link && <Button variant="text" as="a" href={c.link.href} target="_blank" rel="noreferrer">{c.link.label}</Button>}
       </div>
     </>
@@ -257,7 +277,7 @@ export function Work() {
             {blackHole.tags.map((t) => <Tag key={t} variant="blue">{t}</Tag>)}
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 26 }}>
-            <Button variant="outline" as="a" href={blackHole.postUrl} target="_blank" rel="noreferrer" iconRight="↗">전체 글 읽기</Button>
+            <Button variant="outline" as="a" href={blackHole.postUrl} iconRight="→">전체 글 읽기</Button>
             <Button variant="text" as="a" href={blackHole.repo} target="_blank" rel="noreferrer">GitHub ↗</Button>
           </div>
         </div>
@@ -278,8 +298,8 @@ export function Work() {
         </div>
       </article>
 
-      <a href="https://h8njo.vercel.app/" target="_blank" rel="noreferrer" className="hoonjo-allworks" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginTop: 20, padding: '22px', border: '1px dashed var(--steel)', borderRadius: 'var(--radius-lg)', textDecoration: 'none', fontFamily: 'var(--font-sans)', fontSize: 15, fontWeight: 500, color: 'var(--blue-deep)', transition: 'background 150ms ease, border-color 150ms ease' }}>
-        더 많은 작업과 자세한 글 — 전체 사이트에서 보기 <span style={{ fontFamily: 'var(--font-mono)' }}>↗</span>
+      <a href="/work" className="hoonjo-allworks" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginTop: 20, padding: '22px', border: '1px dashed var(--steel)', borderRadius: 'var(--radius-lg)', textDecoration: 'none', fontFamily: 'var(--font-sans)', fontSize: 15, fontWeight: 500, color: 'var(--blue-deep)', transition: 'background 150ms ease, border-color 150ms ease' }}>
+        더 많은 작업과 자세한 글 — 블로그에서 보기 <span style={{ fontFamily: 'var(--font-mono)' }}>→</span>
       </a>
     </section>
   );
