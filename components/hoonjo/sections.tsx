@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import {
   Button, Tag, Badge, Eyebrow, SectionHeader, BlueprintGrid, MetricRow, TimelineItem,
 } from './components';
@@ -34,6 +35,9 @@ const NAV_ROUTES: { label: string; href: string; external?: boolean }[] = [
 
 export function Nav() {
   const [open, setOpen] = useState(false);
+  // 홈에서는 인페이지 스크롤(#work), 다른 페이지(/work 등)에서는 홈 섹션으로 이동(/#work).
+  const onHome = usePathname() === '/';
+  const sectionHref = (id: string) => (onHome ? `#${id}` : `/#${id}`);
   return (
     <header style={{
       position: 'sticky', top: 0, zIndex: 40, background: 'rgba(255,255,255,0.82)',
@@ -41,14 +45,14 @@ export function Nav() {
       borderBottom: '1px solid var(--line)',
     }}>
       <div style={{ ...CONTAINER, height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <a href="#top" onClick={(e) => scrollTo(e, 'top')} style={{ display: 'inline-flex', alignItems: 'center', gap: 9, textDecoration: 'none' }}>
+        <a href={onHome ? '#top' : '/'} onClick={onHome ? (e) => scrollTo(e, 'top') : undefined} style={{ display: 'inline-flex', alignItems: 'center', gap: 9, textDecoration: 'none' }}>
           <span aria-hidden style={{ width: 9, height: 9, background: 'var(--blue)', transform: 'rotate(45deg)', borderRadius: 1 }} />
           <span style={{ fontFamily: 'var(--font-serif)', fontSize: 21, fontWeight: 600, color: 'var(--text)', letterSpacing: '-0.01em' }}>{profile.name}</span>
           <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-muted)', letterSpacing: '0.06em', marginLeft: 2, marginTop: 2 }}>FE·7Y</span>
         </a>
         <nav className="hoonjo-nav-links" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
           {NAV_LINKS.map(([label, id]) => (
-            <a key={id} href={`#${id}`} onClick={(e) => scrollTo(e, id)} style={{
+            <a key={id} href={sectionHref(id)} onClick={onHome ? (e) => scrollTo(e, id) : undefined} style={{
               fontFamily: 'var(--font-sans)', fontSize: 15, color: 'var(--text-secondary)', padding: '8px 12px',
               textDecoration: 'none', borderRadius: 'var(--radius-md)', transition: 'color 150ms ease, background 150ms ease',
             }}
@@ -66,7 +70,7 @@ export function Nav() {
             >{label}{external && <span aria-hidden style={{ fontFamily: 'var(--font-mono)', fontSize: 12, marginLeft: 4 }}>↗</span>}</a>
           ))}
           <span style={{ width: 1, height: 22, background: 'var(--line)', margin: '0 10px' }} />
-          <Button variant="primary" size="sm" as="a" href="#contact" onClick={(e: React.MouseEvent) => scrollTo(e, 'contact')}>연락하기</Button>
+          <Button variant="primary" size="sm" as="a" href={onHome ? '#contact' : '/#contact'} onClick={onHome ? (e: React.MouseEvent) => scrollTo(e, 'contact') : undefined}>연락하기</Button>
         </nav>
         <button className="hoonjo-nav-burger" aria-label="메뉴" onClick={() => setOpen((o) => !o)} style={{
           display: 'none', width: 44, height: 44, border: '1px solid var(--line)', background: 'var(--paper)',
@@ -78,7 +82,7 @@ export function Nav() {
       {open && (
         <div style={{ borderTop: '1px solid var(--line)', background: 'var(--canvas)', padding: '12px 24px 20px' }}>
           {NAV_LINKS.map(([label, id]) => (
-            <a key={id} href={`#${id}`} onClick={(e) => { scrollTo(e, id); setOpen(false); }} style={{
+            <a key={id} href={sectionHref(id)} onClick={onHome ? (e) => { scrollTo(e, id); setOpen(false); } : () => setOpen(false)} style={{
               display: 'block', fontFamily: 'var(--font-sans)', fontSize: 18, color: 'var(--text)',
               padding: '12px 0', borderBottom: '1px solid var(--line)', textDecoration: 'none',
             }}>{label}</a>
@@ -90,7 +94,7 @@ export function Nav() {
             }}>{label}{external && <span aria-hidden style={{ fontFamily: 'var(--font-mono)', fontSize: 13, marginLeft: 6 }}>↗</span>}</a>
           ))}
           <div style={{ marginTop: 16 }}>
-            <Button variant="primary" as="a" href="#contact" onClick={(e: React.MouseEvent) => { scrollTo(e, 'contact'); setOpen(false); }} style={{ width: '100%' }}>연락하기</Button>
+            <Button variant="primary" as="a" href={onHome ? '#contact' : '/#contact'} onClick={onHome ? (e: React.MouseEvent) => { scrollTo(e, 'contact'); setOpen(false); } : () => setOpen(false)} style={{ width: '100%' }}>연락하기</Button>
           </div>
         </div>
       )}

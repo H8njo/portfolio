@@ -1,18 +1,19 @@
-import { SiteNav } from "@/components/site-nav";
+import "../hoonjo.css";
+import { Nav } from "@/components/hoonjo/sections";
 import { SiteFooter } from "@/components/site-footer";
 
-// /work 서브트리 전용 크롬. 루트 레이아웃에서 SiteNav/SiteFooter를 걷어냈으므로
-// (메인 포트폴리오는 자체 Nav·Contact footer를 가짐) 기존 케이스 페이지의
-// 내비게이션은 여기서 유지한다.
+// /work(블로그) 서브트리 크롬. 홈과 "같은 헤더"를 쓰기 위해 포팅한 .hoonjo Nav를
+// 사용한다. Nav의 스코프 토큰·반응형 규칙(.hoonjo .hoonjo-nav-links)과 sticky
+// 컨테이닝 블록이 .hoonjo 조상에 의존하므로 서브트리 전체를 .hoonjo로 감싼다.
 export default function WorkLayout({ children }: { children: React.ReactNode }) {
   return (
-    <>
+    <div className="hoonjo">
       <a href="#main" className="skip-link">
         본문으로 건너뛰기
       </a>
-      <SiteNav />
+      <Nav />
       <main id="main">{children}</main>
       <SiteFooter />
-    </>
+    </div>
   );
 }
