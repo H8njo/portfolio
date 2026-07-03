@@ -250,10 +250,10 @@
     grid-template-columns: 1fr !important;
     gap: 28px !important;
   }
+  /* 모바일에선 인물 사진을 숨긴다 — 좁은 화면에선 사진이 첫 화면을 먹고
+     가치 제안/헤드라인을 접힘 아래로 밀어냄. 헤드라인부터 바로 보이게. */
   .hoonjo .hoonjo-portrait {
-    order: -1;
-    justify-self: start !important;
-    max-width: 200px;
+    display: none !important;
   }
   .hoonjo .hoonjo-nav-burger {
     display: inline-flex !important;

@@ -1,5 +1,9 @@
 # Design System — hoonjo portfolio
 
+> **현행 기준(2026-07-03~):** `/`, `/resume`, `/portfolio-pdf`에 적용된 **`.hoonjo` 시스템**이 정식 기준이다.
+> 값의 원본(single source of truth)은 [components/hoonjo/](components/hoonjo/) + [app/hoonjo.css](app/hoonjo.css)(스코프 토큰).
+> `/work`(+`/work/[slug]`)는 아직 구 디자인("문제지 책자")이며 이 시스템으로 이관 예정.
+
 ## Product Context
 - **What this is:** 7년차 프론트엔드 개발자의 이직용 포트폴리오 사이트.
 - **Who it's for:** 채용 결정권자(FE 리드) + FE 구성원 + HR. 30~90초 안에 "어려운 FE 문제를 푸는 사람"인지 판단.
@@ -9,56 +13,63 @@
 
 ## Aesthetic Direction
 - **Direction:** Editorial Minimal + "측정 도구(instrument)" 톤 — 엔지니어의 정밀한 실험 노트.
-- **Decoration level:** intentional (헤어라인 그리드·페이지 구분선으로 절제된 구조감. 스큐어모픽 X).
+- **Decoration level:** intentional (헤어라인·블루프린트 그리드·부드러운 그림자로 절제된 구조감. 스큐어모픽 X).
 - **Mood:** 차분, 자신감, 정밀. 과한 애니메이션·장식 금지(= 주니어 신호).
-- **Signature:** 작업 목록을 "문제지 책자 스크롤"로 — 세로 1열, 각 케이스가 "문제 한 장"(모노 페이지 번호, 페이지 헤더 라인, 점선 풋터). column-count 2열 트릭은 케이스 02 디테일의 라이브 데모로.
-- **원리:** "조용한 껍데기, 시끄러운 방들" — 랜딩은 절제, 디테일 페이지에서 데모로 터뜨림.
+- **Light-only:** 다크 토글 없음. 대신 닫는 밴드(오픈소스·Contact)를 **"잉크 슬랩"**(near-black) 면으로 깔아 대비를 만든다 — 다크 테마가 아니라 섹션 대비 장치.
+- **Signature:**
+  1. **before → after 임팩트 스트립** — 히어로/케이스마다 "구 상태(취소선) → 신 상태(굵게)"로 성과를 수치화.
+  2. **살아있는 렌더** — 사이드 프로젝트에 **실시간 WebGL 블랙홀**(중력렌즈 셰이더)이 실제로 돈다. column-count 트릭은 `/work/[slug]`의 라이브 column-pager 데모로.
+  3. **mono 수치** — JetBrains Mono + `tabular-nums`로 수치를 그래픽 요소화("측정하는 엔지니어").
+- **원리:** "조용한 껍데기, 시끄러운 방들" — 랜딩은 절제, 디테일/데모에서 터뜨림.
 - **Reference sites:** Linear, Vercel docs, Brittany Chiang.
 
 ## Typography
-- **Display/Hero (영문):** General Sans (600) — 깔끔하지만 개성 있는 그로테스크. Inter/Space Grotesk 등 수렴 폰트 회피. (Fontshare)
-- **Body / UI (한·영):** Pretendard — 한글 신뢰감, FE 업계 표준. (jsdelivr CDN)
-- **Metric/수치 전용:** Geist Mono (500) — 수치를 그래픽 요소로. "측정하는 엔지니어" 시그니처. (Google Fonts)
-- **Code:** Geist Mono / JetBrains Mono.
-- **Loading:** Pretendard `cdn.jsdelivr.net/gh/orioncactus/pretendard`, General Sans `api.fontshare.com`, Geist Mono Google Fonts. (배포 시 self-host 검토)
-- **Scale:** Hero metric clamp(2.4rem, 7vw, 5.2rem) / H1 clamp(1.4rem, 3vw, 2.1rem) / H3 24px / body 16~17px / mono 13~14px. line-height 본문 1.7.
+- **Display/Hero (한·영):** **Pretendard** 600, 강조는 800(예: 히어로 "되게"). *(구 General Sans 폐기 — 한·영 통일과 신뢰감 우선. 개성은 weight 대비 600↔800로.)*
+- **Body / UI (한·영):** Pretendard 400/500.
+- **Metric·mono·code:** **JetBrains Mono** 400~600. 수치는 `font-variant-numeric: tabular-nums`, 라벨은 대문자 + `letter-spacing: 0.08~0.14em`.
+- **Loading:** Pretendard = 자체 호스팅(next/font, `--font-pretendard`). JetBrains Mono = Google Fonts. *(구 jsdelivr Pretendard CDN은 404로 폐기.)*
+- **Scale (clamp):** 히어로 H1 `clamp(30px,4.4vw,52px)` / 섹션 H2 40 / 케이스 H3 30~32 / H4 21 / body 15~19 / mono 라벨 11~13. letter-spacing 디스플레이 −0.035em. line-height 본문 1.6, 헤딩 1.1.
 
 ## Color
-- **Approach:** restrained — 무채색 + 포인트 1색. 액센트는 링크·hover·핵심 수치에만, 면적 작게.
-- **Ink (text):** #0B0B0C (light) / #F2F2F0 (dark)
-- **Paper (bg):** #FAFAF8 (light) / #0C0D0F (dark)
-- **Surface:** #FFFFFF (light) / #15171A (dark)
-- **Accent (Cobalt):** #2348FF (light) / #6B86FF (dark)
-- **Neutrals:** Gray-1 #6B6B6E, Gray-2 #9A9A9D, Hairline rgba(ink, 0.12~0.14)
-- **Semantic:** success #1A8F5C, warning #B7791F, error #D03A3A, info = accent
-- **Dark mode:** 토글 제공. 다크에서 액센트 채도/명도 약간 올림(#6B86FF).
+- **Approach:** near-white 캔버스 + **trust-blue(1차) + green(2차)**. 액센트는 링크·CTA·핵심 수치·상태에만 작게. 색은 헤어라인으로 면을 나눈다(회색 면 채움 X).
+- **Blue — 구조/액션 (1차):** `#3182f6` / hover `#2174ea` / deep `#1b64da` / bright `#7daffa` / soft `#eaf2fe` / line `#c5dcfb`. *(구 Cobalt #2348FF 대체.)*
+- **Green — 증명/라이브/featured (2차):** `#16a563` / deep `#157346` / bright `#43c98a` / soft `#e6f5ec` / line `#b6e3c8`. 섹션 번호·"현재" 마커·featured 뱃지·상태 점·수치 상승분에만.
+- **Surface:** canvas/paper `#ffffff`, cloud `#fcfdfe`, fog `#f6f8fa`, steel `#c2c8d1`, hairline `#e9ecf1`.
+- **Ink slab (닫는 밴드):** ink `#18191c`, ink-soft `#232428`, ink-deep `#0b0c0e`. on-ink `#f5f6f8`, on-ink-muted `#a4a7b0`.
+- **Text ramp:** text `#18191c` / secondary `#3a3c42` / muted `#6b6e76` / faint `#9a9da6`. (명도 단계로 위계, 불투명도 안 낮춤.)
+- **Semantic:** positive = green-deep `#157346`, warn `#9a6312`, danger `#b3262b`.
 
 ## Spacing
 - **Base unit:** 8px
 - **Density:** spacious (에디토리얼 여백)
-- **Scale:** 2xs(2) xs(4) sm(8) md(16) lg(24) xl(32) 2xl(48) 3xl(64)
-- **읽기 폭:** 본문 ~680px, 책자 영역 ~820px.
+- **Scale:** 4 / 8 / 12 / 16 / 20 / 24 / 32 / 40 / 48 / 64 / 80 / 96 / 128
+- **섹션 리듬:** `clamp(56px, 9vw, 96px)` (모바일 56 → 데스크톱 96, 미디어쿼리 없이).
+- **읽기 폭:** 본문 46~52ch, 컨테이너 1200px.
 
 ## Layout
-- **Approach:** hybrid — 랜딩/목록은 문제지 책자(세로 1열 카드), 디테일은 grid-disciplined.
-- **Grid:** 콘텐츠 max-width 1080px(전체), 820px(책자), 680px(읽기).
-- **Border radius:** 카드 4px(종이 느낌), 버튼 8px, 태그 999px. (버블 라운드 금지)
-- **Mobile-first 필수:** 리크루터 폰 스크리닝. 책자 카드는 모바일에서 패딩 축소·1열 유지.
+- **Approach:** hybrid — 랜딩=에디토리얼 카드(세로 흐름), 문서(/resume·/portfolio-pdf)=인쇄용 시트, /work=책자(구).
+- **Container:** max-width **1200px**, 좌우 패딩 24px.
+- **Cards:** paper + 1px hairline + `shadow-soft (0 2px 10px rgba(17,18,22,.06))`. 히어로엔 옅은 블루프린트 그리드 배경.
+- **Border radius:** xs 2 / sm 4 / md 8 / lg 12 / **xl 16(카드)** / button 10 / tag(xs~sm) / pill 9999. *(구 카드 4px 폐기 — 일관된 스케일 사용, 단 전 요소 동일 버블 라운드는 금지.)*
+- **Responsive:** 다단 그리드는 ≤900px에서 1열로 접힘, nav→버거. **모바일(≤900px) 히어로 인물 사진은 숨김** — 좁은 화면에선 헤드라인·가치 제안·CTA를 첫 화면에 먼저 보여준다.
+- **Mobile-first 필수:** 리크루터 폰 스크리닝. 첫 화면에 가치 제안·CTA가 보이게.
 
 ## Motion
-- **Approach:** minimal-functional + 결정적 한 방 1개.
-- **결정적 한 방:** 히어로 수치 count-up 1회, 케이스 02 column-count 라이브 데모.
-- **나머지:** scroll fade-up 1회, hover 시 제목 액센트·밑줄 reveal.
-- **Easing:** enter ease-out / exit ease-in / move ease-in-out.
-- **Duration:** micro 50-100ms / short 150-250ms / medium 250-400ms.
+- **Approach:** minimal-functional + **"살아있는 렌더" 한 방**.
+- **결정적 한 방:** 실시간 WebGL 블랙홀(항상 렌더), `/work/[slug]` column-pager 라이브 데모.
+- **나머지:** live-dot 펄스(2.4s), nav·링크 hover 색/배경 전환, 인페이지 스무스 스크롤.
+- **Easing:** enter ease-out / exit ease-in / move ease-in-out. **Duration:** micro 120ms / short 150ms / medium 250~400ms.
+- **`prefers-reduced-motion` 존중:** 블랙홀은 정지 1프레임, 펄스 off.
 
 ## Anti-patterns (금지)
-- 보라/바이올렛 그라데이션, 아이콘 3열 카드 그리드, 센터 정렬 일색, 전 요소 버블 라운드, 그라데이션 CTA, 스톡 사진 히어로, system-ui를 본문/디스플레이 폰트로, 스큐어모픽 A4 종이 그림자, 과한 애니메이션.
+- 보라/바이올렛 그라데이션, 아이콘 3열 카드 그리드, 센터 정렬 일색, 전 요소 동일 버블 라운드, 그라데이션 CTA, 스톡 사진 히어로, system-ui를 본문/디스플레이 폰트로, 스큐어모픽 종이 그림자, 과한 애니메이션.
+- 액센트 남용(파랑·초록은 뷰포트당 소수). 회색 면으로 영역 나누기(헤어라인으로).
 
 ## Decisions Log
 | Date | Decision | Rationale |
 |------|----------|-----------|
-| 2026-06-05 | 초기 디자인 시스템 생성 | /design-consultation. Editorial Minimal + instrument 톤, 문제지 책자 스크롤 시그니처. 리서치(2026 트렌드: 미니멀 수렴 → 구조적 차별화) 기반. |
+| 2026-06-05 | 초기 디자인 시스템 생성 | /design-consultation. Editorial Minimal + instrument 톤, 문제지 책자 스크롤 시그니처. |
 | 2026-06-05 | 목록을 column-count 2열 → 문제지 책자 세로 1열로 변경 | 스캔성·모바일 우위, 스큐어모픽 리스크 회피. column-count는 라이브 데모로. |
-| 2026-06-05 | column-count 케이스를 시그니처 강점으로 격상 | "AI·동료 FE가 못 푼 걸 창의적 발상으로 해결" = 단일 최강 차별점. AI 시대에 "AI가 못 하는 사고" 신호로 프레이밍. featured 배치 + 데모에서 "남들 방법 vs 내 방법" 대비. |
-| 2026-06-07 | 랜딩 리스트-우선 + 데모를 상세로 이전 | 채용자는 리스트 훑고 클릭. 랜딩 임베드 데모는 첫 화면을 먹고 이탈 리스크. → 랜딩=깔끔한 리스트(featured 항목 강조+"▶ 라이브 데모" 미끼), 데모는 /work/[slug] 상세에서 작동(클릭 보상=몰입도↑). |
+| 2026-06-07 | 랜딩 리스트-우선 + 데모를 상세로 이전 | 채용자는 리스트 훑고 클릭. 랜딩 임베드 데모는 이탈 리스크. |
+| 2026-07-03 | **`.hoonjo` 디자인을 정식 기준으로 채택** (`/`, `/resume`, `/portfolio-pdf`) | 독립 Vite 빌드에서 포팅. 완성도·일관성이 더 높다고 판단. 구 시스템 대비: 디스플레이 폰트 Pretendard(General Sans 폐기), 액센트 blue+green 2색, 카드 radius 12~16px, mono는 JetBrains, **라이트 전용**(다크 토글 제거·잉크 슬랩으로 대체). `/work`는 구 "문제지 책자" 유지, 추후 이관. |
+| 2026-07-03 | 모바일(≤900px) 히어로 인물 사진 숨김 | 인라인 max-width로 풀폭 렌더돼 첫 화면을 사진이 먹고 헤드라인이 접힘 아래로 밀림. 좁은 화면에선 가치 제안 우선 → `display:none`. |
