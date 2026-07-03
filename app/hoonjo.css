@@ -1,0 +1,580 @@
+/* Hoonjo portfolio — scoped design system (tokens + layout).
+   Ported from the standalone Vite build. Everything is scoped under .hoonjo,
+   so it coexists with the app's Tailwind globals.css without collisions. */
+
+/* Hoonjo design tokens — a self-contained, scoped copy of the hoonjo-design
+   system (the .claude/skills/hoonjo-design bundle is read-only reference; the
+   runtime needs the tokens inside src/). Mirrors tokens/*.css with two changes
+   so this sample stays portable and collision-free with other /d samples:
+     1. :root  →  .hoonjo   (tokens scoped to this sample's subtree)
+     2. base element rules (body/h1/a/…) scoped under .hoonjo
+   Font @import / @font-face stay global — that's how the cascade works.
+
+   Engineering-editorial: cool near-white canvas, one deep trust-blue used
+   sparingly, Pretendard headlines, JetBrains Mono for measurement. */
+
+/* ---- Fonts --------------------------------------------------------------
+   Pretendard is served by the app's own next/font (self-hosted, --font-pretendard
+   on <html>) — the original CDN @font-face 404'd, so we consume the local one via
+   the CSS var below (see --font-serif). JetBrains Mono (the design's measurement
+   voice) still comes from Google Fonts. */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400..700;1,400..600&display=swap');
+
+/* ---- Tokens (scoped to the sample root) --------------------------------- */
+.hoonjo {
+  /* Primary accent — clean trust blue. The "structure / action" voice:
+     identity mark, primary CTAs, links, the blueprint grid. At most twice
+     per viewport. */
+  --blue: #3182f6;
+  --blue-bright: #7daffa;
+  --blue-hover: #2174ea;
+  --blue-deep: #1b64da;
+  --blue-soft: #eaf2fe;
+  --blue-line: #c5dcfb;
+
+  /* Secondary accent — clean green (the tone the client picked from the badge).
+     The "proof / live / featured" voice: section index numerals, the impact
+     label, the active "now" marker, the featured badge, status dots, and one
+     highlight word per band. Pairs with --blue, which stays primary. */
+  --green: #16a563;
+  --green-bright: #43c98a;
+  --green-deep: #157346;
+  --green-soft: #e6f5ec;
+  --green-line: #b6e3c8;
+
+  /* Surface — white. Canvas is pure white; bands/panels sit a whisper under it
+     so they're told apart by hairlines, not by any visible gray fill. */
+  --canvas: #ffffff;
+  --paper: #ffffff;
+  --cloud: #fcfdfe;
+  --fog: #f6f8fa;
+  --steel: #c2c8d1;
+  --line: #e9ecf1;
+
+  /* Ink slab — cool near-black for closing bands & footer */
+  --ink: #18191c;
+  --ink-soft: #232428;
+  --ink-deep: #0b0c0e;
+
+  /* Text ramp — shift steps for hierarchy, never drop opacity */
+  --text: #18191c;
+  --text-secondary: #3a3c42;
+  --text-muted: #6b6e76;
+  --text-faint: #9a9da6;
+  --on-ink: #f5f6f8;
+  --on-ink-muted: #a4a7b0;
+  --on-blue: #ffffff;
+
+  /* Semantic — metric deltas. Positive shares the secondary-green family so
+     the gains read as one green language with the accent. */
+  --positive: var(--green-deep);
+  --positive-soft: var(--green-soft);
+  --warn: #9a6312;
+  --danger: #b3262b;
+  --danger-soft: #f8e7e6;
+
+  --accent: var(--blue);
+  --accent-hover: var(--blue-hover);
+  --link: var(--blue);
+  --link-visited: var(--blue-deep);
+
+  /* Families — display is Pretendard (the myeongjo/serif read dated) */
+  --font-serif: var(--font-pretendard), 'Pretendard Variable', Pretendard, 'Apple SD Gothic Neo', system-ui, sans-serif;
+  --font-display: var(--font-serif);
+  --font-sans: var(--font-serif);
+  --font-mono: 'JetBrains Mono', 'SFMono-Regular', ui-monospace, monospace;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* Display / headline scale */
+  --display-xxl: 72px;
+  --display-xl: 54px;
+  --display-lg: 40px;
+  --display-md: 30px;
+  --display-sm: 23px;
+  --display-xs: 19px;
+
+  /* Body */
+  --body-lg: 18px;
+  --body-md: 16px;
+  --body-sm: 14px;
+  --body-xs: 12.5px;
+
+  /* Mono / engineering */
+  --metric-xxl: 56px;
+  --metric-lg: 34px;
+  --metric-md: 20px;
+  --mono-label: 12px;
+  --mono-sm: 13px;
+
+  --lh-tight: 1;
+  --lh-snug: 1.15;
+  --lh-body: 1.6;
+  --lh-mono: 1.45;
+
+  --track-eyebrow: 0.14em;
+  --track-label: 0.08em;
+  --track-display: -0.03em;
+  --track-tight: -0.01em;
+
+  /* Spacing — 8px base, 96px section rhythm (48px mobile) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+  --space-32: 128px;
+  --container-max: 1200px;
+  --container-pad: 24px;
+
+  /* Radius — sharp interactive (4px), soft containers (12px), round buttons */
+  --radius-none: 0px;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-pill: 9999px;
+  --radius-button: 10px;
+  --radius-input: 10px;
+  --radius-card: var(--radius-lg);
+
+  /* Elevation — mostly flat, depth via hairlines + contrast */
+  --shadow-hairline: 0 0 0 1px var(--line);
+  --shadow-soft: 0 2px 10px rgba(17, 18, 22, 0.06);
+  --shadow-soft-lg: 0 4px 18px rgba(17, 18, 22, 0.08);
+  --shadow-modal: 0 10px 32px rgba(8, 9, 12, 0.16);
+  --ring-focus: 0 0 0 2px var(--canvas), 0 0 0 4px var(--blue);
+  --grid-line: rgba(49, 130, 246, 0.018);
+  --grid-line-strong: rgba(49, 130, 246, 0.035);
+}
+
+/* ---- Base element rules, scoped under the sample root ------------------- */
+.hoonjo {
+  background: var(--canvas);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--body-md);
+  line-height: var(--lh-body);
+  font-weight: var(--weight-regular);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.hoonjo :is(h1, h2, h3, h4, h5) {
+  font-family: var(--font-serif);
+  font-weight: var(--weight-semibold);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--track-display);
+  margin: 0;
+  color: var(--text);
+}
+
+.hoonjo p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.hoonjo a {
+  color: var(--link);
+  text-decoration: none;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.hoonjo a:hover {
+  text-decoration: underline;
+}
+.hoonjo a:visited {
+  color: var(--link-visited);
+}
+
+.hoonjo code,
+.hoonjo kbd,
+.hoonjo samp,
+.hoonjo pre {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+}
+
+.hoonjo button {
+  font-family: inherit;
+}
+
+.hoonjo :focus-visible {
+  outline: none;
+  box-shadow: var(--ring-focus);
+  border-radius: var(--radius-sm);
+}
+
+.hoonjo ::selection {
+  background: var(--blue-soft);
+  color: var(--blue-deep);
+}
+
+.hoonjo img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Hoonjo portfolio — layout + responsive rules. Tokens + scoped base come
+   from ./tokens.css. Section components are inline-styled against the tokens;
+   the rules here are only the things inline styles can't do well: the root
+   reset and the responsive grid collapses (mirroring the design system's
+   ui_kit breakpoints), all scoped under .hoonjo so nothing leaks. */
+
+.hoonjo {
+  min-height: 100vh;
+}
+
+.hoonjo a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Tablet / mobile — collapse the multi-column section grids to one column. */
+@media (max-width: 900px) {
+  .hoonjo .hoonjo-nav-links {
+    display: none !important;
+  }
+  /* hero: stack, and lift the portrait above the headline as a small avatar */
+  .hoonjo .hoonjo-hero-top {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+  }
+  .hoonjo .hoonjo-portrait {
+    order: -1;
+    justify-self: start !important;
+    max-width: 200px;
+  }
+  .hoonjo .hoonjo-nav-burger {
+    display: inline-flex !important;
+  }
+  .hoonjo .hoonjo-case-grid,
+  .hoonjo .hoonjo-bh-grid,
+  .hoonjo .hoonjo-repo-grid,
+  .hoonjo .hoonjo-fl-top,
+  .hoonjo .hoonjo-fl-bottom {
+    grid-template-columns: 1fr !important;
+  }
+  .hoonjo .hoonjo-case-grid > div:first-child,
+  .hoonjo .hoonjo-bh-grid > div:last-child,
+  .hoonjo .hoonjo-fl-top > div:first-child,
+  .hoonjo .hoonjo-fl-bottom > div:first-child {
+    border-right: none !important;
+    border-bottom: 1px solid var(--line);
+  }
+  .hoonjo .hoonjo-stack-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .hoonjo .hoonjo-impact-strip {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .hoonjo .hoonjo-impact-strip > div {
+    border-right: none !important;
+    border-bottom: 1px solid var(--line);
+  }
+}
+
+@media (max-width: 560px) {
+  .hoonjo .hoonjo-impact-strip {
+    grid-template-columns: 1fr !important;
+  }
+  .hoonjo .hoonjo-footer-row {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+  /* timeline: period sits above the role instead of in a cramped side column */
+  .hoonjo .hoonjo-timeline-item {
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+  }
+  /* drop forced line breaks inside headings — let them wrap naturally */
+  .hoonjo .hoonjo-br {
+    display: none;
+  }
+  /* metric strip: stack the cells instead of cramming 3 across */
+  .hoonjo .hoonjo-metric-row {
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+  }
+  .hoonjo .hoonjo-metric-row > div {
+    border-left: none !important;
+    padding-left: 0 !important;
+    padding-top: 14px;
+    margin-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+  .hoonjo .hoonjo-metric-row > div:first-child {
+    padding-top: 0;
+    margin-top: 0;
+    border-top: none;
+  }
+}
+
+/* Works list — row hover */
+.hoonjo .hoonjo-work-row:hover {
+  background: var(--cloud);
+}
+.hoonjo .hoonjo-work-row:hover .hoonjo-work-arrow {
+  transform: translateX(4px);
+}
+.hoonjo .hoonjo-allworks:hover {
+  background: var(--cloud);
+  border-color: var(--blue-line);
+}
+
+/* Post body — markdown rendered with react-markdown */
+.hoonjo .hoonjo-md h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(22px, 2.6vw, 28px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--text);
+  margin: 48px 0 0;
+  padding-top: 30px;
+  border-top: 1px solid var(--line);
+}
+.hoonjo .hoonjo-md > h2:first-child {
+  margin-top: 36px;
+}
+.hoonjo .hoonjo-md h3 {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 30px 0 0;
+}
+.hoonjo .hoonjo-md p {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.78;
+  color: var(--text-secondary);
+  margin: 18px 0 0;
+}
+.hoonjo .hoonjo-md ul,
+.hoonjo .hoonjo-md ol {
+  margin: 18px 0 0;
+  padding-left: 22px;
+}
+.hoonjo .hoonjo-md li {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.72;
+  color: var(--text-secondary);
+  margin: 9px 0 0;
+}
+.hoonjo .hoonjo-md li::marker {
+  color: var(--text-faint);
+}
+.hoonjo .hoonjo-md strong {
+  color: var(--text);
+  font-weight: 600;
+}
+.hoonjo .hoonjo-md a {
+  color: var(--blue-deep);
+}
+.hoonjo .hoonjo-md code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  background: var(--cloud);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 1px 5px;
+  color: var(--text);
+}
+.hoonjo .hoonjo-md pre {
+  margin: 22px 0 0;
+  background: var(--ink);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  overflow-x: auto;
+}
+.hoonjo .hoonjo-md pre code {
+  font-size: 12.5px;
+  line-height: 1.65;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--on-ink);
+  display: block;
+  white-space: pre;
+}
+.hoonjo .hoonjo-md blockquote {
+  margin: 24px 0 0;
+  padding: 16px 20px;
+  background: var(--blue-soft);
+  border: 1px solid var(--blue-line);
+  border-radius: var(--radius-md);
+}
+.hoonjo .hoonjo-md blockquote p {
+  margin: 0;
+  color: var(--text);
+  font-size: 15.5px;
+  line-height: 1.65;
+}
+.hoonjo .hoonjo-md blockquote p + p {
+  margin-top: 10px;
+}
+.hoonjo .hoonjo-md hr {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 40px 0 0;
+}
+
+/* live-render dot — a slow ambient pulse, disabled under reduced motion */
+.hoonjo .hoonjo-live-dot {
+  animation: hoonjo-pulse 2.4s ease-in-out infinite;
+}
+@keyframes hoonjo-pulse {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hoonjo * {
+    scroll-behavior: auto !important;
+  }
+  .hoonjo .hoonjo-live-dot {
+    animation: none;
+  }
+}
+
+/* ---- Document pages (이력서 / 경력기술서 / 포트폴리오 PDF) ----------------- */
+.hoonjo .hoonjo-doc {
+  min-height: 100vh;
+  background: var(--cloud);
+}
+.hoonjo .hoonjo-doc-bar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 56px;
+  padding: 0 20px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: saturate(180%) blur(10px);
+  -webkit-backdrop-filter: saturate(180%) blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.hoonjo .hoonjo-doc-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+.hoonjo .hoonjo-doc-back:hover {
+  color: var(--text);
+}
+.hoonjo .hoonjo-doc-tab {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.hoonjo .hoonjo-doc-print {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--blue);
+  border: none;
+  border-radius: var(--radius-button);
+  padding: 9px 16px;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+.hoonjo .hoonjo-doc-print:hover {
+  background: var(--blue-hover);
+}
+.hoonjo .hoonjo-doc-sheet {
+  max-width: 820px;
+  margin: 32px auto;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: clamp(28px, 5vw, 56px);
+}
+
+@media (max-width: 720px) {
+  .hoonjo .hoonjo-doc-skills,
+  .hoonjo .hoonjo-doc-ps {
+    grid-template-columns: 1fr !important;
+  }
+  .hoonjo .hoonjo-doc-row {
+    grid-template-columns: 1fr !important;
+    gap: 4px !important;
+  }
+  /* résumé experience block: period column stacks above the company details */
+  .hoonjo .hoonjo-exp {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+  .hoonjo .hoonjo-doc-tab {
+    display: none;
+  }
+}
+
+@media print {
+  /* margin:0 leaves the browser no room to draw its own header/footer
+     (date · title · url · page number), so they disappear; we put the real
+     page margins back as padding on the sheet instead. */
+  @page {
+    margin: 0;
+  }
+  .hoonjo .hoonjo-doc {
+    background: #fff;
+    min-height: 0;
+  }
+  .hoonjo .hoonjo-doc-bar {
+    display: none !important;
+  }
+  .hoonjo .hoonjo-doc-sheet {
+    max-width: none;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 16mm 14mm;
+  }
+  /* a section that starts a fresh page gets a top cushion so its first line
+     isn't flush against the paper edge (page margins can't repeat via @page). */
+  .hoonjo .hoonjo-doc-break {
+    padding-top: 14mm;
+  }
+  /* keep a block (a project, a career row, an image) from splitting across pages */
+  .hoonjo .hoonjo-doc-section,
+  .hoonjo .hoonjo-doc-row,
+  .hoonjo .hoonjo-doc img {
+    break-inside: avoid;
+  }
+  /* résumé: keep a whole company block together where it fits on a page
+     (blocks taller than a page break at the achievement-bullet boundaries) */
+  .hoonjo .hoonjo-exp,
+  .hoonjo .hoonjo-exp-hl {
+    break-inside: avoid;
+  }
+  /* preserve metric colors and card fills in the printed PDF */
+  .hoonjo .hoonjo-doc,
+  .hoonjo .hoonjo-doc * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
