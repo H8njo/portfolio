@@ -43,7 +43,8 @@
   --green-line: #b6e3c8;
 
   /* Surface — 캔버스(페이지 바탕)를 살짝 틴트해 흰 카드(--paper)가 그 위로
-     떠오르게 한다. 순백-온-순백은 톤차가 0이라 입체감이 없었음(Linear/Vercel식). */
+     떠오르게 한다. 순백-온-순백은 톤차가 0이라 입체감이 없었음(Linear/Vercel식).
+     ※ /work 서브트리만 파란기 없는 #fcfdfe로 스코프 오버라이드(.hoonjo-work 참조). */
   --canvas: #f4f8ff;
   --paper: #ffffff;
   --cloud: #fcfdfe;
@@ -157,6 +158,13 @@
   --ring-focus: 0 0 0 2px var(--canvas), 0 0 0 4px var(--blue);
   --grid-line: rgba(49, 130, 246, 0.018);
   --grid-line-strong: rgba(49, 130, 246, 0.035);
+}
+
+/* /work(블로그) 서브트리만 페이지 바탕을 파란기 없는 거의-흰(#fcfdfe)으로.
+   홈·/resume·/portfolio-pdf의 파란 틴트(--canvas #f4f8ff)는 그대로 두고 여기만
+   오버라이드한다(.hoonjo.hoonjo-work = specificity 0,2,0 로 .hoonjo를 이김). */
+.hoonjo.hoonjo-work {
+  --canvas: #fcfdfe;
 }
 
 /* ---- Base element rules, scoped under the sample root ------------------- */
@@ -321,15 +329,63 @@
 }
 
 /* Works list — row hover */
+.hoonjo .hoonjo-work-row {
+  transition: background 150ms ease;
+}
 .hoonjo .hoonjo-work-row:hover {
   background: var(--cloud);
 }
-.hoonjo .hoonjo-work-row:hover .hoonjo-work-arrow {
+.hoonjo .hoonjo-work-arrow {
+  display: inline-block;
+  transition: transform 150ms ease;
+}
+.hoonjo .hoonjo-work-row:hover .hoonjo-work-arrow,
+.hoonjo .hoonjo-work-card:hover .hoonjo-work-arrow {
   transform: translateX(4px);
 }
 .hoonjo .hoonjo-allworks:hover {
   background: var(--cloud);
   border-color: var(--blue-line);
+}
+
+/* /work index — featured case card (link) hover: hairline warms to blue, lifts */
+.hoonjo .hoonjo-work-card {
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+.hoonjo .hoonjo-work-card:hover {
+  border-color: var(--blue-line);
+  box-shadow: var(--shadow-soft-lg);
+}
+.hoonjo .hoonjo-work-card:hover .hoonjo-work-title {
+  color: var(--blue-deep);
+}
+.hoonjo .hoonjo-work-row:hover .hoonjo-work-title {
+  color: var(--blue-deep);
+}
+
+/* /work detail — case metric grid stacks to one column on small screens */
+@media (max-width: 560px) {
+  .hoonjo .hoonjo-case-metric-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .hoonjo .hoonjo-case-metric-grid > div {
+    border-right: none !important;
+    border-top: 1px solid var(--line) !important;
+  }
+  .hoonjo .hoonjo-case-metric-grid > div:first-child {
+    border-top: none !important;
+  }
+}
+
+/* /work index — row grid collapses its number/meta column on small screens */
+@media (max-width: 640px) {
+  .hoonjo .hoonjo-work-row {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  .hoonjo .hoonjo-work-row-no {
+    order: -1;
+  }
 }
 
 /* Post body — markdown rendered with react-markdown */

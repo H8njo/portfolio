@@ -1,8 +1,8 @@
 # Design System — hoonjo portfolio
 
-> **현행 기준(2026-07-03~):** `/`, `/resume`, `/portfolio-pdf`에 적용된 **`.hoonjo` 시스템**이 정식 기준이다.
+> **현행 기준(2026-07-03~):** `/`, `/resume`, `/portfolio-pdf`, **`/work`(+`/work/[slug]`)** 전부 **`.hoonjo` 시스템**이 정식 기준이다.
 > 값의 원본(single source of truth)은 [components/hoonjo/](components/hoonjo/) + [app/hoonjo.css](app/hoonjo.css)(스코프 토큰).
-> `/work`(+`/work/[slug]`)는 아직 구 디자인("문제지 책자")이며 이 시스템으로 이관 예정.
+> 구 "문제지 책자" 디자인은 폐기됨(2026-07-03 `/work` 이관 완료).
 
 ## Product Context
 - **What this is:** 7년차 프론트엔드 개발자의 이직용 포트폴리오 사이트.
@@ -47,7 +47,7 @@
 - **읽기 폭:** 본문 46~52ch, 컨테이너 1200px.
 
 ## Layout
-- **Approach:** hybrid — 랜딩=에디토리얼 카드(세로 흐름), 문서(/resume·/portfolio-pdf)=인쇄용 시트, /work=책자(구).
+- **Approach:** hybrid — 랜딩=에디토리얼 카드(세로 흐름), 문서(/resume·/portfolio-pdf)=인쇄용 시트, /work=홈과 같은 `.hoonjo` 캔버스(인덱스=플래그십 카드+행 리스트, 상세=캔버스 위 에디토리얼).
 - **Container:** max-width **1200px**, 좌우 패딩 24px.
 - **Cards:** paper + 1px hairline + `shadow-soft (0 2px 10px rgba(17,18,22,.06))`. 히어로엔 옅은 블루프린트 그리드 배경.
 - **Border radius:** xs 2 / sm 4 / md 8 / lg 12 / **xl 16(카드)** / button 10 / tag(xs~sm) / pill 9999. *(구 카드 4px 폐기 — 일관된 스케일 사용, 단 전 요소 동일 버블 라운드는 금지.)*
@@ -73,3 +73,5 @@
 | 2026-06-07 | 랜딩 리스트-우선 + 데모를 상세로 이전 | 채용자는 리스트 훑고 클릭. 랜딩 임베드 데모는 이탈 리스크. |
 | 2026-07-03 | **`.hoonjo` 디자인을 정식 기준으로 채택** (`/`, `/resume`, `/portfolio-pdf`) | 독립 Vite 빌드에서 포팅. 완성도·일관성이 더 높다고 판단. 구 시스템 대비: 디스플레이 폰트 Pretendard(General Sans 폐기), 액센트 blue+green 2색, 카드 radius 12~16px, mono는 JetBrains, **라이트 전용**(다크 토글 제거·잉크 슬랩으로 대체). `/work`는 구 "문제지 책자" 유지, 추후 이관. |
 | 2026-07-03 | 모바일(≤900px) 히어로 인물 사진 숨김 | 인라인 max-width로 풀폭 렌더돼 첫 화면을 사진이 먹고 헤드라인이 접힘 아래로 밀림. 좁은 화면에선 가치 제안 우선 → `display:none`. |
+| 2026-07-03 | **`/work`(+`/work/[slug]`)를 `.hoonjo` 시스템으로 리뉴얼** (구 "문제지 책자" 폐기) | 홈과 톤이 달라 다른 사이트처럼 보였다. 레이아웃 전체를 홈과 같은 `.hoonjo` 루트(캔버스 틴트·sticky Nav·잉크 슬랩 Contact 푸터)로 감싸고, 본문을 Tailwind 유틸 대신 `.hoonjo` 프리미티브 + `.hoonjo-md`로 재작성 → 예전 base-rule 충돌(display:contents 우회)이 사라짐. 인덱스=플래그십 카드+행 리스트, 상세=에디토리얼(헤더·지표 그리드·라이브 데모 카드·다음 케이스). 구 `components/case-card.tsx` 삭제. |
+| 2026-07-03 | 케이스 지표에 전용 `CaseMetrics` 컴포넌트 도입 | 홈 `MetricTable/MetricRow`는 "1,310ms"류 짧은 숫자용이라 값에 `white-space:nowrap`이 걸려, 케이스 frontmatter의 긴 텍스트 지표("사내 v1 → v2 → npm 패키지")가 잘렸다. 같은 계측 톤(mono·tabular-nums)을 유지하되 값이 줄바꿈되는 grid/strip 변형으로 대체. |
