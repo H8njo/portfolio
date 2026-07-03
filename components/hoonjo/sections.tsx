@@ -118,8 +118,7 @@ function Portrait() {
       <img
         src={portrait}
         alt={profile.nameKo}
-        // 대체 사진이 없어 배경(초록 벽)이 시선을 뺏는 걸 채도↓+살짝 그레이스케일로 눅임
-        style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 32%', filter: 'saturate(0.62) grayscale(0.18) contrast(1.02)' }}
+        style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 32%' }}
       />
     </div>
   );
@@ -129,7 +128,7 @@ function Portrait() {
 export function Hero() {
   return (
     <section id="top">
-      <BlueprintGrid cell={80} intensity="soft" style={{ borderBottom: '1px solid var(--line)' }}>
+      <BlueprintGrid cell={80} intensity="soft" style={{ backgroundColor: '#fcfdfe', borderBottom: '1px solid var(--line)' }}>
         <div style={{ ...CONTAINER, padding: `${SECTION_Y} 24px 0`, position: 'relative' }}>
           <div className="hoonjo-hero-top" style={{ display: 'grid', gridTemplateColumns: '1fr clamp(260px, 32%, 360px)', gap: 'clamp(20px, 2.4vw, 36px)', alignItems: 'center' }}>
             <div>
@@ -331,7 +330,8 @@ export function Career() {
 /* ---- Expertise ---------------------------------------------------------- */
 export function Expertise() {
   return (
-    <section id="stack" style={{ ...CONTAINER, padding: `${SECTION_Y} 24px` }}>
+    <section id="stack" style={{ background: '#fcfdfe', borderBottom: '1px solid var(--line)' }}>
+      <div style={{ ...CONTAINER, padding: `${SECTION_Y} 24px` }}>
       <SectionHeader index={3} eyebrow="EXPERTISE" title="어디서 강한가" lead="렌더링·성능, 시스템 설계, 복잡한 상태 — 각 강점은 증명한 작업으로 이어집니다." />
       <div className="hoonjo-stack-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 28, marginTop: 48 }}>
         {capabilities.map((c) => (
@@ -363,6 +363,7 @@ export function Expertise() {
             </div>
           </div>
         ))}
+      </div>
       </div>
     </section>
   );
