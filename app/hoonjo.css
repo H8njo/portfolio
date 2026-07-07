@@ -328,24 +328,59 @@
   }
 }
 
-/* Works list — row hover */
+/* Works list — row hover: the flat row lifts into a white card (shadow), a blue
+   "structure line" grows on its left edge (the site's diamond/blue motif), and
+   number·title·arrow shift to blue while the arrow slides. */
 .hoonjo .hoonjo-work-row {
-  transition: background 150ms ease;
+  position: relative;
+  border-radius: var(--radius-md);
+  transition: background 160ms ease, box-shadow 160ms ease;
+}
+.hoonjo .hoonjo-work-row::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--blue);
+  transform: scaleY(0);
+  transform-origin: center;
+  transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 .hoonjo .hoonjo-work-row:hover {
-  background: var(--cloud);
+  background: var(--paper);
+  box-shadow: var(--shadow-soft);
+}
+.hoonjo .hoonjo-work-row:hover::before {
+  transform: scaleY(1);
+}
+.hoonjo .hoonjo-work-row-no {
+  transition: color 150ms ease;
+}
+.hoonjo .hoonjo-work-row:hover .hoonjo-work-row-no {
+  color: var(--blue);
 }
 .hoonjo .hoonjo-work-arrow {
   display: inline-block;
-  transition: transform 150ms ease;
+  transition: transform 150ms ease, color 150ms ease;
 }
 .hoonjo .hoonjo-work-row:hover .hoonjo-work-arrow,
 .hoonjo .hoonjo-work-card:hover .hoonjo-work-arrow {
   transform: translateX(4px);
+  color: var(--blue);
 }
 .hoonjo .hoonjo-allworks:hover {
   background: var(--cloud);
   border-color: var(--blue-line);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hoonjo .hoonjo-work-row::before,
+  .hoonjo .hoonjo-work-arrow {
+    transition: none;
+  }
 }
 
 /* /work index — featured case card (link) hover: hairline warms to blue, lifts */
