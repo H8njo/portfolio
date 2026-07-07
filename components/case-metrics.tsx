@@ -8,8 +8,9 @@ import type { CaseMetric } from "@/lib/cases.schema";
 //   variant "strip" = 세로 구분선 (인덱스 featured 카드의 cloud 임팩트 밴드)
 
 const LABEL = "font-hj-mono text-[11px] font-medium tracking-[0.08em] uppercase text-hj-muted";
-// 값은 primary(blue)로 강조 — 핵심 수치를 액센트로. (DESIGN.md: 핵심 수치에 액센트 허용)
-const VALUE_BASE = "font-hj-mono tabular-nums font-semibold text-hj-blue tracking-[-0.005em] text-pretty";
+// 값은 잉크(검정) bold — 홈 MetricRow와 동일. 임팩트 스트립은 사이트 시그니처라
+// 전 라우트에서 같은 색이어야 한다. 액센트(파랑)는 링크·CTA·상태에만(DESIGN.md).
+const VALUE_BASE = "font-hj-mono tabular-nums font-semibold text-hj-fg tracking-[-0.005em] text-pretty";
 const STRIP_VALUE = `${VALUE_BASE} text-[16px] leading-[1.25] mt-1`;
 const GRID_VALUE = `${VALUE_BASE} text-[18px] leading-[1.3] mt-2`;
 

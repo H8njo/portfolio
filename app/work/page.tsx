@@ -99,7 +99,7 @@ function CaseRow({ entry, no }: { entry: CaseEntry; no: string }) {
             {frontmatter.metrics.slice(0, 2).map((m) => (
               <span key={m.label} className="inline-flex items-baseline gap-2 font-hj-mono tabular-nums whitespace-nowrap">
                 <span className="text-[11px] text-hj-muted">{m.label}</span>
-                <span className="text-[14.5px] font-bold tracking-[-0.01em] text-hj-blue">{m.value}</span>
+                <span className="text-[14.5px] font-bold tracking-[-0.01em] text-hj-fg">{m.value}</span>
               </span>
             ))}
           </div>
