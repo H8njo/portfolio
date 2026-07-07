@@ -96,10 +96,17 @@ function CaseRow({ entry, no }: { entry: CaseEntry; no: string }) {
       href={`/work/${slug}`}
       className="hoonjo-work-row"
       style={{
-        display: "grid", gridTemplateColumns: "40px 1fr auto", alignItems: "start", gap: 20,
-        padding: "22px 20px", borderRadius: "var(--radius-md)", textDecoration: "none",
+        position: "relative", display: "grid", gridTemplateColumns: "40px 1fr auto", alignItems: "start", gap: 20,
+        padding: frontmatter.demo ? "50px 20px 22px" : "22px 20px", borderRadius: "var(--radius-md)", textDecoration: "none",
       }}
     >
+      {/* LIVE DEMO — 행 왼쪽 상단(번호 위)에 앱솔루트로 핀 고정. 데모 행은 위 패딩을
+          늘려(50px) 이 뱃지 자리를 비워두므로 번호·제목과 겹치지 않는다. */}
+      {frontmatter.demo && (
+        <div style={{ position: "absolute", top: 20, left: 20, zIndex: 1 }}>
+          <DemoBadge />
+        </div>
+      )}
       <span className="hoonjo-work-row-no" style={{ fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums", fontSize: 13, color: "var(--text-faint)", paddingTop: 3 }}>{no}</span>
       <div style={{ minWidth: 0 }}>
         <h3 className="hoonjo-work-title" style={{ fontFamily: "var(--font-serif)", fontSize: 20, fontWeight: 600, letterSpacing: "-0.015em", lineHeight: 1.25, color: "var(--text)", margin: 0, transition: "color 150ms ease" }}>
@@ -108,9 +115,8 @@ function CaseRow({ entry, no }: { entry: CaseEntry; no: string }) {
         <p style={{ fontFamily: "var(--font-sans)", fontSize: 15, lineHeight: 1.6, color: "var(--text-muted)", margin: "8px 0 0", maxWidth: "62ch" }}>
           {frontmatter.summary}
         </p>
-        {(frontmatter.demo || frontmatter.tags.length > 0) && (
+        {frontmatter.tags.length > 0 && (
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }}>
-            {frontmatter.demo && <DemoBadge />}
             {frontmatter.tags.map((t) => (
               <span key={t} style={TAG_CHIP}>{t}</span>
             ))}
