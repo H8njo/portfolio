@@ -68,8 +68,8 @@ function FeaturedCase({ entry }: { entry: CaseEntry }) {
         </div>
       </div>
       {frontmatter.metrics.length > 0 && (
-        <div style={{ padding: "clamp(18px, 2.4vw, 24px) clamp(24px, 3.2vw, 34px)", background: "var(--cloud)", borderTop: "1px solid var(--line)" }}>
-          <div style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: 16 }}>Impact · 측정 결과</div>
+        <div style={{ padding: "clamp(14px, 2vw, 18px) clamp(24px, 3.2vw, 34px)", background: "var(--cloud)", borderTop: "1px solid var(--line)" }}>
+          <div style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: 10 }}>Impact · 측정 결과</div>
           <CaseMetrics metrics={frontmatter.metrics} variant="strip" />
         </div>
       )}
@@ -118,7 +118,7 @@ function CaseRow({ entry, no }: { entry: CaseEntry; no: string }) {
             {frontmatter.metrics.slice(0, 2).map((m) => (
               <span key={m.label} style={{ display: "inline-flex", alignItems: "baseline", gap: 8, fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
                 <span style={{ fontSize: 11, color: "var(--text-muted)" }}>{m.label}</span>
-                <span style={{ fontSize: 14.5, fontWeight: 700, color: "var(--text)", letterSpacing: "-0.01em" }}>{m.value}</span>
+                <span style={{ fontSize: 14.5, fontWeight: 700, color: "var(--blue)", letterSpacing: "-0.01em" }}>{m.value}</span>
               </span>
             ))}
           </div>

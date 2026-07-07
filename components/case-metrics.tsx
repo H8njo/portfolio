@@ -11,11 +11,15 @@ const labelStyle: React.CSSProperties = {
   fontFamily: "var(--font-mono)", fontSize: 11, fontWeight: 500,
   letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--text-muted)",
 };
-const valueStyle: React.CSSProperties = {
+// 값은 primary(blue)로 강조 — 핵심 수치를 액센트로. (DESIGN.md: 핵심 수치에 액센트 허용)
+const valueBase: React.CSSProperties = {
   fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums",
-  fontSize: 18, fontWeight: 600, lineHeight: 1.35, color: "var(--text)",
-  letterSpacing: "-0.005em", marginTop: 10, textWrap: "pretty",
+  fontWeight: 600, color: "var(--blue)", letterSpacing: "-0.005em", textWrap: "pretty",
 };
+// strip(featured 밴드) = 조밀하게(라벨↔값 간격·크기 축소해 듬성함 제거)
+const stripValueStyle: React.CSSProperties = { ...valueBase, fontSize: 16, lineHeight: 1.25, marginTop: 4 };
+// grid(상세 페이지) = 조금 더 큰 값
+const gridValueStyle: React.CSSProperties = { ...valueBase, fontSize: 18, lineHeight: 1.3, marginTop: 8 };
 
 export function CaseMetrics({
   metrics,
@@ -35,7 +39,7 @@ export function CaseMetrics({
         {metrics.map((m, i) => (
           <div key={m.label} style={{ paddingLeft: i > 0 ? 24 : 0, borderLeft: i > 0 ? "1px solid var(--line)" : "none", minWidth: 0 }}>
             <div style={labelStyle}>{m.label}</div>
-            <div style={valueStyle}>{m.value}</div>
+            <div style={stripValueStyle}>{m.value}</div>
           </div>
         ))}
       </div>
@@ -57,7 +61,7 @@ export function CaseMetrics({
           }}
         >
           <div style={labelStyle}>{m.label}</div>
-          <div style={valueStyle}>{m.value}</div>
+          <div style={gridValueStyle}>{m.value}</div>
         </div>
       ))}
     </div>
