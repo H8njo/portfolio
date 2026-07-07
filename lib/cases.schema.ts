@@ -15,6 +15,7 @@ export interface CaseFrontmatter {
   tags: string[];
   metrics: CaseMetric[];
   demo?: "column-pager" | "blackhole" | "range-editor"; // 상세 페이지에 라이브 데모 임베드 (지원 데모만)
+  demoUrl?: string; // 브라우저 임베드가 불가능한 케이스(네이티브 앱 등)의 외부 라이브 데모/저장소 링크
   date?: string;
 }
 
@@ -63,6 +64,10 @@ export function parseFrontmatter(slug: string, data: Record<string, unknown>): C
       data.demo === "blackhole" ||
       data.demo === "range-editor"
         ? data.demo
+        : undefined,
+    demoUrl:
+      typeof data.demoUrl === "string" && data.demoUrl.trim() !== ""
+        ? data.demoUrl
         : undefined,
     date: typeof data.date === "string" ? data.date : undefined,
   };
