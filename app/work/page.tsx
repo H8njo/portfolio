@@ -39,25 +39,19 @@ function DemoBadge() {
 // featured 케이스 — 홈 플래그십과 같은 결의 큰 종이 카드 + 임팩트 스트립.
 function FeaturedCase({ entry }: { entry: CaseEntry }) {
   const { slug, frontmatter } = entry;
-  const cta = frontmatter.demo ? "라이브 데모 보기" : "케이스 열기";
+  const hasDemo = !!(frontmatter.demo || frontmatter.demoUrl);
+  const cta = hasDemo ? "라이브 데모 보기" : "케이스 열기";
   return (
     <Link
       href={`/work/${slug}`}
       className="hoonjo-work-card"
       style={{
-        position: "relative", display: "block", marginTop: 40, background: "var(--paper)", border: "1px solid var(--line)",
+        display: "block", marginTop: 40, background: "var(--paper)", border: "1px solid var(--line)",
         borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-soft)", overflow: "hidden", textDecoration: "none",
       }}
     >
-      {/* LIVE DEMO — 카드 왼쪽 위 코너에 앱솔루트로 핀 고정(콘텐츠 패딩과 같은 오프셋
-          이라 헤더의 FEATURED 칩과 같은 높이). 카드가 overflow:hidden이라 코너 안쪽에. */}
-      {frontmatter.demo && (
-        <div style={{ position: "absolute", top: "clamp(24px, 3.2vw, 34px)", left: "clamp(24px, 3.2vw, 34px)", zIndex: 1 }}>
-          <DemoBadge />
-        </div>
-      )}
       <div style={{ padding: "clamp(24px, 3.2vw, 34px)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", justifyContent: frontmatter.demo ? "flex-end" : "flex-start" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
           <Badge variant="green" dot>FEATURED · 창의적 해결</Badge>
         </div>
         <h2 className="hoonjo-work-title" style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(26px, 3vw, 34px)", fontWeight: 600, letterSpacing: "-0.02em", lineHeight: 1.16, color: "var(--text)", margin: "18px 0 0", textWrap: "balance", transition: "color 150ms ease" }}>
@@ -67,6 +61,7 @@ function FeaturedCase({ entry }: { entry: CaseEntry }) {
           {frontmatter.summary}
         </p>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 22 }}>
+          {hasDemo && <DemoBadge />}
           {frontmatter.tags.filter((t) => !/^라이브\s*데모$/.test(t)).map((t) => (
             <span key={t} style={TAG_CHIP}>{t}</span>
           ))}
@@ -91,6 +86,7 @@ function FeaturedCase({ entry }: { entry: CaseEntry }) {
 // 나머지 케이스 — 스캔용 에디토리얼 행. 번호 · 제목/요약/태그/수치 · 화살표.
 function CaseRow({ entry, no }: { entry: CaseEntry; no: string }) {
   const { slug, frontmatter } = entry;
+  const hasDemo = !!(frontmatter.demo || frontmatter.demoUrl);
   return (
     <Link
       href={`/work/${slug}`}
@@ -108,9 +104,9 @@ function CaseRow({ entry, no }: { entry: CaseEntry; no: string }) {
         <p style={{ fontFamily: "var(--font-sans)", fontSize: 15, lineHeight: 1.6, color: "var(--text-muted)", margin: "8px 0 0", maxWidth: "62ch" }}>
           {frontmatter.summary}
         </p>
-        {(frontmatter.demo || frontmatter.tags.length > 0) && (
+        {(hasDemo || frontmatter.tags.length > 0) && (
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }}>
-            {frontmatter.demo && <DemoBadge />}
+            {hasDemo && <DemoBadge />}
             {frontmatter.tags.map((t) => (
               <span key={t} style={TAG_CHIP}>{t}</span>
             ))}
