@@ -34,10 +34,10 @@
 - **Approach:** near-white 캔버스 + **trust-blue(1차) + green(2차)**. 액센트는 링크·CTA·핵심 수치·상태에만 작게. 색은 헤어라인으로 면을 나눈다(회색 면 채움 X).
 - **Blue — 구조/액션 (1차):** `#3182f6` / hover `#2174ea` / deep `#1b64da` / bright `#7daffa` / soft `#eaf2fe` / line `#c5dcfb`. *(구 Cobalt #2348FF 대체.)*
 - **Green — 증명/라이브/featured (2차):** `#16a563` / deep `#157346` / bright `#43c98a` / soft `#e6f5ec` / line `#b6e3c8`. 섹션 번호·"현재" 마커·featured 뱃지·상태 점·수치 상승분에만.
-- **Surface:** canvas/paper `#ffffff`, cloud `#fcfdfe`, fog `#f6f8fa`, steel `#c2c8d1`, hairline `#e9ecf1`.
+- **Surface:** canvas `#f4f8ff`(홈·문서 페이지 바탕 — 흰 카드가 떠 보이게 살짝 쿨 틴트), paper `#ffffff`, cloud `#fcfdfe`(/work 서브트리 바탕), fog `#f6f8fa`, steel `#c2c8d1`, hairline `#e9ecf1`.
 - **Ink slab (닫는 밴드):** ink `#18191c`, ink-soft `#232428`, ink-deep `#0b0c0e`. on-ink `#f5f6f8`, on-ink-muted `#a4a7b0`.
 - **Text ramp:** text `#18191c` / secondary `#3a3c42` / muted `#6b6e76` / faint `#9a9da6`. (명도 단계로 위계, 불투명도 안 낮춤.)
-- **Semantic:** positive = green-deep `#157346`, warn `#9a6312`, danger `#b3262b`.
+- **Semantic:** positive = green-deep `#157346`, warn `#9a6312`, danger `#b3262b` (soft `#f8e7e6`). *(faint 메타 텍스트는 `#868992` — WCAG large-text 3:1 확보.)*
 
 ## Spacing
 - **Base unit:** 8px
