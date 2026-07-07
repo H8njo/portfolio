@@ -9,9 +9,6 @@ import RangeEditorDemo from "@/components/demos/range-editor-demo";
 import { Tag, Badge } from "@/components/hoonjo/components";
 import { CaseMetrics } from "@/components/case-metrics";
 
-const CONTAINER = { maxWidth: 760, margin: "0 auto", padding: "0 24px" } as const;
-const SECTION_TOP = "clamp(40px, 7vw, 72px)";
-
 export function generateStaticParams() {
   return getAllCases().map((c) => ({ slug: c.slug }));
 }
@@ -25,13 +22,18 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 // MDX 본문은 .hoonjo-md CSS(app/hoonjo.css)가 통째로 스타일한다 — 홈의 글 본문과
 // 동일한 시스템. 여기선 native 태그가 아닌 이미지(캡션)만 커스터마이즈한다.
+// 페이지 크롬(헤더·데모·네비)은 Tailwind 유틸(theme.css의 hj-* 토큰)로 짠다.
+//
+// .hoonjo 스코프 베이스 규칙(.hoonjo a / :is(h1..) / p)은 언레이어드 CSS라
+// utilities 레이어의 Tailwind 유틸을 이긴다. 그래서 그 규칙과 충돌하는 속성
+// (링크 색, h1 line-height/margin, 요약 p margin, 카드 밑줄)만 `!` 중요 수정자로 덮는다.
 const mdxComponents = {
   img: ({ alt, ...p }: React.ComponentProps<"img">) => (
-    <figure style={{ margin: "26px 0 0" }}>
+    <figure className="mt-[26px]">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img style={{ width: "100%", borderRadius: "var(--radius-md)", border: "1px solid var(--line)" }} alt={alt} {...p} />
+      <img className="w-full rounded-hj-md border border-hj-line" alt={alt} {...p} />
       {alt && (
-        <figcaption style={{ marginTop: 10, textAlign: "center", fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--text-muted)" }}>{alt}</figcaption>
+        <figcaption className="mt-[10px] text-center font-hj-mono text-[12px] text-hj-muted">{alt}</figcaption>
       )}
     </figure>
   ),
@@ -40,13 +42,13 @@ const mdxComponents = {
 // 라이브 데모 블록 — 종이 카드에 담아 홈 카드와 같은 결로.
 function DemoBlock({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section aria-label="라이브 데모" style={{ marginTop: 40 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
-        <span className="hoonjo-live-dot" aria-hidden style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--green)" }} />
-        <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--green-deep)" }}>라이브 데모</span>
+    <section aria-label="라이브 데모" className="mt-10">
+      <div className="mb-[14px] flex items-center gap-[10px]">
+        <span aria-hidden className="h-2 w-2 rounded-full bg-hj-green animate-hj-pulse" />
+        <span className="font-hj-mono text-[12px] font-medium uppercase tracking-[0.1em] text-hj-green-deep">라이브 데모</span>
       </div>
-      <p style={{ fontFamily: "var(--font-sans)", fontSize: 15, lineHeight: 1.6, color: "var(--text-secondary)", margin: 0, maxWidth: "52ch" }}>{title}</p>
-      <div style={{ marginTop: 18, background: "var(--paper)", border: "1px solid var(--line)", borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-soft)", padding: "clamp(16px, 2.4vw, 24px)", overflow: "hidden" }}>
+      <p className="max-w-[52ch] font-hj-serif text-[15px] leading-[1.6] text-hj-fg-secondary">{title}</p>
+      <div className="mt-[18px] overflow-hidden rounded-hj-lg border border-hj-line bg-hj-paper p-[clamp(16px,2.4vw,24px)] shadow-hj-soft">
         {children}
       </div>
     </section>
@@ -64,27 +66,27 @@ export default async function CaseDetail({ params }: { params: Promise<{ slug: s
   const { frontmatter } = entry;
 
   return (
-    <article style={{ ...CONTAINER, padding: `${SECTION_TOP} 24px` }}>
-      <Link href="/work" style={{ display: "inline-flex", alignItems: "center", gap: 7, fontFamily: "var(--font-mono)", fontSize: 13, color: "var(--text-muted)" }}>
+    <article className="mx-auto max-w-[760px] px-6 py-[clamp(40px,7vw,72px)]">
+      <Link href="/work" className="inline-flex items-center gap-[7px] font-hj-mono text-[13px] text-hj-muted!">
         <span aria-hidden>←</span> 블로그
       </Link>
 
-      <header style={{ marginTop: 28 }}>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+      <header className="mt-7">
+        <div className="flex flex-wrap gap-2">
           {frontmatter.featured && <Badge variant="green" dot>FEATURED</Badge>}
           {frontmatter.tags.map((t) => <Tag key={t}>{t}</Tag>)}
         </div>
-        <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(28px, 4.4vw, 44px)", fontWeight: 600, letterSpacing: "-0.03em", lineHeight: 1.12, color: "var(--text)", margin: "20px 0 0", textWrap: "balance" }}>
+        <h1 className="mt-5! text-balance font-hj-serif text-[clamp(28px,4.4vw,44px)] font-semibold leading-[1.12]! tracking-[-0.03em] text-hj-fg">
           {frontmatter.title}
         </h1>
-        <p style={{ fontFamily: "var(--font-sans)", fontSize: 18, lineHeight: 1.6, color: "var(--text-secondary)", margin: "18px 0 0", maxWidth: "54ch" }}>
+        <p className="mt-[18px]! max-w-[54ch] font-hj-serif text-[18px] leading-[1.6] text-hj-fg-secondary">
           {frontmatter.summary}
         </p>
       </header>
 
       {frontmatter.metrics.length > 0 && (
-        <div style={{ marginTop: 32 }}>
-          <div style={{ fontFamily: "var(--font-mono)", fontSize: 11, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: 14 }}>Impact · 측정 결과</div>
+        <div className="mt-8">
+          <div className="mb-[14px] font-hj-mono text-[11px] font-medium uppercase tracking-[0.1em] text-hj-muted">Impact · 측정 결과</div>
           <CaseMetrics metrics={frontmatter.metrics} variant="grid" />
         </div>
       )}
@@ -104,8 +106,22 @@ export default async function CaseDetail({ params }: { params: Promise<{ slug: s
           <RangeEditorDemo />
         </DemoBlock>
       )}
+      {!frontmatter.demo && frontmatter.demoUrl && (
+        <DemoBlock title="브라우저에 담을 수 없는 데스크톱 앱이라, 실제 코드와 설치는 GitHub 저장소에서 직접 확인하세요.">
+          <a
+            href={frontmatter.demoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex items-center gap-2.5 font-hj-mono text-[14px] font-medium text-hj-blue-deep! no-underline!"
+          >
+            <span aria-hidden className="text-[15px]">↗</span>
+            GitHub 저장소 열기
+            <span aria-hidden className="inline-block transition-transform duration-150 group-hover:translate-x-1">→</span>
+          </a>
+        </DemoBlock>
+      )}
 
-      <div className="hoonjo-md" style={{ marginTop: 8 }}>
+      <div className="hoonjo-md mt-2">
         <MDXRemote
           source={entry.content}
           components={mdxComponents}
@@ -119,16 +135,20 @@ export default async function CaseDetail({ params }: { params: Promise<{ slug: s
         />
       </div>
 
-      {/* 다음 케이스 던지기 — 종이 카드로 끌림 구조 */}
-      <nav aria-label="케이스 이동" style={{ marginTop: 64, paddingTop: 32, borderTop: "1px solid var(--line)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 20, flexWrap: "wrap" }}>
-        <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: 7, fontFamily: "var(--font-mono)", fontSize: 13, color: "var(--text-muted)" }}>
+      {/* 다음 케이스 던지기 — 종이 카드로 끌림 구조 (hover는 group으로) */}
+      <nav aria-label="케이스 이동" className="mt-16 flex flex-wrap items-center justify-between gap-5 border-t border-hj-line pt-8">
+        <Link href="/" className="inline-flex items-center gap-[7px] font-hj-mono text-[13px] text-hj-muted!">
           <span aria-hidden>←</span> 홈
         </Link>
         {next && next.slug !== slug && (
-          <Link href={`/work/${next.slug}`} className="hoonjo-work-card" style={{ display: "block", textAlign: "right", maxWidth: 420, background: "var(--paper)", border: "1px solid var(--line)", borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-soft)", padding: "16px 20px", textDecoration: "none" }}>
-            <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-muted)", display: "block" }}>다음 케이스</span>
-            <span className="hoonjo-work-title" style={{ display: "inline-flex", alignItems: "center", gap: 8, marginTop: 6, fontFamily: "var(--font-serif)", fontSize: 17, fontWeight: 600, letterSpacing: "-0.015em", color: "var(--text)", transition: "color 150ms ease" }}>
-              {next.frontmatter.title} <span className="hoonjo-work-arrow" aria-hidden>→</span>
+          <Link
+            href={`/work/${next.slug}`}
+            className="group block max-w-[420px] rounded-hj-lg border border-hj-line bg-hj-paper px-5 py-4 text-right no-underline! shadow-hj-soft transition-[border-color,box-shadow] duration-150 hover:border-hj-blue-line hover:shadow-hj-soft-lg"
+          >
+            <span className="block font-hj-mono text-[11px] uppercase tracking-[0.1em] text-hj-muted">다음 케이스</span>
+            <span className="mt-1.5 inline-flex items-center gap-2 font-hj-serif text-[17px] font-semibold tracking-[-0.015em] text-hj-fg transition-colors duration-150 group-hover:text-hj-blue-deep">
+              {next.frontmatter.title}{" "}
+              <span aria-hidden className="inline-block transition-transform duration-150 group-hover:translate-x-1 group-hover:text-hj-blue-deep">→</span>
             </span>
           </Link>
         )}

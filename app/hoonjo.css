@@ -457,10 +457,17 @@
   color: var(--text-secondary);
   margin: 18px 0 0;
 }
-.hoonjo .hoonjo-md ul,
+/* Tailwind Preflight resets ul/ol to list-style:none globally — restore the
+   markers here so blog body lists actually show bullets/numbers. */
+.hoonjo .hoonjo-md ul {
+  margin: 18px 0 0;
+  padding-left: 22px;
+  list-style: disc;
+}
 .hoonjo .hoonjo-md ol {
   margin: 18px 0 0;
   padding-left: 22px;
+  list-style: decimal;
 }
 .hoonjo .hoonjo-md li {
   font-family: var(--font-sans);
@@ -470,7 +477,7 @@
   margin: 9px 0 0;
 }
 .hoonjo .hoonjo-md li::marker {
-  color: var(--text-faint);
+  color: #4b6ac8;
 }
 .hoonjo .hoonjo-md strong {
   color: var(--text);
@@ -479,10 +486,13 @@
 .hoonjo .hoonjo-md a {
   color: var(--blue-deep);
 }
-.hoonjo .hoonjo-md code {
+/* 인라인 코드 칩만 — pre>code(코드 블록)는 제외해서 블록 배경까지 파래지지 않게 한다.
+   globals.css의 :not(pre) > code 가 !important로 배경을 덮으므로 여기도 !important가
+   필요하고, 스코프가 더 구체적이라 important끼리는 이 규칙이 이긴다. */
+.hoonjo .hoonjo-md :not(pre) > code {
   font-family: var(--font-mono);
   font-size: 0.86em;
-  background: var(--cloud);
+  background: #edf1ff !important;
   border: 1px solid var(--line);
   border-radius: 4px;
   padding: 1px 5px;

@@ -1,6 +1,8 @@
 /* Fonts are self-hosted via next/font/local (lib/fonts.ts) — no render-blocking CDN @import.
    --font-pretendard / --font-general / --font-geist-mono are injected on <html>. */
 @import 'tailwindcss';
+/* Hoonjo editorial tokens for Tailwind utilities (used by /work/[slug]) */
+@import './theme.css';
 
 /* column-pager renders with Tailwind utility classes — keep them from being purged */
 @source "../node_modules/column-pager/dist";
