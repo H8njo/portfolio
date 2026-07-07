@@ -24,15 +24,9 @@ function FeaturedCase({ entry }: { entry: CaseEntry }) {
         borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-soft)", overflow: "hidden", textDecoration: "none",
       }}
     >
-      <div style={{ padding: "clamp(26px, 3.6vw, 40px)" }}>
+      <div style={{ padding: "clamp(24px, 3.2vw, 34px)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
           <Badge variant="green" dot>FEATURED · 창의적 해결</Badge>
-          {frontmatter.demo && (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 7, fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--text-muted)" }}>
-              <span className="hoonjo-live-dot" aria-hidden style={{ width: 7, height: 7, borderRadius: "50%", background: "var(--green-bright)" }} />
-              라이브 데모
-            </span>
-          )}
         </div>
         <h2 className="hoonjo-work-title" style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(26px, 3vw, 34px)", fontWeight: 600, letterSpacing: "-0.02em", lineHeight: 1.16, color: "var(--text)", margin: "18px 0 0", textWrap: "balance", transition: "color 150ms ease" }}>
           {frontmatter.title}
@@ -45,12 +39,13 @@ function FeaturedCase({ entry }: { entry: CaseEntry }) {
         </div>
       </div>
       {frontmatter.metrics.length > 0 && (
-        <div style={{ padding: "clamp(20px, 2.8vw, 28px) clamp(26px, 3.6vw, 40px)", background: "var(--cloud)", borderTop: "1px solid var(--line)" }}>
+        <div style={{ padding: "clamp(18px, 2.4vw, 24px) clamp(24px, 3.2vw, 34px)", background: "var(--cloud)", borderTop: "1px solid var(--line)" }}>
           <div style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: 16 }}>Impact · 측정 결과</div>
           <CaseMetrics metrics={frontmatter.metrics} variant="strip" />
         </div>
       )}
-      <div style={{ padding: "18px clamp(26px, 3.6vw, 40px)", borderTop: "1px dashed var(--line)", display: "flex", justifyContent: "flex-end" }}>
+      <div style={{ padding: "14px clamp(24px, 3.2vw, 34px)", borderTop: "1px dashed var(--line)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
+        <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--text-faint)" }}>01 · FEATURED</span>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: "var(--font-mono)", fontSize: 13, fontWeight: 500, color: "var(--blue-deep)" }}>
           {cta} <span className="hoonjo-work-arrow" aria-hidden>→</span>
         </span>
@@ -67,8 +62,8 @@ function CaseRow({ entry, no }: { entry: CaseEntry; no: string }) {
       href={`/work/${slug}`}
       className="hoonjo-work-row"
       style={{
-        display: "grid", gridTemplateColumns: "56px 1fr auto", alignItems: "start", gap: 24,
-        padding: "26px 20px", borderRadius: "var(--radius-md)", textDecoration: "none",
+        display: "grid", gridTemplateColumns: "40px 1fr auto", alignItems: "start", gap: 20,
+        padding: "22px 20px", borderRadius: "var(--radius-md)", textDecoration: "none",
       }}
     >
       <span className="hoonjo-work-row-no" style={{ fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums", fontSize: 13, color: "var(--text-faint)", paddingTop: 3 }}>{no}</span>
@@ -79,24 +74,28 @@ function CaseRow({ entry, no }: { entry: CaseEntry; no: string }) {
         <p style={{ fontFamily: "var(--font-sans)", fontSize: 15, lineHeight: 1.6, color: "var(--text-muted)", margin: "8px 0 0", maxWidth: "62ch" }}>
           {frontmatter.summary}
         </p>
-        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "6px 16px", marginTop: 14 }}>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+        {frontmatter.tags.length > 0 && (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }}>
             {frontmatter.tags.map((t) => (
               <span key={t} style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--text-secondary)", border: "1px solid var(--line)", borderRadius: "var(--radius-xs)", padding: "3px 8px", whiteSpace: "nowrap" }}>{t}</span>
             ))}
           </div>
-          {frontmatter.metrics.slice(0, 2).map((m) => (
-            <span key={m.label} style={{ fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums", fontSize: 12.5, color: "var(--text-muted)", whiteSpace: "nowrap" }}>
-              {m.label} <span style={{ color: "var(--text)", fontWeight: 500 }}>{m.value}</span>
-            </span>
-          ))}
-          {frontmatter.demo && (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: "var(--font-mono)", fontSize: 11.5, letterSpacing: "0.04em", color: "var(--green-deep)", whiteSpace: "nowrap" }}>
-              <span className="hoonjo-live-dot" aria-hidden style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--green)" }} />
-              라이브 데모
-            </span>
-          )}
-        </div>
+        )}
+        {(frontmatter.metrics.length > 0 || frontmatter.demo) && (
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "4px 18px", marginTop: 10 }}>
+            {frontmatter.metrics.slice(0, 2).map((m) => (
+              <span key={m.label} style={{ fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums", fontSize: 12.5, color: "var(--text-muted)", whiteSpace: "nowrap" }}>
+                {m.label} <span style={{ color: "var(--text)", fontWeight: 500 }}>{m.value}</span>
+              </span>
+            ))}
+            {frontmatter.demo && (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: "var(--font-mono)", fontSize: 11.5, letterSpacing: "0.04em", color: "var(--green-deep)", whiteSpace: "nowrap" }}>
+                <span className="hoonjo-live-dot" aria-hidden style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--green)" }} />
+                라이브 데모
+              </span>
+            )}
+          </div>
+        )}
       </div>
       <span className="hoonjo-work-arrow" aria-hidden style={{ fontFamily: "var(--font-mono)", fontSize: 15, color: "var(--text-faint)", paddingTop: 3 }}>→</span>
     </Link>
@@ -133,7 +132,7 @@ export default function WorkIndex() {
           {featured && <FeaturedCase entry={featured} />}
 
           {rest.length > 0 && (
-            <div style={{ marginTop: 48 }}>
+            <div style={{ marginTop: 40 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 4 }}>
                 <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, fontWeight: 500, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--text-muted)" }}>더 많은 작업</span>
                 <span aria-hidden style={{ flex: 1, height: 1, background: "var(--line)" }} />
