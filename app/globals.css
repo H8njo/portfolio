@@ -113,6 +113,18 @@ body {
   }
 }
 
+/* Print: kill the browser's own page margins (date/title/url/page-number) so the
+   document sheet can draw its own via padding. The only print rule that can't be
+   a Tailwind `print:` utility — @page is a global at-rule. The doc pages
+   (/resume, /portfolio-pdf) restore real margins as sheet padding; print-color
+   preservation is handled by [print-color-adjust:exact] on the doc root (it
+   inherits to descendants). */
+@media print {
+  @page {
+    margin: 0;
+  }
+}
+
 /* Accessibility: respect reduced-motion (Pass 6 decision) */
 @media (prefers-reduced-motion: reduce) {
   html {

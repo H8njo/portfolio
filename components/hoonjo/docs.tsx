@@ -8,58 +8,60 @@ import type { ProjImage, ExpCompany } from './content';
 import { BlackHole } from './BlackHole';
 const portrait = '/hoonjo/portrait.jpg';
 
-/* Print-to-PDF documents served at /d/<slug>/{resume,portfolio-pdf}.
-   이력서 is a CV (page 1) + the projects in detail on a second print page;
-   포트폴리오 PDF is the whole portfolio in document form, so the PDF alone reads
-   as the full portfolio. All copy comes from content.ts so nothing drifts. */
+/* Print-to-PDF documents (/resume, /portfolio-pdf). Built with hj-* utilities;
+   print behavior via `print:` variants. The only irreducible print CSS lives in
+   globals.css: `@page { margin: 0 }`. print-color-adjust:exact on the doc root
+   inherits to descendants so fills/colors survive the printed PDF. All copy comes
+   from content.ts so nothing drifts. */
 
 /* ---- shared shell ------------------------------------------------------- */
 function DocShell({ tab, children }: { tab: string; children: ReactNode }) {
   return (
-    <div className="hoonjo-doc">
-      <header className="hoonjo-doc-bar">
-        <a className="hoonjo-doc-back" href="/">
-          <span aria-hidden style={{ fontFamily: 'var(--font-mono)' }}>←</span> 포트폴리오로
+    <div className="min-h-screen bg-hj-cloud [print-color-adjust:exact] [-webkit-print-color-adjust:exact] print:bg-white print:min-h-0">
+      <header className="sticky top-0 z-20 flex items-center justify-between gap-3 h-14 px-5 bg-[rgba(255,255,255,0.85)] backdrop-blur-[10px] backdrop-saturate-[1.8] border-b border-hj-line print:hidden">
+        <a className="inline-flex items-center gap-[7px] font-hj-serif text-[14px] text-hj-fg-secondary no-underline transition-colors duration-150 hover:text-hj-fg" href="/">
+          <span aria-hidden className="font-hj-mono">←</span> 포트폴리오로
         </a>
-        <span className="hoonjo-doc-tab">{tab}</span>
-        <button type="button" className="hoonjo-doc-print" onClick={() => window.print()}>
+        <span className="font-hj-mono text-[12px] tracking-[0.1em] uppercase text-hj-muted max-[720px]:hidden">{tab}</span>
+        <button type="button" className="font-hj-serif text-[13px] font-semibold text-white bg-hj-blue border-0 rounded-hj-button px-4 py-[9px] cursor-pointer transition-colors duration-150 hover:bg-hj-blue-hover" onClick={() => window.print()}>
           인쇄 · PDF 저장
         </button>
       </header>
-      <article className="hoonjo-doc-sheet">{children}</article>
+      <article className="max-w-[820px] mx-auto my-8 bg-hj-paper border border-hj-line rounded-hj-lg shadow-hj-soft p-[clamp(28px,5vw,56px)] print:max-w-none print:m-0 print:border-0 print:rounded-none print:shadow-none print:p-[16mm_14mm]">{children}</article>
     </div>
   );
 }
 
 function DocHeader({ tagline, summary }: { tagline?: string; summary?: string }) {
   return (
-    <header className="hoonjo-doc-head" style={{ paddingBottom: 24, borderBottom: '2px solid var(--text)', display: 'flex', gap: 26, alignItems: 'flex-start' }}>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, flexWrap: 'wrap' }}>
-          <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 34, fontWeight: 700, letterSpacing: '-0.02em', color: 'var(--text)', margin: 0 }}>{profile.nameKo}</h1>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 14, color: 'var(--text-muted)' }}>{profile.name}</span>
+    <header className="pb-6 border-b-2 border-hj-fg flex gap-[26px] items-start break-inside-avoid">
+      <div className="flex-1 min-w-0">
+        <div className="flex items-baseline gap-3 flex-wrap">
+          <h1 className="font-hj-serif text-[34px] font-bold tracking-[-0.02em] text-hj-fg">{profile.nameKo}</h1>
+          <span className="font-hj-mono text-[14px] text-hj-muted">{profile.name}</span>
         </div>
-        <div style={{ fontFamily: 'var(--font-sans)', fontSize: 16, color: 'var(--text-secondary)', marginTop: 8 }}>{profile.role}</div>
-        {tagline && <div style={{ fontFamily: 'var(--font-serif)', fontSize: 22, fontWeight: 600, letterSpacing: '-0.01em', color: 'var(--text)', marginTop: 14 }}>{tagline}</div>}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 18px', marginTop: 14, fontFamily: 'var(--font-mono)', fontSize: 12.5, color: 'var(--text-muted)' }}>
-          <a href={`mailto:${profile.email}`} style={{ color: 'var(--blue-deep)' }}>{profile.email}</a>
-          <a href={profile.github} target="_blank" rel="noreferrer" style={{ color: 'var(--blue-deep)' }}>{profile.githubHandle}</a>
+        <div className="font-hj-serif text-[16px] text-hj-fg-secondary mt-2">{profile.role}</div>
+        {tagline && <div className="font-hj-serif text-[22px] font-semibold tracking-[-0.01em] text-hj-fg mt-3.5">{tagline}</div>}
+        <div className="flex flex-wrap gap-x-[18px] gap-y-1 mt-3.5 font-hj-mono text-[12.5px] text-hj-muted">
+          <a href={`mailto:${profile.email}`} className="text-hj-blue-deep">{profile.email}</a>
+          <a href={profile.github} target="_blank" rel="noreferrer" className="text-hj-blue-deep">{profile.githubHandle}</a>
         </div>
-        {summary && <p style={{ fontFamily: 'var(--font-sans)', fontSize: 14.5, lineHeight: 1.6, color: 'var(--text-secondary)', margin: '16px 0 0', maxWidth: '62ch' }}>{summary}</p>}
+        {summary && <p className="font-hj-serif text-[14.5px] leading-[1.6] text-hj-fg-secondary mt-4 max-w-[62ch]">{summary}</p>}
       </div>
-      <img className="hoonjo-doc-photo" src={portrait} alt={profile.nameKo} style={{ flex: 'none', width: 116, height: 138, objectFit: 'cover', objectPosition: 'center 22%', borderRadius: 'var(--radius-lg)', border: '1px solid var(--line)' }} />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={portrait} alt={profile.nameKo} className="flex-none w-[116px] h-[138px] object-cover object-[center_22%] rounded-hj-lg border border-hj-line break-inside-avoid" />
     </header>
   );
 }
 
 function SectionLabel({ children }: { children: ReactNode }) {
-  return <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>{children}</div>;
+  return <div className="font-hj-mono text-[11px] tracking-[0.1em] uppercase text-hj-muted">{children}</div>;
 }
 
 function DocSection({ label, breakPage, children }: { label: string; breakPage?: boolean; children: ReactNode }) {
   return (
-    <section className={`hoonjo-doc-section${breakPage ? ' hoonjo-doc-break' : ''}`} style={{ marginTop: 26, ...(breakPage ? { breakBefore: 'page' } : null) }}>
-      <h2 style={{ fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-muted)', margin: '0 0 14px', paddingBottom: 8, borderBottom: '1px solid var(--line)' }}>{label}</h2>
+    <section className={`mt-[26px] break-inside-avoid ${breakPage ? '[break-before:page] print:pt-[14mm]' : ''}`}>
+      <h2 className="font-hj-mono text-[12px] tracking-[0.12em] uppercase text-hj-muted mt-0 mb-3.5 pb-2 border-b border-hj-line">{label}</h2>
       {children}
     </section>
   );
@@ -67,10 +69,10 @@ function DocSection({ label, breakPage, children }: { label: string; breakPage?:
 
 function Bullets({ items }: { items: string[] }) {
   return (
-    <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
+    <ul className="list-none m-0 p-0 flex flex-col gap-1.5">
       {items.map((it, i) => (
-        <li key={i} style={{ display: 'flex', gap: 9, fontFamily: 'var(--font-sans)', fontSize: 14, lineHeight: 1.5, color: 'var(--text-secondary)', whiteSpace: 'pre-line' }}>
-          <span aria-hidden style={{ flex: 'none', width: 4, height: 4, marginTop: 8, borderRadius: 1, background: 'var(--steel)', transform: 'rotate(45deg)' }} />
+        <li key={i} className="flex gap-[9px] font-hj-serif text-[14px] leading-[1.5] text-hj-fg-secondary whitespace-pre-line">
+          <span aria-hidden className="flex-none w-1 h-1 mt-2 rounded-[1px] bg-hj-steel rotate-45" />
           <span>{it}</span>
         </li>
       ))}
@@ -99,38 +101,39 @@ const PROJECTS: Project[] = [
 
 function ProjectBlock({ p, withImages = false }: { p: Project; withImages?: boolean }) {
   return (
-    <section className="hoonjo-doc-section" style={{ paddingTop: 22, borderTop: '1px solid var(--line)' }}>
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, flexWrap: 'wrap' }}>
-        <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: 20, fontWeight: 600, letterSpacing: '-0.01em', color: 'var(--text)', margin: 0 }}>{p.title}</h3>
-        {p.company && <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12.5, color: 'var(--text-muted)' }}>{p.company}</span>}
+    <section className="pt-[22px] border-t border-hj-line break-inside-avoid">
+      <div className="flex items-baseline gap-2.5 flex-wrap">
+        <h3 className="font-hj-serif text-[20px] font-semibold tracking-[-0.01em] text-hj-fg">{p.title}</h3>
+        {p.company && <span className="font-hj-mono text-[12.5px] text-hj-muted">{p.company}</span>}
       </div>
       {withImages && p.images && p.images.length > 0 && (
-        <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(p.images.length, 3)}, 1fr)`, gap: 10, marginTop: 16 }}>
+        <div className="grid gap-2.5 mt-4" style={{ gridTemplateColumns: `repeat(${Math.min(p.images.length, 3)}, 1fr)` }}>
           {p.images.map((im, i) => (
-            <img key={i} src={im.src} alt={im.alt} style={{ width: '100%', aspectRatio: '4 / 3', objectFit: 'cover', borderRadius: 'var(--radius-md)', border: '1px solid var(--line)' }} />
+            // eslint-disable-next-line @next/next/no-img-element
+            <img key={i} src={im.src} alt={im.alt} className="w-full aspect-[4/3] object-cover rounded-hj-md border border-hj-line break-inside-avoid" />
           ))}
         </div>
       )}
       {withImages && (!p.images || p.images.length === 0) && p.code && (
-        <div style={{ marginTop: 16, background: 'var(--ink)', border: '1px solid var(--ink-soft)', borderRadius: 'var(--radius-md)', padding: '18px 20px', overflowX: 'auto' }}>
+        <div className="mt-4 bg-hj-ink border border-hj-ink-soft rounded-hj-md px-5 py-[18px] overflow-x-auto">
           {p.code.lines.split('\n').map((ln, i) => {
             const t = ln.trim();
-            const color = t.startsWith('//') ? 'var(--on-ink-muted)' : t.startsWith('$') ? 'var(--blue-bright)' : 'var(--on-ink)';
-            return <div key={i} style={{ fontFamily: 'var(--font-mono)', fontSize: 12, lineHeight: 1.8, color, whiteSpace: 'pre', minHeight: '1.3em' }}>{ln || ' '}</div>;
+            const color = t.startsWith('//') ? 'text-hj-on-ink-muted' : t.startsWith('$') ? 'text-hj-blue-bright' : 'text-hj-on-ink';
+            return <div key={i} className={`font-hj-mono text-[12px] leading-[1.8] whitespace-pre min-h-[1.3em] ${color}`}>{ln || ' '}</div>;
           })}
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--on-ink-muted)', marginTop: 12, paddingTop: 10, borderTop: '1px solid rgba(246,244,238,0.14)' }}>{p.code.caption}</div>
+          <div className="font-hj-mono text-[10.5px] text-hj-on-ink-muted mt-3 pt-2.5 border-t border-[rgba(246,244,238,0.14)]">{p.code.caption}</div>
         </div>
       )}
-      <div className="hoonjo-doc-ps" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginTop: 16 }}>
-        <div><SectionLabel>Problem</SectionLabel><div style={{ marginTop: 9 }}><Bullets items={p.problem} /></div></div>
-        <div><SectionLabel>Structure</SectionLabel><div style={{ marginTop: 9 }}><Bullets items={p.structure} /></div></div>
+      <div className="grid grid-cols-2 gap-6 mt-4 max-[720px]:grid-cols-1">
+        <div><SectionLabel>Problem</SectionLabel><div className="mt-[9px]"><Bullets items={p.problem} /></div></div>
+        <div><SectionLabel>Structure</SectionLabel><div className="mt-[9px]"><Bullets items={p.structure} /></div></div>
       </div>
-      <div style={{ marginTop: 18, paddingTop: 16, borderTop: '1px solid var(--line)' }}>
+      <div className="mt-[18px] pt-4 border-t border-hj-line">
         <SectionLabel>Impact</SectionLabel>
-        <div style={{ marginTop: 14 }}><MetricRow stats={p.metrics} /></div>
+        <div className="mt-3.5"><MetricRow stats={p.metrics} /></div>
       </div>
       {withImages && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 16 }}>
+        <div className="flex flex-wrap gap-1.5 mt-4">
           {p.tags.map((t) => <Tag key={t}>{t}</Tag>)}
         </div>
       )}
@@ -140,16 +143,16 @@ function ProjectBlock({ p, withImages = false }: { p: Project; withImages?: bool
 
 function CareerList() {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+    <div className="flex flex-col gap-3">
       {timeline.map((t) => (
-        <div key={t.org} className="hoonjo-doc-row" style={{ display: 'grid', gridTemplateColumns: '98px 1fr', gap: 18 }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12.5, color: 'var(--text-muted)', paddingTop: 2 }}>{t.period}</div>
+        <div key={t.org} className="grid grid-cols-[98px_1fr] gap-[18px] break-inside-avoid max-[720px]:grid-cols-1 max-[720px]:gap-1">
+          <div className="font-hj-mono text-[12.5px] text-hj-muted pt-0.5">{t.period}</div>
           <div>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap' }}>
-              <span style={{ fontFamily: 'var(--font-sans)', fontSize: 15.5, fontWeight: 600, color: 'var(--text)' }}>{t.role}</span>
-              <span style={{ fontFamily: 'var(--font-sans)', fontSize: 13.5, color: 'var(--text-muted)' }}>· {t.org}</span>
+            <div className="flex items-baseline gap-2 flex-wrap">
+              <span className="font-hj-serif text-[15.5px] font-semibold text-hj-fg">{t.role}</span>
+              <span className="font-hj-serif text-[13.5px] text-hj-muted">· {t.org}</span>
             </div>
-            <p style={{ fontFamily: 'var(--font-sans)', fontSize: 13.5, lineHeight: 1.6, color: 'var(--text-secondary)', margin: '6px 0 0', whiteSpace: 'pre-line' }}>{t.description}</p>
+            <p className="font-hj-serif text-[13.5px] leading-[1.6] text-hj-fg-secondary mt-1.5 whitespace-pre-line">{t.description}</p>
           </div>
         </div>
       ))}
@@ -159,11 +162,11 @@ function CareerList() {
 
 function Skills() {
   return (
-    <div className="hoonjo-doc-skills" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 22 }}>
+    <div className="grid grid-cols-3 gap-[22px] max-[720px]:grid-cols-1">
       {capabilities.map((c) => (
         <div key={c.label}>
-          <div style={{ fontFamily: 'var(--font-sans)', fontSize: 14.5, fontWeight: 600, color: 'var(--text)' }}>{c.label}</div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 10 }}>
+          <div className="font-hj-serif text-[14.5px] font-semibold text-hj-fg">{c.label}</div>
+          <div className="flex flex-wrap gap-1.5 mt-2.5">
             {c.skills.map((s) => <Tag key={s}>{s}</Tag>)}
           </div>
         </div>
@@ -173,49 +176,42 @@ function Skills() {
 }
 
 /* ---- 이력서 전용 파트 ---------------------------------------------------- */
-/* 포트폴리오 PDF와 확실히 구분되는, "회사 위주"로 읽는 CV 헤더.
-   포트폴리오의 큰 세리프 태그라인 대신 요약 문단·연락처를 담아 문서처럼 읽힌다. */
 function ResumeHeader() {
   return (
-    <header style={{ paddingBottom: 24, borderBottom: '2px solid var(--text)' }}>
-      <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--blue-deep)' }}>이력서 · Résumé</div>
-      <div style={{ display: 'flex', gap: 26, alignItems: 'flex-start', marginTop: 14 }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, flexWrap: 'wrap' }}>
-            <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 32, fontWeight: 700, letterSpacing: '-0.02em', color: 'var(--text)', margin: 0 }}>{profile.nameKo}</h1>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 14, color: 'var(--text-muted)' }}>{profile.name}</span>
+    <header className="pb-6 border-b-2 border-hj-fg break-inside-avoid">
+      <div className="font-hj-mono text-[11px] tracking-[0.16em] uppercase text-hj-blue-deep">이력서 · Résumé</div>
+      <div className="flex gap-[26px] items-start mt-3.5">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-baseline gap-3 flex-wrap">
+            <h1 className="font-hj-serif text-[32px] font-bold tracking-[-0.02em] text-hj-fg">{profile.nameKo}</h1>
+            <span className="font-hj-mono text-[14px] text-hj-muted">{profile.name}</span>
           </div>
-          <div style={{ fontFamily: 'var(--font-sans)', fontSize: 15.5, color: 'var(--text-secondary)', marginTop: 7 }}>{profile.role}</div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 16px', marginTop: 12, fontFamily: 'var(--font-mono)', fontSize: 12.5 }}>
-            <a href={`mailto:${profile.email}`} style={{ color: 'var(--blue-deep)' }}>{profile.email}</a>
-            <a href={profile.github} target="_blank" rel="noreferrer" style={{ color: 'var(--blue-deep)' }}>{profile.githubHandle}</a>
+          <div className="font-hj-serif text-[15.5px] text-hj-fg-secondary mt-[7px]">{profile.role}</div>
+          <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3 font-hj-mono text-[12.5px]">
+            <a href={`mailto:${profile.email}`} className="text-hj-blue-deep">{profile.email}</a>
+            <a href={profile.github} target="_blank" rel="noreferrer" className="text-hj-blue-deep">{profile.githubHandle}</a>
           </div>
         </div>
-        <img src={portrait} alt={profile.nameKo} style={{ flex: 'none', width: 104, height: 124, objectFit: 'cover', objectPosition: 'center 22%', borderRadius: 'var(--radius-lg)', border: '1px solid var(--line)' }} />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={portrait} alt={profile.nameKo} className="flex-none w-[104px] h-[124px] object-cover object-[center_22%] rounded-hj-lg border border-hj-line" />
       </div>
-      <div style={{ margin: '18px 0 0', display: 'flex', flexDirection: 'column', gap: 7, maxWidth: '72ch' }}>
+      <div className="mt-[18px] flex flex-col gap-[7px] max-w-[72ch]">
         {resumeSummary.map((line, i) => {
           if (line.kind === 'close') {
             const [pre, post] = line.t.split(' : ');
             return (
-              <p key={i} style={{ fontFamily: 'var(--font-sans)', fontSize: 14.5, lineHeight: 1.55, margin: '5px 0 0' }}>
-                <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>{pre}</span>
-                <span style={{ color: 'var(--blue-deep)', fontFamily: 'var(--font-mono)', margin: '0 10px' }}>→</span>
-                <span style={{ color: 'var(--text)', fontWeight: 600 }}>{post}</span>
+              <p key={i} className="font-hj-serif text-[14.5px] leading-[1.55] mt-[5px]">
+                <span className="text-hj-fg-secondary font-normal">{pre}</span>
+                <span className="text-hj-blue-deep font-hj-mono mx-2.5">→</span>
+                <span className="text-hj-fg font-semibold">{post}</span>
               </p>
             );
           }
+          const sizeCls = line.kind === 'lead' ? 'text-[18px]' : line.kind === 'hook' ? 'text-[15.5px]' : 'text-[14px]';
+          const weightCls = line.kind === 'lead' ? 'font-bold' : line.kind === 'body' ? 'font-normal' : 'font-semibold';
+          const colorCls = line.kind === 'body' ? 'text-hj-fg-secondary' : 'text-hj-fg';
           return (
-            <p key={i} style={{
-              fontFamily: 'var(--font-sans)',
-              lineHeight: 1.5,
-              margin: 0,
-              marginTop: line.kind === 'hook' ? 3 : 0,
-              fontSize: line.kind === 'lead' ? 18 : line.kind === 'hook' ? 15.5 : 14,
-              fontWeight: line.kind === 'lead' ? 700 : line.kind === 'body' ? 400 : 600,
-              letterSpacing: line.kind === 'lead' ? '-0.01em' : undefined,
-              color: line.kind === 'body' ? 'var(--text-secondary)' : 'var(--text)',
-            }}>{line.t}</p>
+            <p key={i} className={`font-hj-serif leading-[1.5] ${line.kind === 'hook' ? 'mt-[3px]' : ''} ${line.kind === 'lead' ? 'tracking-[-0.01em]' : ''} ${sizeCls} ${weightCls} ${colorCls}`}>{line.t}</p>
           );
         })}
       </div>
@@ -225,11 +221,11 @@ function ResumeHeader() {
 
 function ResumeSkills() {
   return (
-    <div className="hoonjo-doc-skills" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '18px 30px' }}>
+    <div className="grid grid-cols-2 gap-x-[30px] gap-y-[18px] max-[720px]:grid-cols-1">
       {resumeSkills.map((s) => (
-        <div key={s.label} style={{ display: 'grid', gridTemplateColumns: '132px 1fr', gap: 14, alignItems: 'start' }} className="hoonjo-doc-row">
-          <div style={{ fontFamily: 'var(--font-sans)', fontSize: 13.5, fontWeight: 600, color: 'var(--text)', paddingTop: 3 }}>{s.label}</div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+        <div key={s.label} className="grid grid-cols-[132px_1fr] gap-3.5 items-start break-inside-avoid max-[720px]:grid-cols-1 max-[720px]:gap-1">
+          <div className="font-hj-serif text-[13.5px] font-semibold text-hj-fg pt-[3px]">{s.label}</div>
+          <div className="flex flex-wrap gap-1.5">
             {s.items.map((it) => <Tag key={it}>{it}</Tag>)}
           </div>
         </div>
@@ -238,46 +234,45 @@ function ResumeSkills() {
   );
 }
 
-/* 회사 하나 = 기간(왼쪽) + 회사/제품/역할 헤더 + 스택 + 성과 불릿(오른쪽).
-   first면 위 구분선을 뺀다 — 섹션 제목 밑줄과 겹쳐 이중선이 되는 걸 막기 위해. */
+/* 회사 하나 = 기간(왼쪽) + 회사/제품/역할 헤더 + 스택 + 성과 불릿(오른쪽). */
 function ExperienceBlock({ c, first = false }: { c: ExpCompany; first?: boolean }) {
   return (
-    <section className="hoonjo-exp" style={{ display: 'grid', gridTemplateColumns: '150px 1fr', gap: 22, paddingTop: first ? 4 : 22, borderTop: first ? 'none' : '1px solid var(--line)' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 500, color: c.current ? 'var(--green-deep)' : 'var(--text-muted)', paddingTop: 3 }}>
-        {c.current && <span aria-hidden style={{ width: 7, height: 7, borderRadius: 1, transform: 'rotate(45deg)', background: 'var(--green)', flex: 'none' }} />}
+    <section className={`grid grid-cols-[150px_1fr] gap-[22px] break-inside-avoid max-[720px]:grid-cols-1 max-[720px]:gap-2 ${first ? 'pt-1' : 'pt-[22px] border-t border-hj-line'}`}>
+      <div className={`flex items-center gap-2 font-hj-mono text-[13px] font-medium pt-[3px] ${c.current ? 'text-hj-green-deep' : 'text-hj-muted'}`}>
+        {c.current && <span aria-hidden className="w-[7px] h-[7px] rounded-[1px] rotate-45 bg-hj-green flex-none" />}
         {c.period}
       </div>
-      <div style={{ minWidth: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, flexWrap: 'wrap' }}>
-          <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: 21, fontWeight: 600, letterSpacing: '-0.01em', color: 'var(--text)', margin: 0 }}>{c.company}</h3>
-          <span style={{ fontFamily: 'var(--font-sans)', fontSize: 13.5, color: 'var(--text-muted)' }}>{c.product}</span>
+      <div className="min-w-0">
+        <div className="flex items-baseline gap-2.5 flex-wrap">
+          <h3 className="font-hj-serif text-[21px] font-semibold tracking-[-0.01em] text-hj-fg">{c.company}</h3>
+          <span className="font-hj-serif text-[13.5px] text-hj-muted">{c.product}</span>
         </div>
-        <div style={{ fontFamily: 'var(--font-sans)', fontSize: 13.5, fontWeight: 500, color: 'var(--text-secondary)', marginTop: 4 }}>{c.role}</div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 12 }}>
+        <div className="font-hj-serif text-[13.5px] font-medium text-hj-fg-secondary mt-1">{c.role}</div>
+        <div className="flex flex-wrap gap-1.5 mt-3">
           {c.stack.map((t) => <Tag key={t}>{t}</Tag>)}
         </div>
-        <ul style={{ listStyle: 'none', margin: '14px 0 0', padding: 0, display: 'flex', flexDirection: 'column', gap: 11 }}>
+        <ul className="list-none mt-3.5 p-0 flex flex-col gap-[11px]">
           {c.highlights.map((h) => (
-            <li key={h.head} className="hoonjo-exp-hl" style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: 10 }}>
-              <span aria-hidden style={{ width: 5, height: 5, marginTop: 7, borderRadius: 1, background: 'var(--blue)', transform: 'rotate(45deg)', flex: 'none' }} />
+            <li key={h.head} className="grid grid-cols-[auto_1fr] gap-2.5 break-inside-avoid">
+              <span aria-hidden className="w-[5px] h-[5px] mt-[7px] rounded-[1px] bg-hj-blue rotate-45 flex-none" />
               <div>
-                <div style={{ fontFamily: 'var(--font-sans)', fontSize: 14.5, fontWeight: 600, lineHeight: 1.45, color: 'var(--text)' }}>{h.head}</div>
-                <ul style={{ listStyle: 'none', margin: '6px 0 0', padding: 0, display: 'flex', flexDirection: 'column', gap: 3 }}>
+                <div className="font-hj-serif text-[14.5px] font-semibold leading-[1.45] text-hj-fg">{h.head}</div>
+                <ul className="list-none mt-1.5 p-0 flex flex-col gap-[3px]">
                   {h.points.map((pt, i) => (
-                    <li key={i} style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: 8, fontFamily: 'var(--font-sans)', fontSize: 13.5, lineHeight: 1.55, color: 'var(--text-secondary)' }}>
-                      <span aria-hidden style={{ color: 'var(--text-faint)' }}>–</span>
+                    <li key={i} className="grid grid-cols-[auto_1fr] gap-2 font-hj-serif text-[13.5px] leading-[1.55] text-hj-fg-secondary">
+                      <span aria-hidden className="text-hj-faint">–</span>
                       <span>{pt}</span>
                     </li>
                   ))}
                 </ul>
                 {h.results && h.results.length > 0 && (
-                  <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '7px 8px', marginTop: 10 }}>
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: 'var(--font-mono)', fontSize: 10.5, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--green-deep)' }}>
-                      <span aria-hidden style={{ width: 5, height: 5, transform: 'rotate(45deg)', background: 'var(--green)', flex: 'none' }} />
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-[7px] mt-2.5">
+                    <span className="inline-flex items-center gap-1.5 font-hj-mono text-[10.5px] font-semibold tracking-[0.14em] uppercase text-hj-green-deep">
+                      <span aria-hidden className="w-[5px] h-[5px] rotate-45 bg-hj-green flex-none" />
                       성과
                     </span>
                     {h.results.map((r) => (
-                      <span key={r} style={{ fontFamily: 'var(--font-sans)', fontSize: 12.5, fontWeight: 600, color: 'var(--text)', background: 'var(--cloud)', border: '1px solid var(--line)', borderRadius: 'var(--radius-xs)', padding: '4px 10px', lineHeight: 1.35 }}>{r}</span>
+                      <span key={r} className="font-hj-serif text-[12.5px] font-semibold text-hj-fg bg-hj-cloud border border-hj-line rounded-hj-xs px-2.5 py-1 leading-[1.35]">{r}</span>
                     ))}
                   </div>
                 )}
@@ -292,13 +287,13 @@ function ExperienceBlock({ c, first = false }: { c: ExpCompany; first?: boolean 
 
 function Education() {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+    <div className="flex flex-col gap-3.5">
       {education.map((e) => (
-        <div key={e.school} className="hoonjo-doc-row" style={{ display: 'grid', gridTemplateColumns: '150px 1fr', gap: 22 }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12.5, color: 'var(--text-muted)', paddingTop: 2 }}>{e.period}</div>
+        <div key={e.school} className="grid grid-cols-[150px_1fr] gap-[22px] break-inside-avoid max-[720px]:grid-cols-1 max-[720px]:gap-1">
+          <div className="font-hj-mono text-[12.5px] text-hj-muted pt-0.5">{e.period}</div>
           <div>
-            <div style={{ fontFamily: 'var(--font-sans)', fontSize: 14.5, fontWeight: 600, color: 'var(--text)' }}>{e.school}</div>
-            <div style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: 'var(--text-secondary)', marginTop: 3 }}>{e.detail}</div>
+            <div className="font-hj-serif text-[14.5px] font-semibold text-hj-fg">{e.school}</div>
+            <div className="font-hj-serif text-[13px] text-hj-fg-secondary mt-[3px]">{e.detail}</div>
           </div>
         </div>
       ))}
@@ -306,23 +301,21 @@ function Education() {
   );
 }
 
-/* ---- 이력서: 회사 위주로 읽는 CV (포트폴리오 PDF와 구분되는 문서) --------- */
+/* ---- 이력서: 회사 위주로 읽는 CV --------------------------------------- */
 export function Resume() {
   return (
     <DocShell tab="이력서">
       <ResumeHeader />
       <DocSection label="핵심 역량"><ResumeSkills /></DocSection>
       <DocSection label="학력 · 교육"><Education /></DocSection>
-      {/* 경력을 2개 페이지 그룹으로 나눠, 인쇄 시 각 페이지가 위쪽 여백(cushion)을
-          갖고 아래는 자연 여백이 남도록 — 회사 블록은 페이지 중간에서 잘리지 않는다. */}
       <DocSection label="경력 기술" breakPage>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div className="flex flex-col gap-2">
           <ExperienceBlock c={resumeExperience[0]} first />
           <ExperienceBlock c={resumeExperience[1]} />
         </div>
       </DocSection>
-      <section className="hoonjo-doc-section hoonjo-doc-break" style={{ marginTop: 8, breakBefore: 'page' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <section className="mt-2 [break-before:page] print:pt-[14mm] break-inside-avoid">
+        <div className="flex flex-col gap-2">
           {resumeExperience.slice(2).map((c) => <ExperienceBlock key={c.company} c={c} />)}
         </div>
       </section>
@@ -337,15 +330,15 @@ export function PortfolioPdf() {
       <DocHeader tagline="안 되던 화면을 되게 만듭니다." summary={profile.lead.replace(/\n/g, ' ')} />
 
       <DocSection label="대표 임팩트">
-        <div style={{ fontFamily: 'var(--font-sans)', fontSize: 14.5, color: 'var(--text-secondary)', margin: '-4px 0 12px' }}>{impact.lead}</div>
-        <div className="hoonjo-doc-skills" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', background: 'var(--ink)', border: '1px solid var(--ink-soft)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+        <div className="font-hj-serif text-[14.5px] text-hj-fg-secondary -mt-1 mb-3">{impact.lead}</div>
+        <div className="grid grid-cols-3 bg-hj-ink border border-hj-ink-soft rounded-hj-lg overflow-hidden max-[720px]:grid-cols-1">
           {impact.stats.map((s, i) => (
-            <div key={s.k} style={{ padding: '18px 22px', borderRight: i < impact.stats.length - 1 ? '1px solid rgba(246,244,238,0.14)' : 'none' }}>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--on-ink-muted)' }}>{s.k}</div>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 13, color: 'var(--on-ink-muted)', textDecoration: 'line-through', textDecorationColor: 'rgba(246,244,238,0.45)', marginTop: 16 }}>{s.before}</div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: 9, marginTop: 6 }}>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 15, color: 'var(--blue-bright)' }}>→</span>
-                <span style={{ fontFamily: 'var(--font-serif)', fontSize: 23, fontWeight: 700, letterSpacing: '-0.01em', color: 'var(--on-ink)' }}>{s.after}</span>
+            <div key={s.k} className={`px-[22px] py-[18px] ${i < impact.stats.length - 1 ? 'border-r border-[rgba(246,244,238,0.14)]' : ''}`}>
+              <div className="font-hj-mono text-[10.5px] tracking-[0.1em] uppercase text-hj-on-ink-muted">{s.k}</div>
+              <div className="font-hj-mono text-[13px] text-hj-on-ink-muted line-through decoration-[rgba(246,244,238,0.45)] mt-4">{s.before}</div>
+              <div className="flex items-baseline gap-[9px] mt-1.5">
+                <span className="font-hj-mono text-[15px] text-hj-blue-bright">→</span>
+                <span className="font-hj-serif text-[23px] font-bold tracking-[-0.01em] text-hj-on-ink">{s.after}</span>
               </div>
             </div>
           ))}
@@ -354,56 +347,53 @@ export function PortfolioPdf() {
 
       <DocSection label="경력"><CareerList /></DocSection>
 
-      {/* 프로젝트는 각자 한 페이지 — 이어지는 페이지도 위쪽 여백(cushion)을 갖게
-          두 번째부터 페이지를 새로 시작한다(첫 프로젝트는 섹션 제목과 같은 페이지). */}
       <DocSection label="대표 프로젝트" breakPage>
         <ProjectBlock p={PROJECTS[0]} withImages />
         {PROJECTS.slice(1).map((p) => (
-          <div key={p.title} className="hoonjo-doc-break" style={{ breakBefore: 'page', marginTop: 32 }}>
+          <div key={p.title} className="[break-before:page] print:pt-[14mm] mt-8">
             <ProjectBlock p={p} withImages />
           </div>
         ))}
       </DocSection>
 
       <DocSection label="사이드 프로젝트" breakPage>
-        <div className="hoonjo-doc-ps" style={{ display: 'grid', gridTemplateColumns: '1fr 0.82fr', gap: 24, alignItems: 'stretch' }}>
+        <div className="grid grid-cols-[1fr_0.82fr] gap-6 items-stretch max-[720px]:grid-cols-1">
           <div>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, flexWrap: 'wrap' }}>
-              <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: 19, fontWeight: 600, color: 'var(--text)', margin: 0 }}>{blackHole.title.join(' ')}</h3>
-              <a href={blackHole.repo} target="_blank" rel="noreferrer" style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--blue-deep)' }}>github ↗</a>
+            <div className="flex items-baseline gap-2.5 flex-wrap">
+              <h3 className="font-hj-serif text-[19px] font-semibold text-hj-fg">{blackHole.title.join(' ')}</h3>
+              <a href={blackHole.repo} target="_blank" rel="noreferrer" className="font-hj-mono text-[12px] text-hj-blue-deep">github ↗</a>
             </div>
-            <p style={{ fontFamily: 'var(--font-sans)', fontSize: 13.5, lineHeight: 1.55, color: 'var(--text-secondary)', margin: '10px 0 0' }}>{blackHole.body}</p>
-            <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', marginTop: 16 }}>
+            <p className="font-hj-serif text-[13.5px] leading-[1.55] text-hj-fg-secondary mt-2.5">{blackHole.body}</p>
+            <div className="flex gap-5 flex-wrap mt-4">
               {blackHole.stats.map(([k, v]) => (
-                <div key={k}><span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-muted)' }}>{k} · </span><span style={{ fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>{v}</span></div>
+                <div key={k}><span className="font-hj-mono text-[11px] text-hj-muted">{k} · </span><span className="font-hj-mono text-[13px] font-semibold text-hj-fg">{v}</span></div>
               ))}
             </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 16 }}>
+            <div className="flex flex-wrap gap-1.5 mt-4">
               {blackHole.tags.map((t) => <Tag key={t}>{t}</Tag>)}
             </div>
           </div>
-          <div style={{ position: 'relative', minHeight: 216, background: 'var(--ink-deep)', border: '1px solid var(--ink-soft)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
+          <div className="relative min-h-[216px] bg-hj-ink-deep border border-hj-ink-soft rounded-hj-md overflow-hidden">
             <BlackHole />
-            <span style={{ position: 'absolute', top: 12, right: 12, display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: 'var(--font-mono)', fontSize: 9.5, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--on-ink)', background: 'rgba(12,11,8,0.5)', border: '1px solid rgba(246,244,238,0.18)', borderRadius: 'var(--radius-pill)', padding: '4px 9px' }}>
-              <span aria-hidden style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--green-bright)' }} />
+            <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 font-hj-mono text-[9.5px] tracking-[0.06em] uppercase text-hj-on-ink bg-[rgba(12,11,8,0.5)] border border-[rgba(246,244,238,0.18)] rounded-hj-pill px-[9px] py-1">
+              <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-hj-green-bright" />
               실시간 렌더
             </span>
           </div>
         </div>
       </DocSection>
 
-      {/* 오픈소스 + 전문 영역은 한 페이지로 묶고, 페이지 위쪽 여백도 갖게 새 페이지에서 시작 */}
-      <div className="hoonjo-doc-break" style={{ breakBefore: 'page', breakInside: 'avoid' }}>
-      <DocSection label="오픈소스">
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, flexWrap: 'wrap' }}>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 15, fontWeight: 500, color: 'var(--text)' }}>{oss.repo}</span>
-          <a href={oss.href} target="_blank" rel="noreferrer" style={{ fontFamily: 'var(--font-mono)', fontSize: 12.5, color: 'var(--blue-deep)' }}>github ↗</a>
-        </div>
-        <p style={{ fontFamily: 'var(--font-sans)', fontSize: 13.5, lineHeight: 1.55, color: 'var(--text-secondary)', margin: '8px 0 0', whiteSpace: 'pre-line' }}>{oss.desc}</p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 14 }}>
-          {oss.tags.map((t) => <Tag key={t}>{t}</Tag>)}
-        </div>
-      </DocSection>
+      <div className="[break-before:page] print:pt-[14mm] [break-inside:avoid]">
+        <DocSection label="오픈소스">
+          <div className="flex items-baseline gap-2.5 flex-wrap">
+            <span className="font-hj-mono text-[15px] font-medium text-hj-fg">{oss.repo}</span>
+            <a href={oss.href} target="_blank" rel="noreferrer" className="font-hj-mono text-[12.5px] text-hj-blue-deep">github ↗</a>
+          </div>
+          <p className="font-hj-serif text-[13.5px] leading-[1.55] text-hj-fg-secondary mt-2 whitespace-pre-line">{oss.desc}</p>
+          <div className="flex flex-wrap gap-1.5 mt-3.5">
+            {oss.tags.map((t) => <Tag key={t}>{t}</Tag>)}
+          </div>
+        </DocSection>
 
         <DocSection label="전문 영역"><Skills /></DocSection>
       </div>

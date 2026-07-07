@@ -7,19 +7,11 @@ import type { CaseMetric } from "@/lib/cases.schema";
 //   variant "grid"  = 테두리 박스 (상세 페이지)
 //   variant "strip" = 세로 구분선 (인덱스 featured 카드의 cloud 임팩트 밴드)
 
-const labelStyle: React.CSSProperties = {
-  fontFamily: "var(--font-mono)", fontSize: 11, fontWeight: 500,
-  letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--text-muted)",
-};
+const LABEL = "font-hj-mono text-[11px] font-medium tracking-[0.08em] uppercase text-hj-muted";
 // 값은 primary(blue)로 강조 — 핵심 수치를 액센트로. (DESIGN.md: 핵심 수치에 액센트 허용)
-const valueBase: React.CSSProperties = {
-  fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums",
-  fontWeight: 600, color: "var(--blue)", letterSpacing: "-0.005em", textWrap: "pretty",
-};
-// strip(featured 밴드) = 조밀하게(라벨↔값 간격·크기 축소해 듬성함 제거)
-const stripValueStyle: React.CSSProperties = { ...valueBase, fontSize: 16, lineHeight: 1.25, marginTop: 4 };
-// grid(상세 페이지) = 조금 더 큰 값
-const gridValueStyle: React.CSSProperties = { ...valueBase, fontSize: 18, lineHeight: 1.3, marginTop: 8 };
+const VALUE_BASE = "font-hj-mono tabular-nums font-semibold text-hj-blue tracking-[-0.005em] text-pretty";
+const STRIP_VALUE = `${VALUE_BASE} text-[16px] leading-[1.25] mt-1`;
+const GRID_VALUE = `${VALUE_BASE} text-[18px] leading-[1.3] mt-2`;
 
 export function CaseMetrics({
   metrics,
@@ -35,11 +27,14 @@ export function CaseMetrics({
 
   if (variant === "strip") {
     return (
-      <div className="hoonjo-metric-row" style={{ display: "grid", gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`, gap: 0 }}>
+      <div className="grid gap-0 max-[560px]:grid-cols-1!" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
         {metrics.map((m, i) => (
-          <div key={m.label} style={{ paddingLeft: i > 0 ? 24 : 0, borderLeft: i > 0 ? "1px solid var(--line)" : "none", minWidth: 0 }}>
-            <div style={labelStyle}>{m.label}</div>
-            <div style={stripValueStyle}>{m.value}</div>
+          <div
+            key={m.label}
+            className={`min-w-0 ${i > 0 ? "pl-6 border-l border-hj-line max-[560px]:pl-0 max-[560px]:border-l-0 max-[560px]:pt-3.5 max-[560px]:mt-3.5 max-[560px]:border-t max-[560px]:border-hj-line" : ""}`}
+          >
+            <div className={LABEL}>{m.label}</div>
+            <div className={STRIP_VALUE}>{m.value}</div>
           </div>
         ))}
       </div>
@@ -48,20 +43,16 @@ export function CaseMetrics({
 
   return (
     <div
-      className="hoonjo-case-metric-grid"
-      style={{ display: "grid", gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`, border: "1px solid var(--line)", borderRadius: "var(--radius-lg)", overflow: "hidden", background: "var(--paper)" }}
+      className="grid border border-hj-line rounded-hj-lg overflow-hidden bg-hj-paper max-[560px]:grid-cols-1!"
+      style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
     >
       {metrics.map((m, i) => (
         <div
           key={m.label}
-          style={{
-            padding: "18px 20px", minWidth: 0,
-            borderRight: (i + 1) % cols === 0 ? "none" : "1px solid var(--line)",
-            borderTop: i >= cols ? "1px solid var(--line)" : "none",
-          }}
+          className={`px-5 py-[18px] min-w-0 ${(i + 1) % cols === 0 ? "" : "border-r border-hj-line"} ${i >= cols ? "border-t border-hj-line" : ""} max-[560px]:border-r-0 ${i > 0 ? "max-[560px]:border-t max-[560px]:border-hj-line" : "max-[560px]:border-t-0"}`}
         >
-          <div style={labelStyle}>{m.label}</div>
-          <div style={gridValueStyle}>{m.value}</div>
+          <div className={LABEL}>{m.label}</div>
+          <div className={GRID_VALUE}>{m.value}</div>
         </div>
       ))}
     </div>
