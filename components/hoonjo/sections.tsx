@@ -128,9 +128,16 @@ export function Hero() {
             </div>
             {impact.stats.map((s, i) => (
               <div key={s.k} className={`px-6 py-[22px] ${i < 2 ? 'border-r border-hj-line' : ''} max-[900px]:border-r-0 max-[900px]:border-b max-[900px]:border-hj-line max-[560px]:border-b max-[560px]:border-hj-line`}>
+                {/* scope label (context) */}
                 <div className="font-hj-mono text-[11px] tracking-[0.06em] uppercase text-hj-muted">{s.k}</div>
-                <div className="font-hj-mono text-[13px] text-hj-muted line-through decoration-hj-steel mt-2.5">{s.before}</div>
-                <div className="font-hj-mono tabular-nums text-[21px] font-semibold text-hj-fg tracking-[-0.01em] mt-[3px]"><span aria-hidden className="text-hj-blue font-normal mr-[7px]">→</span>{s.after}</div>
+                {/* old state — de-emphasized, small + faint + strikethrough */}
+                <div className="mt-3 font-hj-mono text-[12px] text-hj-faint line-through decoration-hj-steel">{s.before}</div>
+                {/* payoff — the point of the whole strip. big, bold, ink; a small muted
+                    connector arrow leads the eye from the struck-through old state. */}
+                <div className="mt-1.5 flex items-baseline gap-2">
+                  <span aria-hidden className="font-hj-mono text-[13px] text-hj-faint">→</span>
+                  <span className="font-hj-mono tabular-nums text-[24px] font-bold text-hj-fg tracking-[-0.02em] leading-[1.1]">{s.after}</span>
+                </div>
               </div>
             ))}
           </div>
@@ -304,7 +311,7 @@ export function Expertise() {
               <div className="font-hj-serif text-[19px] font-semibold tracking-[-0.01em] text-hj-fg">{c.label}</div>
               <div className="flex flex-wrap gap-x-2.5 gap-y-2 mt-4">
                 {c.skills.map((s) => (
-                  <span key={s} className="font-hj-mono text-[13px] text-hj-fg-secondary bg-hj-paper border border-hj-line rounded-hj-xs px-2.5 py-1.5 leading-none whitespace-nowrap">{s}</span>
+                  <span key={s} className="font-hj-mono text-[13px] text-hj-fg-secondary bg-hj-fog border border-hj-steel rounded-hj-xs px-2.5 py-1.5 leading-none whitespace-nowrap">{s}</span>
                 ))}
               </div>
               <div className="mt-[18px] pt-3.5 border-t border-hj-line">
