@@ -41,7 +41,7 @@
   --color-hj-fg: #18191c; /* --text */
   --color-hj-fg-secondary: #3a3c42; /* --text-secondary */
   --color-hj-muted: #6b6e76; /* --text-muted */
-  --color-hj-faint: #9a9da6; /* --text-faint */
+  --color-hj-faint: #868992; /* de-emphasized meta (row no, arrows, labels). darkened from #9a9da6 to clear WCAG large-text 3:1 on white/cloud */
   --color-hj-on-ink: #f5f6f8;
   --color-hj-on-ink-muted: #a4a7b0;
   --color-hj-on-blue: #ffffff;
