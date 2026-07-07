@@ -112,7 +112,9 @@ export function Eyebrow({ index, children, tone = 'blue', rule = false, style }:
 export function SectionHeader({ index, eyebrow, title, lead, onInk = false, size = 'xl', style }: {
   index?: number; eyebrow?: string; title: ReactNode; lead?: ReactNode; onInk?: boolean; size?: 'lg' | 'xl' | 'xxl'; style?: CSSProperties;
 }) {
-  const titleSize = size === 'lg' ? 'text-[31px]' : size === 'xxl' ? 'text-[54px]' : 'text-[40px]';
+  // clamp so section titles scale down on mobile — a fixed 40px stayed larger than
+  // the hero H1 (which clamps to 30px) on small screens, inverting the hierarchy.
+  const titleSize = size === 'lg' ? 'text-[clamp(24px,3.4vw,31px)]' : size === 'xxl' ? 'text-[clamp(34px,5vw,54px)]' : 'text-[clamp(28px,4.2vw,40px)]';
   return (
     <header style={style}>
       <div className={`h-px mb-[22px] ${onInk ? 'bg-[rgba(246,244,238,0.18)]' : 'bg-hj-line'}`} />

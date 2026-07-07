@@ -298,7 +298,7 @@ export function Expertise() {
     <section id="stack" className="bg-hj-cloud border-b border-hj-line">
       <div className={`${CONTAINER} ${SECTION_PY}`}>
         <SectionHeader index={3} eyebrow="EXPERTISE" title="어디서 강한가" lead="렌더링·성능, 시스템 설계, 복잡한 상태 — 각 강점은 증명한 작업으로 이어집니다." />
-        <div className="grid grid-cols-3 gap-7 mt-12 max-[900px]:grid-cols-1">
+        <div className="grid grid-cols-3 gap-7 mt-12 max-[900px]:grid-cols-2 max-[640px]:grid-cols-1">
           {capabilities.map((c) => (
             <div key={c.label} className="pt-[18px] border-t-2 border-hj-fg">
               <div className="font-hj-serif text-[19px] font-semibold tracking-[-0.01em] text-hj-fg">{c.label}</div>
