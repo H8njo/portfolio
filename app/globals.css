@@ -16,7 +16,7 @@
 :root {
   --ink: #0b0b0c;
   --paper: #fafaf8;
-  --accent: #2348ff;
+  --accent: #3182f6; /* hj-blue — matches the design-system trust blue (구 코발트 #2348ff 폐기) */
   --code-chip: #3f3f46; /* 인라인 코드 — 중립 그래파이트(블루 링크와 구분) */
 }
 

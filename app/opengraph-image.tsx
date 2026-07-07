@@ -15,13 +15,13 @@ export default function OgImage() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background: "#FAFAF8",
-          color: "#0B0B0C",
+          background: "#f4f8ff",
+          color: "#18191c",
           padding: 80,
           fontFamily: "monospace",
         }}
       >
-        <div style={{ fontSize: 30, color: "#2348FF" }}>hoonjo.dev</div>
+        <div style={{ fontSize: 30, color: "#3182f6" }}>hoonjo.dev</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
           <div
             style={{
@@ -35,13 +35,13 @@ export default function OgImage() {
             }}
           >
             <div>Solving hard frontend problems</div>
-            <div style={{ color: "#2348FF" }}>with measurable impact.</div>
+            <div style={{ color: "#3182f6" }}>with measurable impact.</div>
           </div>
-          <div style={{ fontSize: 32, color: "#6B6B6E" }}>
+          <div style={{ fontSize: 32, color: "#6b6e76" }}>
             Performance · complex state · tricky rendering
           </div>
         </div>
-        <div style={{ fontSize: 26, color: "#6B6B6E" }}>7-year Frontend Engineer</div>
+        <div style={{ fontSize: 26, color: "#6b6e76" }}>7-year Frontend Engineer</div>
       </div>
     ),
     { ...size },
