@@ -113,10 +113,12 @@ function CaseRow({ entry, no }: { entry: CaseEntry; no: string }) {
           </div>
         )}
         {frontmatter.metrics.length > 0 && (
-          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "4px 18px", marginTop: 12 }}>
+          <div style={{ marginTop: 16, paddingTop: 14, borderTop: "1px solid var(--line)", display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "8px 24px" }}>
+            <span style={{ alignSelf: "center", fontFamily: "var(--font-mono)", fontSize: 10.5, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--text-faint)" }}>IMPACT</span>
             {frontmatter.metrics.slice(0, 2).map((m) => (
-              <span key={m.label} style={{ fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums", fontSize: 12.5, color: "var(--text-muted)", whiteSpace: "nowrap" }}>
-                {m.label} <span style={{ color: "var(--text)", fontWeight: 500 }}>{m.value}</span>
+              <span key={m.label} style={{ display: "inline-flex", alignItems: "baseline", gap: 8, fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
+                <span style={{ fontSize: 11, color: "var(--text-muted)" }}>{m.label}</span>
+                <span style={{ fontSize: 14.5, fontWeight: 700, color: "var(--text)", letterSpacing: "-0.01em" }}>{m.value}</span>
               </span>
             ))}
           </div>
