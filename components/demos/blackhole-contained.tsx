@@ -37,7 +37,7 @@ export default function BlackholeContained() {
   }, [stars]);
 
   return (
-    <div className="mt-6 overflow-hidden rounded border border-hairline bg-black">
+    <div className="mt-6 overflow-hidden rounded border border-hj-line bg-black">
       <div
         ref={containerRef}
         className="relative w-full bg-black"
@@ -55,7 +55,7 @@ export default function BlackholeContained() {
         />
 
         {/* 컨트롤 (좌하단, 작게). 캔버스 클릭 영역과 안 겹치게 코너에. */}
-        <div className="absolute bottom-2 left-2 z-10 flex items-center gap-3 rounded border border-hairline/60 bg-black/40 px-2 py-1 font-mono text-[11px] text-gray-2 backdrop-blur">
+        <div className="absolute bottom-2 left-2 z-10 flex items-center gap-3 rounded border border-hj-line/60 bg-black/40 px-2 py-1 font-hj-mono text-[11px] text-hj-faint backdrop-blur">
           <label className="flex items-center gap-2">
             <span className="whitespace-nowrap">별 {stars.toLocaleString()}</span>
             <input
@@ -66,16 +66,16 @@ export default function BlackholeContained() {
               value={stars}
               onChange={(e) => setStars(Number(e.target.value))}
               aria-label="별 개수"
-              className="h-1 w-24 cursor-pointer accent-accent"
+              className="h-1 w-24 cursor-pointer accent-hj-blue"
             />
           </label>
-          <span className="text-hairline">|</span>
+          <span className="text-hj-line">|</span>
           <label className="flex cursor-pointer items-center gap-1.5 whitespace-nowrap">
             <input
               type="checkbox"
               checked={useImage}
               onChange={(e) => setUseImage(e.target.checked)}
-              className="cursor-pointer accent-accent"
+              className="cursor-pointer accent-hj-blue"
             />
             배경 이미지
           </label>
@@ -85,12 +85,12 @@ export default function BlackholeContained() {
         <button
           type="button"
           onClick={enterFullscreen}
-          className="absolute right-2 top-2 z-10 inline-flex items-center gap-1 rounded border border-hairline/60 bg-black/40 px-2 py-1 font-mono text-[11px] text-gray-2 backdrop-blur transition-colors hover:text-white"
+          className="absolute right-2 top-2 z-10 inline-flex items-center gap-1 rounded border border-hj-line/60 bg-black/40 px-2 py-1 font-hj-mono text-[11px] text-hj-faint backdrop-blur transition-colors hover:text-white"
         >
           <LuMaximize aria-hidden className="size-3" /> 전체화면
         </button>
       </div>
-      <p className="px-4 py-2 font-mono text-[11px] text-gray-2">
+      <p className="px-4 py-2 font-hj-mono text-[11px] text-hj-faint">
         클릭하면 블랙홀이 그쪽으로 천천히 따라옵니다. raw WebGL 1.0 · GLSL.
       </p>
     </div>

@@ -6,7 +6,8 @@ import { getAllCases, getCaseBySlug } from "@/lib/cases";
 import { FeaturedDemo } from "@/components/demos/featured-demo";
 import { BlackholeDemo } from "@/components/demos/blackhole-demo";
 import RangeEditorDemo from "@/components/demos/range-editor-demo";
-import { LuArrowLeft, LuArrowRight } from "react-icons/lu";
+import { Tag, Badge } from "@/components/hoonjo/components";
+import { CaseMetrics } from "@/components/case-metrics";
 
 export function generateStaticParams() {
   return getAllCases().map((c) => ({ slug: c.slug }));
@@ -19,35 +20,38 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return { title: `${entry.frontmatter.title} — hoonjo`, description: entry.frontmatter.summary };
 }
 
-// MDX 본문 스타일 (DESIGN.md 톤)
+// MDX 본문은 .hoonjo-md CSS(app/globals.css)가 통째로 스타일한다 — 마크다운이
+// 생성한 태그엔 className을 못 붙이므로 유틸이 아니라 스코프 CSS로 스타일한다.
+// 여기선 native 태그가 아닌 이미지(캡션)만 커스터마이즈한다.
+// 페이지 크롬(헤더·데모·네비)은 Tailwind hj-* 유틸(theme.css 토큰)로 짠다.
+// (.hoonjo 베이스 규칙은 globals.css @layer base라 유틸이 자연히 이겨 `!` 불필요.)
 const mdxComponents = {
-  h2: (p: React.ComponentProps<"h2">) => (
-    <h2 className="font-display font-semibold text-xl tracking-tight mt-12 mb-3" {...p} />
-  ),
-  p: (p: React.ComponentProps<"p">) => <p className="text-ink/90 my-4" {...p} />,
-  ul: (p: React.ComponentProps<"ul">) => <ul className="list-disc pl-5 my-4 text-ink/90" {...p} />,
-  // fenced 코드블록: shiki가 다크 배경+토큰색을 inline으로 넣고, 여기선 박스(테두리·둥금·스크롤)만.
-  // 항상 다크라 라이트/다크 양쪽에서 대비가 높다.
-  pre: (p: React.ComponentProps<"pre">) => (
-    <pre
-      className="font-mono my-5 overflow-x-auto rounded-lg border border-hairline p-4 text-[13.5px] leading-7"
-      {...p}
-    />
-  ),
-  // 인라인 코드는 globals.css(:not(pre) > code)가 옅은 칩으로, 블록 코드는 pre+shiki가 스타일.
-  code: (p: React.ComponentProps<"code">) => <code {...p} />,
-  a: (p: React.ComponentProps<"a">) => (
-    <a className="text-accent underline underline-offset-4" {...p} />
-  ),
-  // 본문 이미지(스크린샷 등): alt를 그림 아래 캡션으로도 보여준다.
   img: ({ alt, ...p }: React.ComponentProps<"img">) => (
-    <figure className="my-6">
+    <figure className="mt-[26px]">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img className="w-full rounded-lg border border-hairline" alt={alt} {...p} />
-      {alt && <figcaption className="mt-2 text-center font-mono text-xs text-gray-2">{alt}</figcaption>}
+      <img className="w-full rounded-hj-md border border-hj-line" alt={alt} {...p} />
+      {alt && (
+        <figcaption className="mt-[10px] text-center font-hj-mono text-[12px] text-hj-muted">{alt}</figcaption>
+      )}
     </figure>
   ),
 };
+
+// 라이브 데모 블록 — 종이 카드에 담아 홈 카드와 같은 결로.
+function DemoBlock({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section aria-label="라이브 데모" className="mt-10">
+      <div className="mb-[14px] flex items-center gap-[10px]">
+        <span aria-hidden className="h-2 w-2 rounded-full bg-hj-green animate-hj-pulse" />
+        <span className="font-hj-mono text-[12px] font-medium uppercase tracking-[0.1em] text-hj-green-deep">라이브 데모</span>
+      </div>
+      <p className="max-w-[52ch] font-hj-serif text-[15px] leading-[1.6] text-hj-fg-secondary">{title}</p>
+      <div className="mt-[18px] overflow-hidden rounded-hj-lg border border-hj-line bg-hj-paper p-[clamp(16px,2.4vw,24px)] shadow-hj-soft">
+        {children}
+      </div>
+    </section>
+  );
+}
 
 export default async function CaseDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -57,88 +61,92 @@ export default async function CaseDetail({ params }: { params: Promise<{ slug: s
   const all = getAllCases();
   const idx = all.findIndex((c) => c.slug === slug);
   const next = all[(idx + 1) % all.length];
-  const { frontmatter, content } = entry;
+  const { frontmatter } = entry;
 
   return (
-    <article className="max-w-[680px] mx-auto px-5 sm:px-8 py-20">
-      <div className="font-mono text-xs text-gray-2 flex flex-wrap gap-x-3">
-        {frontmatter.tags.map((t) => (
-          <span key={t}>{t}</span>
-        ))}
-      </div>
-      <h1 className="font-display font-semibold text-[clamp(1.8rem,4vw,2.6rem)] tracking-tight leading-tight mt-4">
-        {frontmatter.title}
-      </h1>
-      <p className="text-gray-1 mt-3 text-[17px]">{frontmatter.summary}</p>
+    <article className="mx-auto max-w-[760px] px-6 py-[clamp(40px,7vw,72px)]">
+      <Link href="/work" className="inline-flex items-center gap-[7px] font-hj-mono text-[13px] text-hj-muted">
+        <span aria-hidden>←</span> 블로그
+      </Link>
+
+      <header className="mt-7">
+        <div className="flex flex-wrap gap-2">
+          {frontmatter.featured && <Badge variant="green" dot>FEATURED</Badge>}
+          {frontmatter.tags.map((t) => <Tag key={t}>{t}</Tag>)}
+        </div>
+        <h1 className="mt-5 text-balance font-hj-serif text-[clamp(28px,4.4vw,44px)] font-semibold leading-[1.12] tracking-[-0.03em] text-hj-fg">
+          {frontmatter.title}
+        </h1>
+        <p className="mt-[18px] max-w-[54ch] font-hj-serif text-[18px] leading-[1.6] text-hj-fg-secondary">
+          {frontmatter.summary}
+        </p>
+      </header>
 
       {frontmatter.metrics.length > 0 && (
-        <dl className="mt-8 grid grid-cols-2 gap-4 border-y border-hairline py-6">
-          {frontmatter.metrics.map((m) => (
-            <div key={m.label}>
-              <dt className="font-mono text-xs text-gray-2">{m.label}</dt>
-              <dd className="font-mono text-lg text-accent mt-1">{m.value}</dd>
-            </div>
-          ))}
-        </dl>
+        <div className="mt-8">
+          <div className="mb-[14px] font-hj-mono text-[11px] font-medium uppercase tracking-[0.1em] text-hj-muted">Impact · 측정 결과</div>
+          <CaseMetrics metrics={frontmatter.metrics} variant="grid" />
+        </div>
       )}
 
-      {/* 라이브 데모 — 데모 보유 케이스만, 상세에서 전체 무대로 작동 */}
       {frontmatter.demo === "column-pager" && (
-        <section aria-label="라이브 데모" className="mt-10">
-          <h2 className="font-display font-semibold text-xl tracking-tight mb-1">라이브 데모</h2>
-          <p className="text-gray-1 text-sm">
-            탭으로 column-pager의 실제 동작을 확인해 보세요 — 긴 카드 슬라이스, 2컬럼, 컬럼 수 변경, 데이터 수정.
-          </p>
+        <DemoBlock title="탭으로 column-pager의 실제 동작을 확인해 보세요 — 긴 카드 슬라이스, 2컬럼, 컬럼 수 변경, 데이터 수정.">
           <FeaturedDemo />
-        </section>
+        </DemoBlock>
       )}
-
       {frontmatter.demo === "blackhole" && (
-        <section aria-label="라이브 데모" className="mt-10">
-          <h2 className="font-display font-semibold text-xl tracking-tight mb-1">라이브 데모</h2>
-          <p className="text-gray-1 text-sm">셰이더가 브라우저에서 실시간으로 도는 모습입니다. 클릭해 보세요.</p>
+        <DemoBlock title="셰이더가 브라우저에서 실시간으로 도는 모습입니다. 클릭해 보세요.">
           <BlackholeDemo />
-        </section>
+        </DemoBlock>
       )}
-
       {frontmatter.demo === "range-editor" && (
-        <section aria-label="라이브 데모" className="mt-10">
-          <h2 className="font-display font-semibold text-xl tracking-tight mb-1">라이브 데모</h2>
-          <p className="text-gray-1 text-sm">
-            단어를 클릭(시작) → 다시 클릭(끝)으로 범위를 잡아 보세요. 끝을 먼저 찍어도{" "}
-            <code>[min, max]</code>로 정규화됩니다.
-          </p>
+        <DemoBlock title="단어를 클릭(시작) → 다시 클릭(끝)으로 범위를 잡아 보세요. 끝을 먼저 찍어도 [min, max]로 정규화됩니다.">
           <RangeEditorDemo />
-        </section>
+        </DemoBlock>
+      )}
+      {!frontmatter.demo && frontmatter.demoUrl && (
+        <DemoBlock title="브라우저에 담을 수 없는 데스크톱 앱이라, 실제 코드와 설치는 GitHub 저장소에서 직접 확인하세요.">
+          <a
+            href={frontmatter.demoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex items-center gap-2.5 font-hj-mono text-[14px] font-medium text-hj-blue-deep no-underline"
+          >
+            <span aria-hidden className="text-[15px]">↗</span>
+            GitHub 저장소 열기
+            <span aria-hidden className="inline-block transition-transform duration-150 group-hover:translate-x-1">→</span>
+          </a>
+        </DemoBlock>
       )}
 
-      <div className="mt-10">
+      <div className="hoonjo-md mt-2">
         <MDXRemote
-          source={content}
+          source={entry.content}
           components={mdxComponents}
           options={{
             mdxOptions: {
               rehypePlugins: [
-                [
-                  rehypePrettyCode,
-                  { theme: "github-dark", keepBackground: true, defaultLang: "txt" },
-                ],
+                [rehypePrettyCode, { theme: "github-dark", keepBackground: true, defaultLang: "txt" }],
               ],
             },
           }}
         />
       </div>
 
-      {/* 다음 케이스 던지기 (Pass 3 끌림 구조) */}
-      <nav className="mt-16 pt-8 border-t border-hairline flex items-center justify-between" aria-label="케이스 이동">
-        <Link href="/" className="inline-flex items-center gap-1 font-mono text-sm text-gray-1 hover:text-accent">
-          <LuArrowLeft aria-hidden className="size-3.5" /> 홈
+      {/* 다음 케이스 던지기 — 종이 카드로 끌림 구조 (hover는 group으로) */}
+      <nav aria-label="케이스 이동" className="mt-16 flex flex-wrap items-center justify-between gap-5 border-t border-hj-line pt-8">
+        <Link href="/" className="inline-flex items-center gap-[7px] font-hj-mono text-[13px] text-hj-muted">
+          <span aria-hidden>←</span> 홈
         </Link>
         {next && next.slug !== slug && (
-          <Link href={`/work/${next.slug}`} className="text-right group">
-            <span className="font-mono text-xs text-gray-2 block">다음 케이스</span>
-            <span className="inline-flex items-center gap-1 font-display font-medium group-hover:text-accent transition-colors">
-              {next.frontmatter.title} <LuArrowRight aria-hidden className="size-3.5" />
+          <Link
+            href={`/work/${next.slug}`}
+            className="group block max-w-[420px] rounded-hj-lg border border-hj-line bg-hj-paper px-5 py-4 text-right no-underline shadow-hj-soft transition-[border-color,box-shadow] duration-150 hover:border-hj-blue-line hover:shadow-hj-soft-lg"
+          >
+            <span className="block font-hj-mono text-[11px] uppercase tracking-[0.1em] text-hj-muted">다음 케이스</span>
+            <span className="mt-1.5 inline-flex items-center gap-2 font-hj-serif text-[17px] font-semibold tracking-[-0.015em] text-hj-fg transition-colors duration-150 group-hover:text-hj-blue-deep">
+              {next.frontmatter.title}{" "}
+              <span aria-hidden className="inline-block transition-transform duration-150 group-hover:translate-x-1 group-hover:text-hj-blue-deep">→</span>
             </span>
           </Link>
         )}

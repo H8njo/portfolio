@@ -9,7 +9,7 @@ const BlackholeContained = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="mt-6 border border-dashed border-hairline rounded p-6 text-center font-mono text-xs text-gray-2">
+      <div className="mt-6 border border-dashed border-hj-line rounded-hj-sm p-6 text-center font-hj-mono text-xs text-hj-faint">
         데모 불러오는 중…
       </div>
     ),

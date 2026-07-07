@@ -1,0 +1,79 @@
+---
+title: AI가 일하는 동안 딴짓하려고, Xcode 없이 맥 앱을 만들었다
+summary: Claude Code한테 시켜놓고 멍하니 화면을 지키는 게 아까웠다. 웹만 하던 내가 Swift 메뉴바 앱을 짰는데, 정작 오래 데인 건 셰이더도 알고리즘도 아니고 "서명 안 된 앱"이라는 벽이었다.
+featured: false
+order: 12
+demo: false
+demoUrl: https://github.com/H8njo/afk
+tags: [Swift, SwiftUI, macOS, 개인 프로젝트]
+metrics:
+  - label: 스택
+    value: Swift · SwiftUI (Xcode 없이 SPM)
+  - label: 배포
+    value: Homebrew Tap
+  - label: 규모
+    value: 18커밋 / 단독
+date: 2026-06-18
+---
+
+요즘 코드의 절반은 Claude Code한테 시킨다. 문제는 시켜놓고 나서다. 걸리는 게 30초든 3분이든, 끝났나 싶어 자꾸 터미널을 들여다보고, 딴 창 열었다가도 "이제 됐나" 하고 `Cmd+Tab`을 눌러댄다. 진짜로 기다리는 것도 아니고 딴짓을 하는 것도 아닌, 어정쩡한 시간이 계속 쌓였다.
+
+그러다 생각했다. AI 작업 상태를 앱이 알 수 있으면, 시작하면 유튜브를 띄우고 끝나면 알아서 터미널로 불러주면 되잖아. 찾아보니 이런 도구가 없었다. "AI 기다리는 시간이 아깝다"는 글은 많은데 정작 자동으로 앱을 전환해주는 건 아무도 안 만들었더라. 그럼 내가.
+
+## 웹 개발자가 왜 Swift를
+
+메뉴바에 상주하면서 다른 앱을 포커스로 끌어당기는 건 결국 OS 권한이 필요한 일이다. Electron으로 감쌀 수도 있었지만, 메뉴바 유틸 하나에 100MB를 얹는 건 아니라고 봤다. 그래서 네이티브로 갔다. 문제는 내가 웹만 하던 사람이라는 것.
+
+Swift도 처음이었지만, 진짜 허들은 언어가 아니라 **Xcode를 깔기 싫었다는 거다.** 수십 기가짜리 IDE를 메뉴바 앱 하나 만들자고 통째로 받는 게 내키지 않았다. 그래서 Command Line Tools에 딸려오는 Swift Package Manager만으로 갈 수 있는지부터 확인했다. `swift build`로 빌드하고, `.app` 번들은 셸 스크립트(`bundle.sh`)로 직접 조립하고, 아이콘도 코드로 그렸다. SwiftUI의 `MenuBarExtra`로 메뉴바 씬을 잡고, `LSUIElement`로 독 아이콘을 숨겼다. IDE 없이 CLI만으로 네이티브 앱을 배포까지 끌고 갈 수 있다는 걸 이때 처음 알았다.
+
+## 셸 훅과 앱을 어떻게 잇지
+
+Claude Code에는 [hooks](https://docs.anthropic.com/en/docs/claude-code/hooks)가 있다. `UserPromptSubmit`, `Notification`, `Stop` 같은 이벤트마다 셸 스크립트를 실행시킬 수 있다. 그러니까 "AI가 지금 뭘 하고 있는지"를 셸 스크립트는 알 수 있다. 문제는 그 정보를 셸에서 돌아가는 Swift 앱한테 어떻게 넘기느냐였다.
+
+소켓이나 로컬 서버를 띄우는 것도 생각했지만, 과했다. 상태 하나 주고받자고 프로세스 간 채널을 여는 건 배보다 배꼽이다. 그래서 제일 단순한 걸 골랐다. **파일.** 훅 스크립트는 이벤트가 올 때마다 세션 상태를 JSON 파일 한 장으로 떨어뜨리고, 앱은 그 디렉토리를 감시한다.
+
+```json
+// ~/.afk/sessions/{session_id}.json
+{ "state": "working", "session_id": "e05d...", "prompt": "테스트 해볼게",
+  "app": "Cursor", "app_bundle": "com.todesktop...", "ts": "..." }
+```
+
+이 방식의 좋은 점은 결합도가 0이라는 거다. Claude Code는 afk의 존재를 모른다. 훅만 걸려 있으면 어떤 관찰자든 이 파일을 주워 읽으면 된다. 세션이 여러 개여도 파일이 세션 ID로 갈라지니 서로 안 밟는다. 쓸 때는 임시 파일에 쓰고 `mv`로 바꿔치기해서, 앱이 반쯤 쓰인 파일을 읽는 일을 막았다.
+
+앱 쪽에선 `SessionMonitor`가 그 폴더를 지켜보다 여러 세션 상태를 하나로 집계한다. 우선순위는 명확하다 — 하나라도 `waiting_for_user`면 그게 이긴다(사람이 필요한 게 최우선). 아니면 `working`, 다 끝났으면 `idle`. `working`으로 바뀌면 잠깐(기본 2초) 뒤 break 앱으로 넘기는데, 이 딜레이가 없으면 짧은 응답이 오갈 때 화면이 깜빡인다. 그새 상태가 또 바뀌면 예약된 전환을 취소해서 깜빡임을 죽였다.
+
+훅 스크립트에서 한 가지 신경 쓴 건 어느 앱에서 도는 세션인지 알아내는 거였다. `TERM_PROGRAM`으로 터미널 종류를 구분하는데, Cursor 안의 내장 터미널에서는 부모한테 물려받은 `TERM_PROGRAM=iTerm.app`이 그대로 남아 엉뚱하게 잡히는 경우가 있었다. 그래서 `CURSOR_CLI`를 먼저 확인하고, 그 다음 `VSCODE_PID`, 마지막에 `TERM_PROGRAM` 순으로 내려가게 우선순위를 뒀다.
+
+## 미서명 앱이라는 벽
+
+여기까진 순조로웠다. 진짜로 오래 데인 건 알림이었다.
+
+AI가 끝나면 화면 위에 배너를 띄우고 싶었다. macOS에 알림 API가 있으니 금방이겠거니 했는데, `UNUserNotificationCenter`를 부르니 아무것도 안 떴다. 한참 뒤에 이해했다. **Apple Developer 서명이 없는 앱은 시스템 알림 설정 목록에 아예 등장하지 않는다.** 목록에 없으니 알림을 보낼 권한도 없는 거다. 그럼 `osascript`로? 그건 배너가 아니라 알림 센터 안에만 조용히 쌓인다. 그럼 `NSPanel`을 직접 띄우면? `LSUIElement`(독 없는 백그라운드 앱)에선 표시가 안 됐다.
+
+막다른 길을 세 번 만나고 나서 나온 답은, 알림을 흉내 내는 창을 직접 만드는 거였다. 테두리 없는 `NSWindow`를 스크린세이버 레벨로 띄운다.
+
+```swift
+let w = NSWindow(contentRect: rect, styleMask: [.borderless],
+                 backing: .buffered, defer: false)
+w.level = .screenSaver                 // 모든 앱 위에
+w.backgroundColor = .clear
+w.collectionBehavior = [.canJoinAllSpaces, .stationary]
+w.contentView = NSHostingView(rootView: banner)  // 내용물은 SwiftUI 뷰
+w.orderFrontRegardless()               // LSUIElement에서도 강제로 앞으로
+```
+
+`.screenSaver` 레벨이라 다른 앱 위에 무조건 뜨고, 내용물은 그냥 SwiftUI 뷰를 얹었다. 겉보기엔 시스템 알림인데 사실은 내가 그린 떠 있는 창인 셈이다. 세션이 여러 개 동시에 끝나면 배너가 위에서 아래로 쌓이도록 좌표를 다시 계산하고, 하나가 사라지면 나머지를 다시 정렬했다. OS가 안 해주니 스택 관리도 손으로 했다.
+
+## 그밖에 데인 것들
+
+**재빌드할 때마다 권한이 풀렸다.** 앱 전환에는 Accessibility 권한이 필요한데, 코드를 고쳐 다시 빌드하면 매번 권한이 사라졌다. 알고 보니 macOS는 바이너리 해시를 기준으로 권한을 기억한다. 서명이 없으니 빌드마다 해시가 바뀌고, OS 입장에선 매번 다른 앱인 거다. 개발 중엔 어쩔 수 없어서, 껐다 켜서 다시 신뢰시키는 걸 루틴으로 삼았다.
+
+**완료 이벤트가 예상과 다르게 왔다.** 원래 상태 기계는 `working → waiting_for_user → idle`로 그렸는데, 실제론 Claude Code가 `Notification`과 `Stop`을 거의 동시에 쏴서 `working → idle`로 직행하는 경우가 대부분이었다. 다이어그램만 믿었으면 알림이 절반은 안 떴을 거다. 그래서 `idle` 전이에서도 완료 알림을 처리하도록 로직을 양쪽에 걸었다. 상태 기계는 내가 그린 그림이 아니라 이벤트가 실제로 오는 순서대로 다시 그려야 한다는 걸 여기서 배웠다.
+
+## 회고
+
+결국 `brew tap H8njo/tap && brew install --cask afk`로 깔리는 데까지 갔다. 저장소는 `H8njo/afk`.
+
+기술적으로 제일 기억에 남는 건, 어려운 게 예상 밖에 있었다는 점이다. Swift 문법이나 상태 집계 로직은 생각보다 금방 익었는데, "서명 안 된 앱은 OS가 기능을 걸어 잠근다"는 벽에서 제일 오래 걸렸다. 알림도, 권한도 전부 여기서 파생됐다. 새 플랫폼에 갈 때 진짜 시간을 잡아먹는 건 언어가 아니라 그 플랫폼의 암묵적인 규칙이라는 걸 몸으로 알았다.
+
+그리고 셸 훅과 네이티브 앱을 파일 한 장으로 이은 결정은 지금 봐도 맞았다고 생각한다. 화려한 IPC를 얹었으면 디버깅할 게 늘었을 텐데, 파일이라 그냥 `cat`으로 상태를 눈으로 볼 수 있었다. 웹에서 늘 쓰던 감각 — 제일 단순한 경계를 먼저 고르는 것 — 은 도메인이 바뀌어도 그대로 통했다.

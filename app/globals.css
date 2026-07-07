@@ -1,52 +1,29 @@
-/* Fonts are self-hosted via next/font/local (lib/fonts.ts) — no render-blocking CDN @import.
-   --font-pretendard / --font-general / --font-geist-mono are injected on <html>. */
+/* Fonts are self-hosted via next/font (lib/fonts.ts) — no render-blocking CDN @import.
+   --font-pretendard / --font-jetbrains-mono are injected on <html>. */
 @import 'tailwindcss';
+/* Hoonjo editorial tokens for Tailwind utilities (used by /work/[slug]) */
+@import './theme.css';
 
 /* column-pager renders with Tailwind utility classes — keep them from being purged */
 @source "../node_modules/column-pager/dist";
 /* black-hole-effect(git 의존성)의 Tailwind 클래스(inset-0 등)가 purge되지 않게 스캔 */
 @source "../node_modules/black-hole-effect/src";
 
-/* next-themes uses class strategy (attribute="class") */
-@custom-variant dark (&:where(.dark, .dark *));
-
-/* DESIGN.md tokens — light defaults */
+/* Light-only (DESIGN.md — dark toggle removed). These raw vars still back the
+   app-level base rules below (body bg/text, inline-code chip, skip link, focus
+   ring on non-.hoonjo pages like error/not-found). The design-system palette for
+   everything else is the hj-* tokens in theme.css. */
 :root {
   --ink: #0b0b0c;
   --paper: #fafaf8;
-  --surface: #ffffff;
-  --accent: #2348ff;
-  --gray-1: #6b6b6e;
-  --gray-2: #9a9a9d;
-  --hairline: rgba(11, 11, 12, 0.12);
+  --accent: #3182f6; /* hj-blue — matches the design-system trust blue (구 코발트 #2348ff 폐기) */
   --code-chip: #3f3f46; /* 인라인 코드 — 중립 그래파이트(블루 링크와 구분) */
 }
 
-.dark {
-  --ink: #f2f2f0;
-  --paper: #0c0d0f;
-  --surface: #15171a;
-  --accent: #6b86ff;
-  --gray-1: #a2a2a6;
-  --gray-2: #6e6e72;
-  --hairline: rgba(242, 242, 240, 0.14);
-  --code-chip: #d4d4d8;
-}
-
-/* Map CSS vars → Tailwind theme so bg-paper / text-ink / text-accent work and swap with .dark */
+/* Font families for the app base (body/code). The hj-* type tokens live in theme.css. */
 @theme inline {
-  --color-ink: var(--ink);
-  --color-paper: var(--paper);
-  --color-surface: var(--surface);
-  --color-accent: var(--accent);
-  --color-gray-1: var(--gray-1);
-  --color-gray-2: var(--gray-2);
-  --color-hairline: var(--hairline);
-
   --font-sans: var(--font-pretendard), system-ui, sans-serif;
-  --font-display:
-    var(--font-general), var(--font-pretendard), system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 }
 
 html {
@@ -78,6 +55,204 @@ body {
   font-family: var(--font-sans);
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Hoonjo editorial base — typographic element defaults for the .hoonjo subtree.
+   Relocated from hoonjo.css into @layer base so Tailwind utilities (utilities
+   layer) win without needing `!` modifiers. Uses theme.css hj tokens so these
+   survive hoonjo.css deletion. Scoped to .hoonjo (the page wrapper stays). */
+@layer base {
+  .hoonjo :is(h1, h2, h3, h4, h5) {
+    font-family: var(--font-hj-serif);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin: 0;
+    color: var(--color-hj-fg);
+  }
+  .hoonjo p {
+    margin: 0;
+    text-wrap: pretty;
+  }
+  .hoonjo a {
+    color: var(--color-hj-blue);
+    text-decoration: none;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+  .hoonjo a:hover {
+    text-decoration: underline;
+  }
+  .hoonjo a:visited {
+    color: var(--color-hj-blue-deep);
+  }
+}
+
+/* Hoonjo subtree root + element defaults + MDX body. Relocated from the deleted
+   hoonjo.css. Kept UNLAYERED (as they were) so the .hoonjo-md inline-code rule
+   still wins the !important battle with the global :not(pre) > code by
+   specificity, and so these element defaults behave exactly as before. Tokens
+   now come from theme.css (@theme → :root vars). */
+.hoonjo {
+  min-height: 100vh;
+  background: var(--color-hj-canvas);
+  color: var(--color-hj-fg);
+  font-family: var(--font-hj-serif);
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+/* /work subtree bg is a hair warmer/less-blue than home (canvas → cloud). */
+.hoonjo.hoonjo-work {
+  background: var(--color-hj-cloud);
+}
+.hoonjo code,
+.hoonjo kbd,
+.hoonjo samp,
+.hoonjo pre {
+  font-family: var(--font-hj-mono);
+  font-size: 0.92em;
+}
+.hoonjo button {
+  font-family: inherit;
+}
+.hoonjo :focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-hj-canvas), 0 0 0 4px var(--color-hj-blue);
+  border-radius: 4px;
+}
+.hoonjo ::selection {
+  background: var(--color-hj-blue-soft);
+  color: var(--color-hj-blue-deep);
+}
+.hoonjo img {
+  max-width: 100%;
+  display: block;
+}
+.hoonjo a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ---- MDX case body (.hoonjo-md) — styles markdown-generated HTML that has no
+   class hooks, so it can't be Tailwind utilities. ------------------------- */
+.hoonjo .hoonjo-md h2 {
+  font-family: var(--font-hj-serif);
+  font-size: clamp(22px, 2.6vw, 28px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--color-hj-fg);
+  margin: 48px 0 0;
+  padding-top: 30px;
+  border-top: 1px solid var(--color-hj-line);
+}
+.hoonjo .hoonjo-md > h2:first-child {
+  margin-top: 36px;
+}
+.hoonjo .hoonjo-md h3 {
+  font-family: var(--font-hj-serif);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-hj-fg);
+  margin: 30px 0 0;
+}
+.hoonjo .hoonjo-md p {
+  font-family: var(--font-hj-serif);
+  font-size: 16px;
+  line-height: 1.78;
+  color: var(--color-hj-fg-secondary);
+  margin: 18px 0 0;
+}
+/* Tailwind Preflight resets ul/ol to list-style:none — restore markers here. */
+.hoonjo .hoonjo-md ul {
+  margin: 18px 0 0;
+  padding-left: 22px;
+  list-style: disc;
+}
+.hoonjo .hoonjo-md ol {
+  margin: 18px 0 0;
+  padding-left: 22px;
+  list-style: decimal;
+}
+.hoonjo .hoonjo-md li {
+  font-family: var(--font-hj-serif);
+  font-size: 16px;
+  line-height: 1.72;
+  color: var(--color-hj-fg-secondary);
+  margin: 9px 0 0;
+}
+.hoonjo .hoonjo-md li::marker {
+  color: #4b6ac8;
+}
+.hoonjo .hoonjo-md strong {
+  color: var(--color-hj-fg);
+  font-weight: 700;
+}
+.hoonjo .hoonjo-md a {
+  color: var(--color-hj-blue-deep);
+}
+/* inline code chip only — beats the global :not(pre) > code !important by
+   specificity (both unlayered), so code blocks keep their dark bg. */
+.hoonjo .hoonjo-md :not(pre) > code {
+  font-family: var(--font-hj-mono);
+  font-size: 0.86em;
+  background: #edf1ff !important;
+  border: 1px solid var(--color-hj-line);
+  border-radius: 4px;
+  padding: 1px 5px;
+  color: var(--color-hj-fg);
+}
+.hoonjo .hoonjo-md pre {
+  margin: 22px 0 0;
+  background: var(--color-hj-ink);
+  border-radius: var(--radius-hj-md);
+  padding: 18px 20px;
+  overflow-x: auto;
+}
+.hoonjo .hoonjo-md pre code {
+  font-size: 12.5px;
+  line-height: 1.65;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-hj-on-ink);
+  display: block;
+  white-space: pre;
+}
+.hoonjo .hoonjo-md blockquote {
+  margin: 24px 0 0;
+  padding: 16px 20px;
+  background: var(--color-hj-blue-soft);
+  border: 1px solid var(--color-hj-blue-line);
+  border-radius: var(--radius-hj-md);
+}
+.hoonjo .hoonjo-md blockquote p {
+  margin: 0;
+  color: var(--color-hj-fg);
+  font-size: 15.5px;
+  line-height: 1.65;
+}
+.hoonjo .hoonjo-md blockquote p + p {
+  margin-top: 10px;
+}
+.hoonjo .hoonjo-md hr {
+  border: none;
+  border-top: 1px solid var(--color-hj-line);
+  margin: 40px 0 0;
+}
+
+/* Print: kill the browser's own page margins (date/title/url/page-number) so the
+   document sheet can draw its own via padding. The only print rule that can't be
+   a Tailwind `print:` utility — @page is a global at-rule. The doc pages
+   (/resume, /portfolio-pdf) restore real margins as sheet padding; print-color
+   preservation is handled by [print-color-adjust:exact] on the doc root (it
+   inherits to descendants). */
+@media print {
+  @page {
+    margin: 0;
+  }
 }
 
 /* Accessibility: respect reduced-motion (Pass 6 decision) */

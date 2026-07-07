@@ -36,7 +36,7 @@ const TALL_CARD: CardDatum = {
 function Card({ number, title, lines }: CardDatum) {
   return (
     <article className="flex flex-col gap-1.5 rounded-xl bg-gray-100 p-4">
-      <span className="font-mono text-[10px] font-medium tracking-wider text-blue-600">
+      <span className="font-hj-mono text-[10px] font-medium tracking-wider text-blue-600">
         {String(number).padStart(2, "0")}
       </span>
       <h3 className="text-[15px] font-bold leading-snug text-blue-600">{title}</h3>
@@ -131,7 +131,7 @@ function EditableDemo({ onReady }: DemoProps) {
     <>
       {/* 편집 패널 — 스크롤해도 항상 보이게 sticky */}
       <div className="sticky top-0 z-10 mb-3 rounded-lg bg-white/90 p-3 shadow backdrop-blur">
-        <label className="mb-1.5 block font-mono text-[11px] text-gray-600">
+        <label className="mb-1.5 block font-hj-mono text-[11px] text-gray-600">
           05번 카드 내용 — 입력하면 그 카드만 재측정돼 즉시 재배치됩니다
         </label>
         <textarea
@@ -177,7 +177,7 @@ export default function ColumnPagerDemo() {
   return (
     <div className="mt-6">
       {/* 탭 바 */}
-      <div role="tablist" aria-label="column-pager 예제" className="flex flex-wrap gap-2 font-mono text-xs mb-3">
+      <div role="tablist" aria-label="column-pager 예제" className="flex flex-wrap gap-2 font-hj-mono text-xs mb-3">
         {TABS.map((t) => (
           <button
             key={t.key}
@@ -185,7 +185,7 @@ export default function ColumnPagerDemo() {
             aria-selected={tab === t.key}
             onClick={() => setTab(t.key)}
             className={`px-3 py-1.5 rounded border transition-colors ${
-              tab === t.key ? "border-accent text-accent" : "border-hairline text-gray-1 hover:text-ink"
+              tab === t.key ? "border-hj-blue text-hj-blue" : "border-hj-line text-hj-muted hover:text-hj-fg"
             }`}
           >
             {t.label}
@@ -194,16 +194,16 @@ export default function ColumnPagerDemo() {
       </div>
 
       {/* 무대 — 스토리북처럼 회색 배경 위 흰 페이지 시트. 높이 제한 + 스크롤로 컨테인. */}
-      <div className="rounded-lg border border-hairline overflow-hidden">
+      <div className="rounded-hj-lg border border-hj-line overflow-hidden">
         <div
-          className="h-[640px] overflow-y-auto bg-[#b6b6b6] p-5 transition-opacity duration-500"
+          className="h-[640px] overflow-y-auto bg-[#b6b6b6] p-5 transition-opacity duration-400"
           style={{ opacity: ready ? 1 : 0 }}
         >
           <Demo key={tab} onReady={() => setReady(true)} />
         </div>
       </div>
 
-      <p className="font-mono text-[11px] text-gray-2 mt-3">{active.note}</p>
+      <p className="font-hj-mono text-[11px] text-hj-faint mt-3">{active.note}</p>
     </div>
   );
 }

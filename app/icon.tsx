@@ -3,7 +3,7 @@ import { ImageResponse } from "next/og";
 export const size = { width: 32, height: 32 };
 export const contentType = "image/png";
 
-// 파비콘 — 코발트 바탕에 흰 "h".
+// 파비콘 — trust-blue 바탕에 흰 "h" (hj-blue #3182f6).
 export default function Icon() {
   return new ImageResponse(
     (
@@ -14,7 +14,7 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#2348FF",
+          background: "#3182f6",
           color: "#fff",
           fontSize: 22,
           fontWeight: 700,
