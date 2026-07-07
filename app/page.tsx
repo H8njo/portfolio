@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import "./hoonjo.css";
 import { MainPortfolio } from "@/components/hoonjo/sections";
 
 export const metadata: Metadata = {

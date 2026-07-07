@@ -20,13 +20,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return { title: `${entry.frontmatter.title} — hoonjo`, description: entry.frontmatter.summary };
 }
 
-// MDX 본문은 .hoonjo-md CSS(app/hoonjo.css)가 통째로 스타일한다 — 홈의 글 본문과
-// 동일한 시스템. 여기선 native 태그가 아닌 이미지(캡션)만 커스터마이즈한다.
-// 페이지 크롬(헤더·데모·네비)은 Tailwind 유틸(theme.css의 hj-* 토큰)로 짠다.
-//
-// .hoonjo 스코프 베이스 규칙(.hoonjo a / :is(h1..) / p)은 언레이어드 CSS라
-// utilities 레이어의 Tailwind 유틸을 이긴다. 그래서 그 규칙과 충돌하는 속성
-// (링크 색, h1 line-height/margin, 요약 p margin, 카드 밑줄)만 `!` 중요 수정자로 덮는다.
+// MDX 본문은 .hoonjo-md CSS(app/globals.css)가 통째로 스타일한다 — 마크다운이
+// 생성한 태그엔 className을 못 붙이므로 유틸이 아니라 스코프 CSS로 스타일한다.
+// 여기선 native 태그가 아닌 이미지(캡션)만 커스터마이즈한다.
+// 페이지 크롬(헤더·데모·네비)은 Tailwind hj-* 유틸(theme.css 토큰)로 짠다.
+// (.hoonjo 베이스 규칙은 globals.css @layer base라 유틸이 자연히 이겨 `!` 불필요.)
 const mdxComponents = {
   img: ({ alt, ...p }: React.ComponentProps<"img">) => (
     <figure className="mt-[26px]">
@@ -67,7 +65,7 @@ export default async function CaseDetail({ params }: { params: Promise<{ slug: s
 
   return (
     <article className="mx-auto max-w-[760px] px-6 py-[clamp(40px,7vw,72px)]">
-      <Link href="/work" className="inline-flex items-center gap-[7px] font-hj-mono text-[13px] text-hj-muted!">
+      <Link href="/work" className="inline-flex items-center gap-[7px] font-hj-mono text-[13px] text-hj-muted">
         <span aria-hidden>←</span> 블로그
       </Link>
 
@@ -76,10 +74,10 @@ export default async function CaseDetail({ params }: { params: Promise<{ slug: s
           {frontmatter.featured && <Badge variant="green" dot>FEATURED</Badge>}
           {frontmatter.tags.map((t) => <Tag key={t}>{t}</Tag>)}
         </div>
-        <h1 className="mt-5! text-balance font-hj-serif text-[clamp(28px,4.4vw,44px)] font-semibold leading-[1.12]! tracking-[-0.03em] text-hj-fg">
+        <h1 className="mt-5 text-balance font-hj-serif text-[clamp(28px,4.4vw,44px)] font-semibold leading-[1.12] tracking-[-0.03em] text-hj-fg">
           {frontmatter.title}
         </h1>
-        <p className="mt-[18px]! max-w-[54ch] font-hj-serif text-[18px] leading-[1.6] text-hj-fg-secondary">
+        <p className="mt-[18px] max-w-[54ch] font-hj-serif text-[18px] leading-[1.6] text-hj-fg-secondary">
           {frontmatter.summary}
         </p>
       </header>
@@ -112,7 +110,7 @@ export default async function CaseDetail({ params }: { params: Promise<{ slug: s
             href={frontmatter.demoUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="group inline-flex items-center gap-2.5 font-hj-mono text-[14px] font-medium text-hj-blue-deep! no-underline!"
+            className="group inline-flex items-center gap-2.5 font-hj-mono text-[14px] font-medium text-hj-blue-deep no-underline"
           >
             <span aria-hidden className="text-[15px]">↗</span>
             GitHub 저장소 열기
@@ -137,13 +135,13 @@ export default async function CaseDetail({ params }: { params: Promise<{ slug: s
 
       {/* 다음 케이스 던지기 — 종이 카드로 끌림 구조 (hover는 group으로) */}
       <nav aria-label="케이스 이동" className="mt-16 flex flex-wrap items-center justify-between gap-5 border-t border-hj-line pt-8">
-        <Link href="/" className="inline-flex items-center gap-[7px] font-hj-mono text-[13px] text-hj-muted!">
+        <Link href="/" className="inline-flex items-center gap-[7px] font-hj-mono text-[13px] text-hj-muted">
           <span aria-hidden>←</span> 홈
         </Link>
         {next && next.slug !== slug && (
           <Link
             href={`/work/${next.slug}`}
-            className="group block max-w-[420px] rounded-hj-lg border border-hj-line bg-hj-paper px-5 py-4 text-right no-underline! shadow-hj-soft transition-[border-color,box-shadow] duration-150 hover:border-hj-blue-line hover:shadow-hj-soft-lg"
+            className="group block max-w-[420px] rounded-hj-lg border border-hj-line bg-hj-paper px-5 py-4 text-right no-underline shadow-hj-soft transition-[border-color,box-shadow] duration-150 hover:border-hj-blue-line hover:shadow-hj-soft-lg"
           >
             <span className="block font-hj-mono text-[11px] uppercase tracking-[0.1em] text-hj-muted">다음 케이스</span>
             <span className="mt-1.5 inline-flex items-center gap-2 font-hj-serif text-[17px] font-semibold tracking-[-0.015em] text-hj-fg transition-colors duration-150 group-hover:text-hj-blue-deep">

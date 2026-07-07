@@ -1,4 +1,3 @@
-import "../hoonjo.css";
 import { Nav, Contact } from "@/components/hoonjo/sections";
 
 // /work(블로그) 서브트리 크롬 — 홈과 "완전히 같은" .hoonjo 시스템을 쓴다.
