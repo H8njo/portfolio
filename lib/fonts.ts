@@ -11,18 +11,6 @@ export const pretendard = localFont({
   preload: false,
 });
 
-// General Sans는 라틴 서브셋이라 가벼움 → preload.
-export const generalSans = localFont({
-  src: [
-    { path: "../fonts/GeneralSans-400.woff2", weight: "400", style: "normal" },
-    { path: "../fonts/GeneralSans-500.woff2", weight: "500", style: "normal" },
-    { path: "../fonts/GeneralSans-600.woff2", weight: "600", style: "normal" },
-    { path: "../fonts/GeneralSans-700.woff2", weight: "700", style: "normal" },
-  ],
-  variable: "--font-general",
-  display: "swap",
-});
-
 // 계측 보이스 (DESIGN.md). 구 CDN @import(hoonjo.css) + Geist Mono 대체.
 export const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],

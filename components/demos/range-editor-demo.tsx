@@ -50,9 +50,9 @@ export default function RangeEditorDemo() {
   const inRange = (i: number) => (active ? i >= active.start && i <= active.end : false);
 
   return (
-    <div className="mt-6 overflow-hidden rounded-xl border border-hairline bg-surface">
+    <div className="mt-6 overflow-hidden rounded-xl border border-hj-line bg-hj-paper">
       {/* 헤더 */}
-      <div className="border-b border-hairline bg-ink/3 px-4 py-2.5 font-mono text-[11px] text-gray-1">
+      <div className="border-b border-hj-line bg-hj-fg/3 px-4 py-2.5 font-hj-mono text-[11px] text-hj-muted">
         본문 미리보기 · 단어를 클릭(시작) → 다시 클릭(끝)
       </div>
 
@@ -68,9 +68,9 @@ export default function RangeEditorDemo() {
               onMouseEnter={() => setHover(i)}
               className={`cursor-pointer rounded px-1 py-0.5 transition-colors ${
                 inRange(i)
-                  ? "bg-accent/20 ring-1 ring-accent/40"
-                  : "hover:bg-ink/6"
-              } ${anchor === i && stage === "anchor" ? "ring-1 ring-accent" : ""}`}
+                  ? "bg-hj-blue/20 ring-1 ring-hj-blue/40"
+                  : "hover:bg-hj-fg/6"
+              } ${anchor === i && stage === "anchor" ? "ring-1 ring-hj-blue" : ""}`}
             >
               {w}
             </span>{" "}
@@ -79,14 +79,14 @@ export default function RangeEditorDemo() {
       </p>
 
       {/* 풋터 — 선택 결과 읽기 */}
-      <div className="flex items-center justify-between gap-3 border-t border-hairline bg-ink/3 px-4 py-2.5 font-mono text-[11px]">
-        <span className="text-ink/80">
-          {stage === "idle" && <span className="text-gray-2">시작 단어를 클릭하세요</span>}
-          {stage === "anchor" && <span className="text-accent">끝 단어를 클릭하세요…</span>}
+      <div className="flex items-center justify-between gap-3 border-t border-hj-line bg-hj-fg/3 px-4 py-2.5 font-hj-mono text-[11px]">
+        <span className="text-hj-fg/80">
+          {stage === "idle" && <span className="text-hj-faint">시작 단어를 클릭하세요</span>}
+          {stage === "anchor" && <span className="text-hj-blue">끝 단어를 클릭하세요…</span>}
           {stage === "selected" && range && (
             <>
-              범위 <span className="text-accent">[{range.start}, {range.end}]</span>
-              <span className="text-gray-2">
+              범위 <span className="text-hj-blue">[{range.start}, {range.end}]</span>
+              <span className="text-hj-faint">
                 {" "}· {range.end - range.start + 1}단어 · 끝을 먼저 찍어도 [min, max]로 정규화
               </span>
             </>
@@ -95,7 +95,7 @@ export default function RangeEditorDemo() {
         <button
           type="button"
           onClick={reset}
-          className="shrink-0 rounded border border-hairline px-2 py-1 text-ink/70 transition-colors hover:bg-ink/6"
+          className="shrink-0 rounded border border-hj-line px-2 py-1 text-hj-fg/70 transition-colors hover:bg-hj-fg/6"
         >
           초기화
         </button>
