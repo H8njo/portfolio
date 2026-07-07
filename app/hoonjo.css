@@ -412,14 +412,19 @@
   }
 }
 
-/* /work index — row grid collapses its number/meta column on small screens */
+/* /work index — row grid collapses its number/meta column on small screens.
+   번호를 맨 위로 올리고(order:-1), 데스크톱에서 우측에 있던 화살표는 1열에서
+   맨 아래 왼쪽에 외톨이로 떨어지므로 모바일에선 숨긴다(행 전체가 탭 타깃). */
 @media (max-width: 640px) {
   .hoonjo .hoonjo-work-row {
     grid-template-columns: 1fr !important;
-    gap: 10px !important;
+    gap: 8px !important;
   }
   .hoonjo .hoonjo-work-row-no {
     order: -1;
+  }
+  .hoonjo .hoonjo-work-row > .hoonjo-work-arrow {
+    display: none !important;
   }
 }
 
