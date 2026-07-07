@@ -55,10 +55,12 @@ export function Button({
 /* ---- Tag ---------------------------------------------------------------- */
 type TagVariant = 'outline' | 'solid' | 'blue' | 'ghost';
 const TAG_VARIANT: Record<TagVariant, string> = {
-  outline: 'bg-transparent text-hj-fg-secondary border-hj-line',
+  // fog fill + steel border — matches the /work list chips. near-white 캔버스에서
+  // 투명+line 테두리 칩이 묻히던 걸 또렷하게(전 라우트 동일).
+  outline: 'bg-hj-fog text-hj-fg-secondary border-hj-steel',
   solid: 'bg-hj-ink text-hj-on-ink border-hj-ink',
   blue: 'bg-hj-blue-soft text-hj-blue-deep border-hj-blue-line',
-  ghost: 'bg-hj-paper text-hj-fg-secondary border-hj-line',
+  ghost: 'bg-hj-fog text-hj-fg-secondary border-hj-steel',
 };
 export function Tag({ variant = 'outline', children, style }: { variant?: TagVariant; children: ReactNode; style?: CSSProperties }) {
   return (
@@ -241,7 +243,7 @@ export function TimelineItem({ period, role, org, description, tags = [], curren
         {tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mt-3.5">
             {tags.map((t) => (
-              <span key={t} className="font-hj-mono text-[12px] text-hj-fg-secondary border border-hj-line rounded-hj-xs px-2 py-[3px] whitespace-nowrap">{t}</span>
+              <span key={t} className="font-hj-mono text-[12px] text-hj-fg-secondary bg-hj-fog border border-hj-steel rounded-hj-xs px-2 py-[3px] whitespace-nowrap">{t}</span>
             ))}
           </div>
         )}
@@ -257,7 +259,7 @@ export function StackList({ label, items, style }: { label: string; items: strin
       <div className="font-hj-mono text-[11px] font-medium tracking-[0.1em] uppercase text-hj-muted mb-3.5">{label}</div>
       <div className="flex flex-wrap gap-x-2.5 gap-y-2">
         {items.map((it) => (
-          <span key={it} className="font-hj-mono text-[13.5px] text-hj-fg bg-hj-paper border border-hj-line rounded-hj-xs px-[11px] py-1.5 leading-none whitespace-nowrap">{it}</span>
+          <span key={it} className="font-hj-mono text-[13.5px] text-hj-fg bg-hj-fog border border-hj-steel rounded-hj-xs px-[11px] py-1.5 leading-none whitespace-nowrap">{it}</span>
         ))}
       </div>
     </div>
