@@ -45,13 +45,19 @@ function FeaturedCase({ entry }: { entry: CaseEntry }) {
       href={`/work/${slug}`}
       className="hoonjo-work-card"
       style={{
-        display: "block", marginTop: 40, background: "var(--paper)", border: "1px solid var(--line)",
+        position: "relative", display: "block", marginTop: 40, background: "var(--paper)", border: "1px solid var(--line)",
         borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-soft)", overflow: "hidden", textDecoration: "none",
       }}
     >
+      {/* LIVE DEMO — 카드 왼쪽 위 코너에 앱솔루트로 핀 고정(콘텐츠 패딩과 같은 오프셋
+          이라 헤더의 FEATURED 칩과 같은 높이). 카드가 overflow:hidden이라 코너 안쪽에. */}
+      {frontmatter.demo && (
+        <div style={{ position: "absolute", top: "clamp(24px, 3.2vw, 34px)", left: "clamp(24px, 3.2vw, 34px)", zIndex: 1 }}>
+          <DemoBadge />
+        </div>
+      )}
       <div style={{ padding: "clamp(24px, 3.2vw, 34px)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", justifyContent: frontmatter.demo ? "space-between" : "flex-start" }}>
-          {frontmatter.demo && <DemoBadge />}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", justifyContent: frontmatter.demo ? "flex-end" : "flex-start" }}>
           <Badge variant="green" dot>FEATURED · 창의적 해결</Badge>
         </div>
         <h2 className="hoonjo-work-title" style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(26px, 3vw, 34px)", fontWeight: 600, letterSpacing: "-0.02em", lineHeight: 1.16, color: "var(--text)", margin: "18px 0 0", textWrap: "balance", transition: "color 150ms ease" }}>
