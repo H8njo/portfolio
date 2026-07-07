@@ -82,6 +82,37 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Hoonjo editorial base — typographic element defaults for the .hoonjo subtree.
+   Relocated from hoonjo.css into @layer base so Tailwind utilities (utilities
+   layer) win without needing `!` modifiers. Uses theme.css hj tokens so these
+   survive hoonjo.css deletion. Scoped to .hoonjo (the page wrapper stays). */
+@layer base {
+  .hoonjo :is(h1, h2, h3, h4, h5) {
+    font-family: var(--font-hj-serif);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin: 0;
+    color: var(--color-hj-fg);
+  }
+  .hoonjo p {
+    margin: 0;
+    text-wrap: pretty;
+  }
+  .hoonjo a {
+    color: var(--color-hj-blue);
+    text-decoration: none;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+  .hoonjo a:hover {
+    text-decoration: underline;
+  }
+  .hoonjo a:visited {
+    color: var(--color-hj-blue-deep);
+  }
+}
+
 /* Accessibility: respect reduced-motion (Pass 6 decision) */
 @media (prefers-reduced-motion: reduce) {
   html {

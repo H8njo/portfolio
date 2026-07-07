@@ -14,11 +14,10 @@
    sparingly, Pretendard headlines, JetBrains Mono for measurement. */
 
 /* ---- Fonts --------------------------------------------------------------
-   Pretendard is served by the app's own next/font (self-hosted, --font-pretendard
-   on <html>) — the original CDN @font-face 404'd, so we consume the local one via
-   the CSS var below (see --font-serif). JetBrains Mono (the design's measurement
-   voice) still comes from Google Fonts. */
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400..700;1,400..600&display=swap');
+   Both Pretendard and JetBrains Mono are now self-hosted via next/font
+   (lib/fonts.ts, --font-pretendard / --font-jetbrains-mono on <html>). The old
+   render-blocking Google Fonts @import for JetBrains Mono was removed — the
+   --font-mono token below consumes the local var instead. */
 
 /* ---- Tokens (scoped to the sample root) --------------------------------- */
 .hoonjo {
@@ -85,7 +84,8 @@
     'Apple SD Gothic Neo', system-ui, sans-serif;
   --font-display: var(--font-serif);
   --font-sans: var(--font-serif);
-  --font-mono: 'JetBrains Mono', 'SFMono-Regular', ui-monospace, monospace;
+  --font-mono:
+    var(--font-jetbrains-mono), 'SFMono-Regular', ui-monospace, monospace;
 
   --weight-regular: 400;
   --weight-medium: 500;
@@ -181,32 +181,9 @@
   text-rendering: optimizeLegibility;
 }
 
-.hoonjo :is(h1, h2, h3, h4, h5) {
-  font-family: var(--font-serif);
-  font-weight: var(--weight-semibold);
-  line-height: var(--lh-tight);
-  letter-spacing: var(--track-display);
-  margin: 0;
-  color: var(--text);
-}
-
-.hoonjo p {
-  margin: 0;
-  text-wrap: pretty;
-}
-
-.hoonjo a {
-  color: var(--link);
-  text-decoration: none;
-  text-underline-offset: 3px;
-  text-decoration-thickness: 1px;
-}
-.hoonjo a:hover {
-  text-decoration: underline;
-}
-.hoonjo a:visited {
-  color: var(--link-visited);
-}
+/* h1-5 / p / a base rules relocated to globals.css @layer base (so Tailwind
+   utilities win without `!`). Element defaults below stay here until the full
+   migration deletes this file. */
 
 .hoonjo code,
 .hoonjo kbd,

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { pretendard, generalSans, geistMono } from "@/lib/fonts";
+import { pretendard, generalSans, jetbrainsMono } from "@/lib/fonts";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang="ko"
       suppressHydrationWarning
-      className={`${pretendard.variable} ${generalSans.variable} ${geistMono.variable}`}
+      className={`${pretendard.variable} ${generalSans.variable} ${jetbrainsMono.variable}`}
     >
       <body>
         {/* 페이지별로 크롬(내비/푸터)을 소유한다: 메인 포트폴리오·이력서·PDF는

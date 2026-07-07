@@ -1,46 +1,82 @@
-/* Hoonjo editorial tokens exposed to Tailwind.
+/* Hoonjo editorial design tokens — the single source of truth for the whole app.
    -------------------------------------------------------------------------
-   The full .hoonjo design system lives in hoonjo.css as CSS custom properties
-   scoped under the .hoonjo root, and still powers the home / resume / pdf /
-   work-list pages and the shared hoonjo components. This file re-declares the
-   subset that /work/[slug] needs as Tailwind @theme tokens, so that route can
-   be built with utilities (text-hj-*, bg-hj-*, border-hj-*, rounded-hj-*,
-   shadow-hj-*, font-hj-*, animate-hj-pulse) instead of inline styles.
+   Ported from the old .hoonjo-scoped custom props (app/hoonjo.css, now deleted).
+   Exposed as Tailwind @theme tokens so every route builds with utilities
+   (text-hj-*, bg-hj-*, border-hj-*, rounded-hj-*, shadow-hj-*, font-hj-*,
+   animate-hj-pulse) instead of inline styles or scoped CSS.
 
-   Values MUST mirror the matching --* tokens in hoonjo.css. They can't just
-   reference them: hoonjo's vars are scoped to .hoonjo, but @theme resolves at
-   :root, so the raw values are duplicated here on purpose. */
+   Engineering-editorial: cool near-white canvas, one deep trust-blue used
+   sparingly, a secondary proof-green, Pretendard headlines, JetBrains Mono for
+   measurement. Light-only (DESIGN.md). */
 @theme {
-  /* Text ramp + surfaces */
+  /* ---- Blue — 구조/액션 (1차) --------------------------------------- */
+  --color-hj-blue: #3182f6;
+  --color-hj-blue-bright: #7daffa;
+  --color-hj-blue-hover: #2174ea;
+  --color-hj-blue-deep: #1b64da;
+  --color-hj-blue-soft: #eaf2fe;
+  --color-hj-blue-line: #c5dcfb;
+
+  /* ---- Green — 증명/라이브/featured (2차) --------------------------- */
+  --color-hj-green: #16a563;
+  --color-hj-green-bright: #43c98a;
+  --color-hj-green-deep: #157346;
+  --color-hj-green-soft: #e6f5ec;
+  --color-hj-green-line: #b6e3c8;
+
+  /* ---- Surfaces — 헤어라인으로 면을 나눔(회색 채움 X) ---------------- */
+  --color-hj-canvas: #f4f8ff;
+  --color-hj-paper: #ffffff;
+  --color-hj-cloud: #fcfdfe;
+  --color-hj-fog: #f6f8fa;
+  --color-hj-steel: #c2c8d1;
+  --color-hj-line: #e9ecf1;
+
+  /* ---- Ink slab — 닫는 밴드/푸터 near-black ------------------------- */
+  --color-hj-ink: #18191c;
+  --color-hj-ink-soft: #232428;
+  --color-hj-ink-deep: #0b0c0e;
+
+  /* ---- Text ramp — 명도 단계로 위계(불투명도 안 낮춤) --------------- */
   --color-hj-fg: #18191c; /* --text */
   --color-hj-fg-secondary: #3a3c42; /* --text-secondary */
   --color-hj-muted: #6b6e76; /* --text-muted */
   --color-hj-faint: #9a9da6; /* --text-faint */
-  --color-hj-line: #e9ecf1; /* --line */
-  --color-hj-paper: #ffffff; /* --paper */
+  --color-hj-on-ink: #f5f6f8;
+  --color-hj-on-ink-muted: #a4a7b0;
+  --color-hj-on-blue: #ffffff;
 
-  /* Accents */
-  --color-hj-green: #16a563; /* --green */
-  --color-hj-green-deep: #157346; /* --green-deep */
-  --color-hj-blue-deep: #1b64da; /* --blue-deep */
-  --color-hj-blue-line: #c5dcfb; /* --blue-line */
+  /* ---- Semantic — metric deltas ------------------------------------ */
+  --color-hj-positive: #157346; /* = green-deep */
+  --color-hj-positive-soft: #e6f5ec; /* = green-soft */
+  --color-hj-warn: #9a6312;
+  --color-hj-danger: #b3262b;
+  --color-hj-danger-soft: #f8e7e6;
 
-  /* Families — serif slot is Pretendard (the myeongjo read dated); mono is the
-     measurement voice. --font-pretendard is injected on <html> by next/font. */
+  /* ---- Families — Pretendard 디스플레이(한·영 통일), JetBrains 계측 --
+     --font-pretendard / --font-jetbrains-mono are injected on <html> by
+     next/font (lib/fonts.ts) — both self-hosted, no render-blocking CDN. */
   --font-hj-serif:
-    var(--font-pretendard), 'Pretendard Variable', Pretendard,
-    'Apple SD Gothic Neo', system-ui, sans-serif;
-  --font-hj-mono: 'JetBrains Mono', 'SFMono-Regular', ui-monospace, monospace;
+    var(--font-pretendard), "Pretendard Variable", Pretendard,
+    "Apple SD Gothic Neo", system-ui, sans-serif;
+  --font-hj-mono:
+    var(--font-jetbrains-mono), "SFMono-Regular", ui-monospace, monospace;
 
-  /* Radius */
+  /* ---- Radius — sharp interactive, soft containers ----------------- */
+  --radius-hj-xs: 2px;
+  --radius-hj-sm: 4px;
   --radius-hj-md: 8px;
   --radius-hj-lg: 12px;
+  --radius-hj-xl: 16px;
+  --radius-hj-button: 10px;
+  --radius-hj-pill: 9999px;
 
-  /* Elevation */
+  /* ---- Elevation — mostly flat, depth via hairlines + contrast ----- */
   --shadow-hj-soft: 0 2px 10px rgba(17, 18, 22, 0.06);
   --shadow-hj-soft-lg: 0 4px 18px rgba(17, 18, 22, 0.08);
+  --shadow-hj-modal: 0 10px 32px rgba(8, 9, 12, 0.16);
 
-  /* Live-render dot — slow ambient pulse (globals.css reduced-motion kills it). */
+  /* Live-render dot — slow ambient pulse (globals reduced-motion kills it). */
   --animate-hj-pulse: hj-pulse 2.4s ease-in-out infinite;
 }
 
