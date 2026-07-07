@@ -194,9 +194,9 @@ export default function ColumnPagerDemo() {
       </div>
 
       {/* 무대 — 스토리북처럼 회색 배경 위 흰 페이지 시트. 높이 제한 + 스크롤로 컨테인. */}
-      <div className="rounded-lg border border-hj-line overflow-hidden">
+      <div className="rounded-hj-lg border border-hj-line overflow-hidden">
         <div
-          className="h-[640px] overflow-y-auto bg-[#b6b6b6] p-5 transition-opacity duration-500"
+          className="h-[640px] overflow-y-auto bg-[#b6b6b6] p-5 transition-opacity duration-400"
           style={{ opacity: ready ? 1 : 0 }}
         >
           <Demo key={tab} onReady={() => setReady(true)} />

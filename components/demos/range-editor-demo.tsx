@@ -50,9 +50,9 @@ export default function RangeEditorDemo() {
   const inRange = (i: number) => (active ? i >= active.start && i <= active.end : false);
 
   return (
-    <div className="mt-6 overflow-hidden rounded-xl border border-hj-line bg-hj-paper">
+    <div className="mt-6 overflow-hidden rounded-hj-lg border border-hj-line bg-hj-paper">
       {/* 헤더 */}
-      <div className="border-b border-hj-line bg-hj-fg/3 px-4 py-2.5 font-hj-mono text-[11px] text-hj-muted">
+      <div className="border-b border-hj-line bg-hj-fog px-4 py-2.5 font-hj-mono text-[11px] text-hj-muted">
         본문 미리보기 · 단어를 클릭(시작) → 다시 클릭(끝)
       </div>
 
@@ -66,10 +66,10 @@ export default function RangeEditorDemo() {
             <span
               onClick={() => onWordClick(i)}
               onMouseEnter={() => setHover(i)}
-              className={`cursor-pointer rounded px-1 py-0.5 transition-colors ${
+              className={`cursor-pointer rounded-hj-sm px-1 py-0.5 transition-colors ${
                 inRange(i)
-                  ? "bg-hj-blue/20 ring-1 ring-hj-blue/40"
-                  : "hover:bg-hj-fg/6"
+                  ? "bg-hj-blue-soft ring-1 ring-hj-blue-line"
+                  : "hover:bg-hj-fog"
               } ${anchor === i && stage === "anchor" ? "ring-1 ring-hj-blue" : ""}`}
             >
               {w}
@@ -79,8 +79,8 @@ export default function RangeEditorDemo() {
       </p>
 
       {/* 풋터 — 선택 결과 읽기 */}
-      <div className="flex items-center justify-between gap-3 border-t border-hj-line bg-hj-fg/3 px-4 py-2.5 font-hj-mono text-[11px]">
-        <span className="text-hj-fg/80">
+      <div className="flex items-center justify-between gap-3 border-t border-hj-line bg-hj-fog px-4 py-2.5 font-hj-mono text-[11px]">
+        <span className="text-hj-fg-secondary">
           {stage === "idle" && <span className="text-hj-faint">시작 단어를 클릭하세요</span>}
           {stage === "anchor" && <span className="text-hj-blue">끝 단어를 클릭하세요…</span>}
           {stage === "selected" && range && (
@@ -95,7 +95,7 @@ export default function RangeEditorDemo() {
         <button
           type="button"
           onClick={reset}
-          className="shrink-0 rounded border border-hj-line px-2 py-1 text-hj-fg/70 transition-colors hover:bg-hj-fg/6"
+          className="shrink-0 rounded-hj-sm border border-hj-line px-2 py-1 text-hj-fg-secondary transition-colors hover:bg-hj-fog"
         >
           초기화
         </button>
