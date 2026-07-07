@@ -80,7 +80,9 @@
   --link-visited: var(--blue-deep);
 
   /* Families — display is Pretendard (the myeongjo/serif read dated) */
-  --font-serif: var(--font-pretendard), 'Pretendard Variable', Pretendard, 'Apple SD Gothic Neo', system-ui, sans-serif;
+  --font-serif:
+    var(--font-pretendard), 'Pretendard Variable', Pretendard,
+    'Apple SD Gothic Neo', system-ui, sans-serif;
   --font-display: var(--font-serif);
   --font-sans: var(--font-serif);
   --font-mono: 'JetBrains Mono', 'SFMono-Regular', ui-monospace, monospace;
@@ -334,10 +336,12 @@
 .hoonjo .hoonjo-work-row {
   position: relative;
   border-radius: var(--radius-md);
-  transition: background 160ms ease, box-shadow 160ms ease;
+  transition:
+    background 160ms ease,
+    box-shadow 160ms ease;
 }
 .hoonjo .hoonjo-work-row::before {
-  content: "";
+  content: '';
   position: absolute;
   left: 0;
   top: 14px;
@@ -364,7 +368,9 @@
 }
 .hoonjo .hoonjo-work-arrow {
   display: inline-block;
-  transition: transform 150ms ease, color 150ms ease;
+  transition:
+    transform 150ms ease,
+    color 150ms ease;
 }
 .hoonjo .hoonjo-work-row:hover .hoonjo-work-arrow,
 .hoonjo .hoonjo-work-card:hover .hoonjo-work-arrow {
@@ -385,7 +391,9 @@
 
 /* /work index — featured case card (link) hover: hairline warms to blue, lifts */
 .hoonjo .hoonjo-work-card {
-  transition: border-color 150ms ease, box-shadow 150ms ease;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
 }
 .hoonjo .hoonjo-work-card:hover {
   border-color: var(--blue-line);
@@ -481,7 +489,7 @@
 }
 .hoonjo .hoonjo-md strong {
   color: var(--text);
-  font-weight: 600;
+  font-weight: 700;
 }
 .hoonjo .hoonjo-md a {
   color: var(--blue-deep);
@@ -542,8 +550,13 @@
   animation: hoonjo-pulse 2.4s ease-in-out infinite;
 }
 @keyframes hoonjo-pulse {
-  0%, 100% { opacity: 0.45; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
