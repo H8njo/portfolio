@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getAllCases } from "@/lib/cases";
 import type { CaseEntry } from "@/lib/cases.schema";
-import { Eyebrow, Badge, Tag } from "@/components/hoonjo/components";
+import { Eyebrow, Badge } from "@/components/hoonjo/components";
 import { CaseMetrics } from "@/components/case-metrics";
 
 export const metadata = {
@@ -10,6 +10,31 @@ export const metadata = {
 
 const CONTAINER = { maxWidth: 1040, margin: "0 auto", padding: "0 24px" } as const;
 const SECTION_Y = "clamp(56px, 9vw, 96px)";
+
+// 기술스택 칩 — near-white 배경에 묻히던 걸 옅은 fog 채움 + 굵은 line 테두리로
+// 또렷하게. 라이브 데모 뱃지와 같은 높이(24px)로 한 줄에 정렬된다.
+const TAG_CHIP: React.CSSProperties = {
+  display: "inline-flex", alignItems: "center", height: 24, padding: "0 9px",
+  fontFamily: "var(--font-mono)", fontSize: 12, lineHeight: 1, color: "var(--text-secondary)",
+  background: "var(--fog)", border: "1px solid var(--steel)", borderRadius: "var(--radius-xs)",
+  whiteSpace: "nowrap",
+};
+
+// 라이브 데모 뱃지 — 데모 보유 케이스를 초록으로 또렷하게 표시(기존 흐린 점 대체).
+function DemoBadge() {
+  return (
+    <span style={{
+      display: "inline-flex", alignItems: "center", gap: 6, height: 24, padding: "0 9px",
+      fontFamily: "var(--font-mono)", fontSize: 11.5, fontWeight: 600, letterSpacing: "0.03em",
+      lineHeight: 1, color: "var(--green-deep)", background: "var(--green-soft)",
+      border: "1px solid var(--green-line)", borderRadius: "var(--radius-xs)", whiteSpace: "nowrap",
+      textTransform: "uppercase",
+    }}>
+      <span className="hoonjo-live-dot" aria-hidden style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--green)" }} />
+      LIVE DEMO
+    </span>
+  );
+}
 
 // featured 케이스 — 홈 플래그십과 같은 결의 큰 종이 카드 + 임팩트 스트립.
 function FeaturedCase({ entry }: { entry: CaseEntry }) {
@@ -25,7 +50,8 @@ function FeaturedCase({ entry }: { entry: CaseEntry }) {
       }}
     >
       <div style={{ padding: "clamp(24px, 3.2vw, 34px)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", justifyContent: frontmatter.demo ? "space-between" : "flex-start" }}>
+          {frontmatter.demo && <DemoBadge />}
           <Badge variant="green" dot>FEATURED · 창의적 해결</Badge>
         </div>
         <h2 className="hoonjo-work-title" style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(26px, 3vw, 34px)", fontWeight: 600, letterSpacing: "-0.02em", lineHeight: 1.16, color: "var(--text)", margin: "18px 0 0", textWrap: "balance", transition: "color 150ms ease" }}>
@@ -35,7 +61,9 @@ function FeaturedCase({ entry }: { entry: CaseEntry }) {
           {frontmatter.summary}
         </p>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 22 }}>
-          {frontmatter.tags.map((t) => <Tag key={t}>{t}</Tag>)}
+          {frontmatter.tags.filter((t) => !/^라이브\s*데모$/.test(t)).map((t) => (
+            <span key={t} style={TAG_CHIP}>{t}</span>
+          ))}
         </div>
       </div>
       {frontmatter.metrics.length > 0 && (
@@ -74,26 +102,21 @@ function CaseRow({ entry, no }: { entry: CaseEntry; no: string }) {
         <p style={{ fontFamily: "var(--font-sans)", fontSize: 15, lineHeight: 1.6, color: "var(--text-muted)", margin: "8px 0 0", maxWidth: "62ch" }}>
           {frontmatter.summary}
         </p>
-        {frontmatter.tags.length > 0 && (
+        {(frontmatter.demo || frontmatter.tags.length > 0) && (
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }}>
+            {frontmatter.demo && <DemoBadge />}
             {frontmatter.tags.map((t) => (
-              <span key={t} style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--text-secondary)", border: "1px solid var(--line)", borderRadius: "var(--radius-xs)", padding: "3px 8px", whiteSpace: "nowrap" }}>{t}</span>
+              <span key={t} style={TAG_CHIP}>{t}</span>
             ))}
           </div>
         )}
-        {(frontmatter.metrics.length > 0 || frontmatter.demo) && (
-          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "4px 18px", marginTop: 10 }}>
+        {frontmatter.metrics.length > 0 && (
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "4px 18px", marginTop: 12 }}>
             {frontmatter.metrics.slice(0, 2).map((m) => (
               <span key={m.label} style={{ fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums", fontSize: 12.5, color: "var(--text-muted)", whiteSpace: "nowrap" }}>
                 {m.label} <span style={{ color: "var(--text)", fontWeight: 500 }}>{m.value}</span>
               </span>
             ))}
-            {frontmatter.demo && (
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: "var(--font-mono)", fontSize: 11.5, letterSpacing: "0.04em", color: "var(--green-deep)", whiteSpace: "nowrap" }}>
-                <span className="hoonjo-live-dot" aria-hidden style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--green)" }} />
-                라이브 데모
-              </span>
-            )}
           </div>
         )}
       </div>
