@@ -1,10 +1,8 @@
-"use client";
+import { type CSSProperties, type ReactNode } from 'react';
 
-import { useState, type CSSProperties, type ReactNode } from 'react';
-
-/* Design-system primitives, ported from the hoonjo-design skill
-   (components/*.jsx) to TypeScript. Inline-styled against the .hoonjo tokens
-   so the whole sample folder stays self-contained and hand-off-ready. */
+/* Design-system primitives, ported from the hoonjo-design skill to TypeScript.
+   Built with hj-* Tailwind utilities (tokens in app/theme.css). Callers may pass
+   `style` for layout overrides (grid placement, margins). */
 
 /* ---- Button ------------------------------------------------------------- */
 type ButtonVariant = 'primary' | 'ink' | 'outline' | 'outline-ink' | 'text';
@@ -18,6 +16,15 @@ type ButtonProps = {
   style?: CSSProperties;
 } & Record<string, unknown>;
 
+const BTN_VARIANT: Record<ButtonVariant, string> = {
+  primary:
+    'bg-hj-blue text-hj-on-blue border-transparent shadow-[0_1px_2px_rgba(27,100,218,0.28)] hover:bg-hj-blue-hover active:bg-hj-blue-deep active:shadow-none active:scale-[0.97]',
+  ink: 'bg-hj-ink text-hj-on-ink border-transparent hover:bg-hj-ink-soft active:bg-hj-ink-deep active:scale-[0.97]',
+  outline: 'bg-transparent text-hj-blue border-hj-blue hover:bg-hj-blue-soft active:scale-[0.97]',
+  'outline-ink': 'bg-transparent text-hj-fg border-hj-fg hover:bg-hj-cloud active:scale-[0.97]',
+  text: 'bg-transparent text-hj-blue border-transparent underline-offset-[3px] hover:underline',
+};
+
 export function Button({
   variant = 'primary',
   size = 'md',
@@ -25,112 +32,61 @@ export function Button({
   href,
   iconRight,
   children,
-  style = {},
+  style,
   ...rest
 }: ButtonProps) {
-  const [hover, setHover] = useState(false);
-  const [active, setActive] = useState(false);
-
-  const s = size === 'sm'
-    ? { height: 38, padding: '0 16px', font: '14px' }
-    : { height: 46, padding: '0 22px', font: '15px' };
-
-  const palettes: Record<ButtonVariant, { bg: string; color: string; border: string }> = {
-    primary: { bg: active ? 'var(--blue-deep)' : hover ? 'var(--blue-hover)' : 'var(--blue)', color: 'var(--on-blue)', border: 'transparent' },
-    ink: { bg: active ? 'var(--ink-deep)' : hover ? 'var(--ink-soft)' : 'var(--ink)', color: 'var(--on-ink)', border: 'transparent' },
-    outline: { bg: hover ? 'var(--blue-soft)' : 'transparent', color: 'var(--blue)', border: 'var(--blue)' },
-    'outline-ink': { bg: hover ? 'var(--cloud)' : 'transparent', color: 'var(--text)', border: 'var(--text)' },
-    text: { bg: 'transparent', color: 'var(--blue)', border: 'transparent' },
-  };
-  const p = palettes[variant];
   const isText = variant === 'text';
-
-  const base: CSSProperties = {
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    boxSizing: 'border-box',
-    height: isText ? 'auto' : s.height,
-    padding: isText ? '4px 0' : s.padding,
-    fontFamily: isText ? 'var(--font-mono)' : 'var(--font-sans)',
-    fontSize: s.font,
-    fontWeight: 600,
-    lineHeight: 1,
-    color: p.color,
-    background: p.bg,
-    border: `1px solid ${p.border}`,
-    borderRadius: isText ? 0 : 'var(--radius-button)',
-    boxShadow: !isText && variant === 'primary' ? (active ? 'none' : '0 1px 2px rgba(27,100,218,0.28)') : 'none',
-    cursor: 'pointer',
-    textDecoration: isText && hover ? 'underline' : 'none',
-    textUnderlineOffset: 3,
-    transform: !isText && active ? 'scale(0.97)' : 'scale(1)',
-    transition: 'background 150ms cubic-bezier(0.4,0,0.2,1), color 150ms ease, border-color 150ms ease, transform 120ms cubic-bezier(0.4,0,0.2,1), box-shadow 150ms ease',
-    whiteSpace: 'nowrap',
-    ...style,
-  };
-
-  const handlers = {
-    onMouseEnter: () => setHover(true),
-    onMouseLeave: () => { setHover(false); setActive(false); },
-    onMouseDown: () => setActive(true),
-    onMouseUp: () => setActive(false),
-  };
-
+  const sizeCls = isText
+    ? 'h-auto py-1 px-0 rounded-none font-hj-mono'
+    : `${size === 'sm' ? 'h-[38px] px-4 text-[14px]' : 'h-[46px] px-[22px] text-[15px]'} rounded-hj-button font-hj-serif`;
+  const cls = `inline-flex items-center justify-center gap-2 box-border border font-semibold leading-none whitespace-nowrap cursor-pointer transition-[background,color,border-color,transform,box-shadow] duration-150 ${sizeCls} ${BTN_VARIANT[variant]}`;
   const content = (
     <>
       <span>{children}</span>
-      {iconRight && <span aria-hidden style={{ fontSize: '1.05em', lineHeight: 0 }}>{iconRight}</span>}
+      {iconRight && <span aria-hidden className="text-[1.05em] leading-[0]">{iconRight}</span>}
     </>
   );
-
   if (as === 'a') {
-    return <a href={href} style={base} {...handlers} {...rest}>{content}</a>;
+    return <a href={href} className={cls} style={style} {...rest}>{content}</a>;
   }
-  return <button type="button" style={base} {...handlers} {...rest}>{content}</button>;
+  return <button type="button" className={cls} style={style} {...rest}>{content}</button>;
 }
 
 /* ---- Tag ---------------------------------------------------------------- */
 type TagVariant = 'outline' | 'solid' | 'blue' | 'ghost';
-export function Tag({ variant = 'outline', children, style = {} }: { variant?: TagVariant; children: ReactNode; style?: CSSProperties }) {
-  const palettes: Record<TagVariant, { bg: string; color: string; border: string }> = {
-    outline: { bg: 'transparent', color: 'var(--text-secondary)', border: 'var(--line)' },
-    solid: { bg: 'var(--ink)', color: 'var(--on-ink)', border: 'var(--ink)' },
-    blue: { bg: 'var(--blue-soft)', color: 'var(--blue-deep)', border: 'var(--blue-line)' },
-    ghost: { bg: 'var(--paper)', color: 'var(--text-secondary)', border: 'var(--line)' },
-  };
-  const p = palettes[variant];
+const TAG_VARIANT: Record<TagVariant, string> = {
+  outline: 'bg-transparent text-hj-fg-secondary border-hj-line',
+  solid: 'bg-hj-ink text-hj-on-ink border-hj-ink',
+  blue: 'bg-hj-blue-soft text-hj-blue-deep border-hj-blue-line',
+  ghost: 'bg-hj-paper text-hj-fg-secondary border-hj-line',
+};
+export function Tag({ variant = 'outline', children, style }: { variant?: TagVariant; children: ReactNode; style?: CSSProperties }) {
   return (
-    <span style={{
-      display: 'inline-flex', alignItems: 'center', height: 24, padding: '0 8px',
-      fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 500, letterSpacing: '0.02em',
-      lineHeight: 1, color: p.color, background: p.bg, border: `1px solid ${p.border}`,
-      borderRadius: 'var(--radius-xs)', whiteSpace: 'nowrap', ...style,
-    }}>{children}</span>
+    <span
+      style={style}
+      className={`inline-flex items-center h-6 px-2 font-hj-mono text-[12px] font-medium tracking-[0.02em] leading-none border rounded-hj-xs whitespace-nowrap ${TAG_VARIANT[variant]}`}
+    >{children}</span>
   );
 }
 
 /* ---- Badge -------------------------------------------------------------- */
 type BadgeVariant = 'outline' | 'ink' | 'blue' | 'green' | 'positive' | 'danger';
-export function Badge({ variant = 'outline', dot = false, children, style = {} }: { variant?: BadgeVariant; dot?: boolean; children: ReactNode; style?: CSSProperties }) {
-  const palettes: Record<BadgeVariant, { bg: string; color: string; border: string; dot: string }> = {
-    outline: { bg: 'var(--paper)', color: 'var(--text)', border: 'var(--text)', dot: 'var(--text)' },
-    ink: { bg: 'var(--ink)', color: 'var(--on-ink)', border: 'var(--ink)', dot: 'var(--blue-bright)' },
-    blue: { bg: 'var(--blue-soft)', color: 'var(--blue-deep)', border: 'var(--blue-line)', dot: 'var(--blue)' },
-    green: { bg: 'var(--green-soft)', color: 'var(--green-deep)', border: 'var(--green-line)', dot: 'var(--green)' },
-    positive: { bg: 'var(--positive-soft)', color: 'var(--positive)', border: 'transparent', dot: 'var(--positive)' },
-    danger: { bg: 'var(--danger-soft)', color: 'var(--danger)', border: 'transparent', dot: 'var(--danger)' },
-  };
-  const p = palettes[variant];
+const BADGE_VARIANT: Record<BadgeVariant, { box: string; dot: string }> = {
+  outline: { box: 'bg-hj-paper text-hj-fg border-hj-fg', dot: 'bg-hj-fg' },
+  ink: { box: 'bg-hj-ink text-hj-on-ink border-hj-ink', dot: 'bg-hj-blue-bright' },
+  blue: { box: 'bg-hj-blue-soft text-hj-blue-deep border-hj-blue-line', dot: 'bg-hj-blue' },
+  green: { box: 'bg-hj-green-soft text-hj-green-deep border-hj-green-line', dot: 'bg-hj-green' },
+  positive: { box: 'bg-hj-positive-soft text-hj-positive border-transparent', dot: 'bg-hj-positive' },
+  danger: { box: 'bg-hj-danger-soft text-hj-danger border-transparent', dot: 'bg-hj-danger' },
+};
+export function Badge({ variant = 'outline', dot = false, children, style }: { variant?: BadgeVariant; dot?: boolean; children: ReactNode; style?: CSSProperties }) {
+  const p = BADGE_VARIANT[variant];
   return (
-    <span style={{
-      display: 'inline-flex', alignItems: 'center', gap: 6, padding: '5px 11px',
-      fontFamily: 'var(--font-sans)', fontSize: 13, fontWeight: 500, lineHeight: 1.2,
-      color: p.color, background: p.bg, border: `1px solid ${p.border}`,
-      borderRadius: 'var(--radius-md)', whiteSpace: 'nowrap', ...style,
-    }}>
-      {dot && <span aria-hidden style={{ width: 6, height: 6, borderRadius: '50%', background: p.dot, flex: 'none' }} />}
+    <span
+      style={style}
+      className={`inline-flex items-center gap-1.5 px-[11px] py-[5px] font-hj-serif text-[13px] font-medium leading-[1.2] border rounded-hj-md whitespace-nowrap ${p.box}`}
+    >
+      {dot && <span aria-hidden className={`h-1.5 w-1.5 rounded-full shrink-0 ${p.dot}`} />}
       {children}
     </span>
   );
@@ -138,70 +94,65 @@ export function Badge({ variant = 'outline', dot = false, children, style = {} }
 
 /* ---- Eyebrow ------------------------------------------------------------ */
 type EyebrowTone = 'blue' | 'muted' | 'onInk';
-export function Eyebrow({ index, children, tone = 'blue', rule = false, style = {} }: { index?: number; children: ReactNode; tone?: EyebrowTone; rule?: boolean; style?: CSSProperties }) {
-  const color = tone === 'muted' ? 'var(--text-muted)' : tone === 'onInk' ? 'var(--blue-bright)' : 'var(--blue)';
-  /* numeral stays quiet/neutral — green is reserved for small functional spots
-     (status dots, featured badge, metric gains), never headline-scale */
-  const indexColor = tone === 'onInk' ? 'var(--on-ink-muted)' : 'var(--text-faint)';
+export function Eyebrow({ index, children, tone = 'blue', rule = false, style }: { index?: number; children: ReactNode; tone?: EyebrowTone; rule?: boolean; style?: CSSProperties }) {
+  const color = tone === 'muted' ? 'text-hj-muted' : tone === 'onInk' ? 'text-hj-blue-bright' : 'text-hj-blue';
+  /* numeral stays quiet/neutral — green is reserved for small functional spots */
+  const indexColor = tone === 'onInk' ? 'text-hj-on-ink-muted' : 'text-hj-faint';
   return (
-    <div style={{
-      display: 'flex', alignItems: 'center', gap: 10, fontFamily: 'var(--font-mono)',
-      fontSize: 12, fontWeight: 500, letterSpacing: '0.14em', textTransform: 'uppercase', color, ...style,
-    }}>
-      {index != null && <span style={{ color: indexColor }}>{String(index).padStart(2, '0')}</span>}
-      {index != null && <span aria-hidden style={{ color: indexColor, opacity: 0.5 }}>/</span>}
-      <span style={{ whiteSpace: 'nowrap' }}>{children}</span>
-      {rule && <span aria-hidden style={{ flex: 1, height: 1, background: 'currentColor', opacity: 0.25, marginLeft: 4 }} />}
+    <div style={style} className={`flex items-center gap-2.5 font-hj-mono text-[12px] font-medium tracking-[0.14em] uppercase ${color}`}>
+      {index != null && <span className={indexColor}>{String(index).padStart(2, '0')}</span>}
+      {index != null && <span aria-hidden className={`${indexColor} opacity-50`}>/</span>}
+      <span className="whitespace-nowrap">{children}</span>
+      {rule && <span aria-hidden className="flex-1 h-px bg-current opacity-25 ml-1" />}
     </div>
   );
 }
 
 /* ---- SectionHeader ------------------------------------------------------ */
-export function SectionHeader({ index, eyebrow, title, lead, onInk = false, size = 'xl', style = {} }: {
+export function SectionHeader({ index, eyebrow, title, lead, onInk = false, size = 'xl', style }: {
   index?: number; eyebrow?: string; title: ReactNode; lead?: ReactNode; onInk?: boolean; size?: 'lg' | 'xl' | 'xxl'; style?: CSSProperties;
 }) {
-  const titleSize = size === 'lg' ? 31 : size === 'xxl' ? 54 : 40;
+  const titleSize = size === 'lg' ? 'text-[31px]' : size === 'xxl' ? 'text-[54px]' : 'text-[40px]';
   return (
     <header style={style}>
-      <div style={{ height: 1, background: onInk ? 'rgba(246,244,238,0.18)' : 'var(--line)', marginBottom: 22 }} />
+      <div className={`h-px mb-[22px] ${onInk ? 'bg-[rgba(246,244,238,0.18)]' : 'bg-hj-line'}`} />
       {eyebrow && (
-        <div style={{ display: 'flex', marginBottom: 18 }}>
+        <div className="flex mb-[18px]">
           <Eyebrow index={index} tone={onInk ? 'onInk' : 'blue'}>{eyebrow}</Eyebrow>
         </div>
       )}
-      <h2 style={{
-        fontFamily: 'var(--font-serif)', fontWeight: 600, fontSize: titleSize, lineHeight: 1.05,
-        letterSpacing: '-0.015em', color: onInk ? 'var(--on-ink)' : 'var(--text)', maxWidth: '24ch', margin: 0,
-      }}>{title}</h2>
+      <h2 className={`max-w-[24ch] font-hj-serif ${titleSize} font-semibold leading-[1.05] tracking-[-0.015em] ${onInk ? 'text-hj-on-ink' : 'text-hj-fg'}`}>{title}</h2>
       {lead && (
-        <p style={{
-          fontFamily: 'var(--font-sans)', fontSize: 18, lineHeight: 1.6,
-          color: onInk ? 'var(--on-ink-muted)' : 'var(--text-secondary)', marginTop: 18, maxWidth: '52ch',
-        }}>{lead}</p>
+        <p className={`mt-[18px] max-w-[52ch] font-hj-serif text-[18px] leading-[1.6] ${onInk ? 'text-hj-on-ink-muted' : 'text-hj-fg-secondary'}`}>{lead}</p>
       )}
     </header>
   );
 }
 
 /* ---- BlueprintGrid ------------------------------------------------------ */
-export function BlueprintGrid({ cell = 32, axes = false, label, intensity = 'soft', children, style = {} }: {
+export function BlueprintGrid({ cell = 32, axes = false, label, intensity = 'soft', children, style }: {
   cell?: number; axes?: boolean; label?: string; intensity?: 'soft' | 'strong'; children: ReactNode; style?: CSSProperties;
 }) {
-  const line = intensity === 'strong' ? 'var(--grid-line-strong)' : 'var(--grid-line)';
+  /* backgroundImage/size are computed from `cell`/`intensity` props → stay inline.
+     Uses theme.css hj tokens so it survives hoonjo.css deletion. */
+  const line = intensity === 'strong' ? 'rgba(49,130,246,0.035)' : 'rgba(49,130,246,0.018)';
   return (
-    <div style={{
-      position: 'relative', backgroundColor: 'var(--canvas)',
-      backgroundImage: `linear-gradient(${line} 1px, transparent 1px), linear-gradient(90deg, ${line} 1px, transparent 1px)`,
-      backgroundSize: `${cell}px ${cell}px`, ...style,
-    }}>
+    <div
+      className="relative bg-hj-canvas"
+      style={{
+        backgroundImage: `linear-gradient(${line} 1px, transparent 1px), linear-gradient(90deg, ${line} 1px, transparent 1px)`,
+        backgroundSize: `${cell}px ${cell}px`,
+        ...style,
+      }}
+    >
       {axes && (
         <>
-          <span aria-hidden style={{ position: 'absolute', left: 0, right: 0, top: '20%', height: 1, background: 'rgba(34,76,120,0.16)' }} />
-          <span aria-hidden style={{ position: 'absolute', top: 0, bottom: 0, left: '12%', width: 1, background: 'rgba(34,76,120,0.16)' }} />
+          <span aria-hidden className="absolute left-0 right-0 top-[20%] h-px bg-[rgba(34,76,120,0.16)]" />
+          <span aria-hidden className="absolute top-0 bottom-0 left-[12%] w-px bg-[rgba(34,76,120,0.16)]" />
         </>
       )}
       {label && (
-        <span aria-hidden style={{ position: 'absolute', top: 12, left: 14, fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.08em', color: 'var(--text-faint)' }}>{label}</span>
+        <span aria-hidden className="absolute top-3 left-3.5 font-hj-mono text-[10px] tracking-[0.08em] text-hj-faint">{label}</span>
       )}
       {children}
     </div>
@@ -212,38 +163,37 @@ export function BlueprintGrid({ cell = 32, axes = false, label, intensity = 'sof
 export type Metric = { label: string; before?: string; after: string; unit?: string; gain?: string };
 
 export function MetricStat({ label, before, after, unit, gain, onInk = false, compact = false }: Metric & { onInk?: boolean; compact?: boolean }) {
-  const muted = onInk ? 'var(--on-ink-muted)' : 'var(--text-muted)';
-  const ink = onInk ? 'var(--on-ink)' : 'var(--text)';
+  const muted = onInk ? 'text-hj-on-ink-muted' : 'text-hj-muted';
+  const ink = onInk ? 'text-hj-on-ink' : 'text-hj-fg';
   return (
     <div>
-      <div style={{ fontFamily: 'var(--font-mono)', fontSize: compact ? 10.5 : 11, fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase', color: muted }}>{label}</div>
-      <div style={{ fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums', marginTop: compact ? 7 : 12, lineHeight: 1.12, display: compact ? 'flex' : 'block', alignItems: 'baseline', gap: compact ? 8 : 0, flexWrap: 'wrap' }}>
+      <div className={`font-hj-mono ${compact ? 'text-[10.5px]' : 'text-[11px]'} font-medium tracking-[0.08em] uppercase ${muted}`}>{label}</div>
+      <div className={`font-hj-mono tabular-nums leading-[1.12] ${compact ? 'mt-[7px] flex items-baseline gap-2 flex-wrap' : 'mt-3 block'}`}>
         {before != null && (
-          <div style={{ fontSize: compact ? 12.5 : 14, color: muted, textDecoration: 'line-through', textDecorationColor: 'var(--steel)' }}>{before}</div>
+          <div className={`${compact ? 'text-[12.5px]' : 'text-[14px]'} ${muted} line-through decoration-hj-steel`}>{before}</div>
         )}
-        <div style={{ fontSize: compact ? 23 : 30, fontWeight: 600, color: ink, letterSpacing: '-0.01em', marginTop: !compact && before != null ? 4 : 0, whiteSpace: 'nowrap' }}>
-          {after}{unit && <span style={{ fontSize: compact ? 13 : 15, color: muted, fontWeight: 400, marginLeft: 2 }}>{unit}</span>}
+        <div className={`${compact ? 'text-[23px]' : 'text-[30px]'} font-semibold ${ink} tracking-[-0.01em] whitespace-nowrap ${!compact && before != null ? 'mt-1' : ''}`}>
+          {after}{unit && <span className={`${compact ? 'text-[13px]' : 'text-[15px]'} ${muted} font-normal ml-0.5`}>{unit}</span>}
         </div>
       </div>
-      {gain && <div style={{ fontFamily: 'var(--font-mono)', fontSize: compact ? 11 : 12, fontWeight: 500, color: 'var(--positive)', marginTop: compact ? 5 : 8 }}>{gain}</div>}
+      {gain && <div className={`font-hj-mono ${compact ? 'text-[11px] mt-[5px]' : 'text-[12px] mt-2'} font-medium text-hj-positive`}>{gain}</div>}
     </div>
   );
 }
 
-export function MetricTable({ stats, columns, onInk = false, compact = false, style = {} }: { stats: Metric[]; columns?: number; onInk?: boolean; compact?: boolean; style?: CSSProperties }) {
+export function MetricTable({ stats, columns, onInk = false, compact = false, style }: { stats: Metric[]; columns?: number; onInk?: boolean; compact?: boolean; style?: CSSProperties }) {
   const cols = columns || Math.min(stats.length || 1, 3);
-  const borderCol = onInk ? 'rgba(246,244,238,0.16)' : 'var(--line)';
+  const bc = onInk ? 'border-[rgba(246,244,238,0.16)]' : 'border-hj-line';
   return (
-    <div style={{
-      display: 'grid', gridTemplateColumns: `repeat(${cols}, 1fr)`, border: `1px solid ${borderCol}`,
-      borderRadius: 'var(--radius-lg)', overflow: 'hidden', background: onInk ? 'var(--ink-soft)' : 'var(--paper)', ...style,
-    }}>
+    <div
+      className={`grid border ${bc} rounded-hj-lg overflow-hidden ${onInk ? 'bg-hj-ink-soft' : 'bg-hj-paper'}`}
+      style={{ gridTemplateColumns: `repeat(${cols}, 1fr)`, ...style }}
+    >
       {stats.map((s, i) => (
-        <div key={i} style={{
-          padding: compact ? '13px 16px' : '20px 22px',
-          borderRight: (i + 1) % cols === 0 ? 'none' : `1px solid ${borderCol}`,
-          borderTop: i >= cols ? `1px solid ${borderCol}` : 'none',
-        }}>
+        <div
+          key={i}
+          className={`${compact ? 'px-4 py-[13px]' : 'px-[22px] py-5'} ${(i + 1) % cols !== 0 ? `border-r ${bc}` : ''} ${i >= cols ? `border-t ${bc}` : ''}`}
+        >
           <MetricStat {...s} onInk={onInk} compact={compact} />
         </div>
       ))}
@@ -254,18 +204,18 @@ export function MetricTable({ stats, columns, onInk = false, compact = false, st
 /* ---- MetricRow — horizontal, bold; the prominent "impact" strip --------- */
 export function MetricRow({ stats }: { stats: Metric[] }) {
   return (
-    <div className="hoonjo-metric-row" style={{ display: 'grid', gridTemplateColumns: `repeat(${stats.length}, 1fr)`, gap: 0 }}>
+    <div className="grid gap-0 max-[560px]:grid-cols-1!" style={{ gridTemplateColumns: `repeat(${stats.length}, 1fr)` }}>
       {stats.map((s, i) => (
-        <div key={i} style={{ paddingLeft: i > 0 ? 24 : 0, borderLeft: i > 0 ? '1px solid var(--line)' : 'none' }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>{s.label}</div>
-          <div style={{ fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums', marginTop: 8, display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap' }}>
-            {s.before != null && <span style={{ fontSize: 13, color: 'var(--text-muted)', textDecoration: 'line-through', textDecorationColor: 'var(--steel)' }}>{s.before}</span>}
-            {s.before != null && <span aria-hidden style={{ fontSize: 14, color: 'var(--text-faint)' }}>→</span>}
-            <span style={{ fontSize: 26, fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.015em', whiteSpace: 'nowrap' }}>
-              {s.after}{s.unit && <span style={{ fontSize: 13, fontWeight: 400, color: 'var(--text-muted)', marginLeft: 2 }}>{s.unit}</span>}
+        <div key={i} className={i > 0 ? 'pl-6 border-l border-hj-line max-[560px]:pl-0 max-[560px]:border-l-0 max-[560px]:pt-3.5 max-[560px]:mt-3.5 max-[560px]:border-t max-[560px]:border-hj-line' : ''}>
+          <div className="font-hj-mono text-[10.5px] font-medium tracking-[0.08em] uppercase text-hj-muted">{s.label}</div>
+          <div className="font-hj-mono tabular-nums mt-2 flex items-baseline gap-2 flex-wrap">
+            {s.before != null && <span className="text-[13px] text-hj-muted line-through decoration-hj-steel">{s.before}</span>}
+            {s.before != null && <span aria-hidden className="text-[14px] text-hj-faint">→</span>}
+            <span className="text-[26px] font-bold text-hj-fg tracking-[-0.015em] whitespace-nowrap">
+              {s.after}{s.unit && <span className="text-[13px] font-normal text-hj-muted ml-0.5">{s.unit}</span>}
             </span>
           </div>
-          {s.gain && <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 500, color: 'var(--positive)', marginTop: 6 }}>{s.gain}</div>}
+          {s.gain && <div className="font-hj-mono text-[11px] font-medium text-hj-positive mt-1.5">{s.gain}</div>}
         </div>
       ))}
     </div>
@@ -273,26 +223,23 @@ export function MetricRow({ stats }: { stats: Metric[] }) {
 }
 
 /* ---- TimelineItem ------------------------------------------------------- */
-export function TimelineItem({ period, role, org, description, tags = [], current = false, style = {} }: {
+export function TimelineItem({ period, role, org, description, tags = [], current = false, style }: {
   period: string; role: string; org?: string; description?: string; tags?: string[]; current?: boolean; style?: CSSProperties;
 }) {
   return (
-    <div className="hoonjo-timeline-item" style={{ position: 'relative', display: 'grid', gridTemplateColumns: '150px 1fr', gap: 28, paddingBottom: 40, ...style }}>
-      <span aria-hidden style={{
-        position: 'absolute', left: -33, top: 6, width: 11, height: 11, borderRadius: 1, transform: 'rotate(45deg)',
-        background: current ? 'var(--green)' : 'var(--canvas)', border: `1.5px solid ${current ? 'var(--green)' : 'var(--steel)'}`,
-      }} />
-      <div style={{ fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 500, color: current ? 'var(--green-deep)' : 'var(--text-muted)', letterSpacing: '0.02em', paddingTop: 3, lineHeight: 1.4 }}>{period}</div>
+    <div className="relative grid grid-cols-[150px_1fr] gap-7 pb-10 max-[560px]:grid-cols-1 max-[560px]:gap-1.5" style={style}>
+      <span aria-hidden className={`absolute -left-[33px] top-1.5 w-[11px] h-[11px] rounded-[1px] rotate-45 border-[1.5px] ${current ? 'bg-hj-green border-hj-green' : 'bg-hj-canvas border-hj-steel'}`} />
+      <div className={`font-hj-mono text-[13px] font-medium tracking-[0.02em] pt-[3px] leading-[1.4] ${current ? 'text-hj-green-deep' : 'text-hj-muted'}`}>{period}</div>
       <div>
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, flexWrap: 'wrap' }}>
-          <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: 21, fontWeight: 600, color: 'var(--text)', lineHeight: 1.2, margin: 0 }}>{role}</h4>
-          {org && <span style={{ fontFamily: 'var(--font-sans)', fontSize: 15, color: 'var(--text-muted)' }}>· {org}</span>}
+        <div className="flex items-baseline gap-2.5 flex-wrap">
+          <h4 className="font-hj-serif text-[21px] font-semibold text-hj-fg leading-[1.2]">{role}</h4>
+          {org && <span className="font-hj-serif text-[15px] text-hj-muted">· {org}</span>}
         </div>
-        {description && <p style={{ fontFamily: 'var(--font-sans)', fontSize: 15, lineHeight: 1.6, color: 'var(--text-secondary)', marginTop: 10 }}>{description.replace(/\n/g, ' ')}</p>}
+        {description && <p className="font-hj-serif text-[15px] leading-[1.6] text-hj-fg-secondary mt-2.5">{description.replace(/\n/g, ' ')}</p>}
         {tags.length > 0 && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 14 }}>
+          <div className="flex flex-wrap gap-1.5 mt-3.5">
             {tags.map((t) => (
-              <span key={t} style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-secondary)', border: '1px solid var(--line)', borderRadius: 'var(--radius-xs)', padding: '3px 8px', whiteSpace: 'nowrap' }}>{t}</span>
+              <span key={t} className="font-hj-mono text-[12px] text-hj-fg-secondary border border-hj-line rounded-hj-xs px-2 py-[3px] whitespace-nowrap">{t}</span>
             ))}
           </div>
         )}
@@ -302,13 +249,13 @@ export function TimelineItem({ period, role, org, description, tags = [], curren
 }
 
 /* ---- StackList ---------------------------------------------------------- */
-export function StackList({ label, items, style = {} }: { label: string; items: string[]; style?: CSSProperties }) {
+export function StackList({ label, items, style }: { label: string; items: string[]; style?: CSSProperties }) {
   return (
-    <div style={{ paddingTop: 18, borderTop: '1px solid var(--line)', ...style }}>
-      <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 14 }}>{label}</div>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 10px' }}>
+    <div className="pt-[18px] border-t border-hj-line" style={style}>
+      <div className="font-hj-mono text-[11px] font-medium tracking-[0.1em] uppercase text-hj-muted mb-3.5">{label}</div>
+      <div className="flex flex-wrap gap-x-2.5 gap-y-2">
         {items.map((it) => (
-          <span key={it} style={{ fontFamily: 'var(--font-mono)', fontSize: 13.5, color: 'var(--text)', background: 'var(--paper)', border: '1px solid var(--line)', borderRadius: 'var(--radius-xs)', padding: '6px 11px', lineHeight: 1, whiteSpace: 'nowrap' }}>{it}</span>
+          <span key={it} className="font-hj-mono text-[13.5px] text-hj-fg bg-hj-paper border border-hj-line rounded-hj-xs px-[11px] py-1.5 leading-none whitespace-nowrap">{it}</span>
         ))}
       </div>
     </div>

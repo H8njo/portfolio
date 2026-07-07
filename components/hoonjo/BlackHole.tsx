@@ -192,5 +192,5 @@ export function BlackHole() {
     };
   }, []);
 
-  return <canvas ref={canvasRef} aria-label="중력렌즈 실시간 렌더" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' }} />;
+  return <canvas ref={canvasRef} aria-label="중력렌즈 실시간 렌더" className="absolute inset-0 w-full h-full block" />;
 }
