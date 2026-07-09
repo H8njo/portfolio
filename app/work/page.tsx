@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import Link from "next/link";
 import { getAllCases } from "@/lib/cases";
 import type { CaseEntry } from "@/lib/cases.schema";
@@ -118,19 +119,17 @@ function CaseRow({ entry, no }: { entry: CaseEntry; no: string }) {
           )}
         </div>
         {frontmatter.metrics.length > 0 && (
-          <div className="mt-5 flex flex-wrap items-stretch gap-x-6 gap-y-3.5 min-[900px]:mt-0 min-[900px]:flex-col min-[900px]:flex-nowrap min-[900px]:items-start min-[900px]:gap-3.5">
-            <span className="self-center font-hj-mono text-[10.5px] font-semibold uppercase tracking-[0.12em] text-hj-faint min-[900px]:self-auto">IMPACT</span>
-            {frontmatter.metrics.slice(0, 2).map((m, i) => (
-              <div
-                key={m.label}
-                className={`min-w-0 ${i > 0 ? "border-l border-hj-line pl-6 max-[640px]:border-l-0 max-[640px]:pl-0 min-[900px]:border-l-0 min-[900px]:pl-0" : ""}`}
-              >
-                <div className="font-hj-mono text-[10.5px] uppercase tracking-[0.06em] text-hj-muted">{m.label}</div>
-                <div className="mt-1.5">
+          <div className="mt-5 min-[900px]:mt-0">
+            <div className="font-hj-mono text-[10.5px] font-semibold uppercase tracking-[0.12em] text-hj-faint">IMPACT</div>
+            {/* 라벨 │ 값 정렬 표 — 라벨끼리·값끼리 세로 정렬돼 한눈에 스캔된다. */}
+            <div className="mt-3 grid grid-cols-[auto_auto] items-baseline justify-start gap-x-6 gap-y-2.5">
+              {frontmatter.metrics.slice(0, 2).map((m) => (
+                <Fragment key={m.label}>
+                  <div className="font-hj-mono text-[11px] uppercase leading-none tracking-[0.04em] text-hj-muted">{m.label}</div>
                   <ImpactValue value={m.value} />
-                </div>
-              </div>
-            ))}
+                </Fragment>
+              ))}
+            </div>
           </div>
         )}
       </div>
