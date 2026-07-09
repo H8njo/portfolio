@@ -23,6 +23,26 @@ function DemoBadge() {
   );
 }
 
+// 지표 값 렌더 — "옛값 → 새값" 꼴이면 payoff-dominant로(히어로 임팩트 스트립과 동일
+// 결): 옛값은 작게+취소선+faint, 화살표 faint, 새값은 크게 bold ink. 화살표가 없거나
+// "v1 → v2 → npm"처럼 2조각이 아닌 값은 취소선 오적용을 피해 그냥 bold로.
+function ImpactValue({ value }: { value: string }) {
+  const parts = value.split("→");
+  if (parts.length === 2) {
+    const [before, after] = parts.map((s) => s.trim());
+    return (
+      <span className="inline-flex items-baseline gap-1.5 font-hj-mono tabular-nums whitespace-nowrap">
+        <span className="text-[12px] text-hj-faint line-through decoration-hj-steel">{before}</span>
+        <span aria-hidden className="text-[12px] text-hj-faint">→</span>
+        <span className="text-[16px] font-bold tracking-[-0.01em] text-hj-fg">{after}</span>
+      </span>
+    );
+  }
+  return (
+    <span className="font-hj-mono tabular-nums text-[15px] font-bold tracking-[-0.01em] text-hj-fg">{value}</span>
+  );
+}
+
 // featured 케이스 — 홈 플래그십과 같은 결의 큰 종이 카드 + 임팩트 스트립.
 function FeaturedCase({ entry }: { entry: CaseEntry }) {
   const { slug, frontmatter } = entry;
@@ -94,13 +114,18 @@ function CaseRow({ entry, no }: { entry: CaseEntry; no: string }) {
           </div>
         )}
         {frontmatter.metrics.length > 0 && (
-          <div className="mt-4 flex flex-wrap items-baseline gap-x-6 gap-y-2 border-t border-hj-line pt-3.5">
+          <div className="mt-4 flex flex-wrap items-stretch gap-x-6 gap-y-3.5 border-t border-hj-line pt-3.5">
             <span className="self-center font-hj-mono text-[10.5px] font-semibold uppercase tracking-[0.12em] text-hj-faint">IMPACT</span>
-            {frontmatter.metrics.slice(0, 2).map((m) => (
-              <span key={m.label} className="inline-flex items-baseline gap-2 font-hj-mono tabular-nums whitespace-nowrap">
-                <span className="text-[11px] text-hj-muted">{m.label}</span>
-                <span className="text-[14.5px] font-bold tracking-[-0.01em] text-hj-fg">{m.value}</span>
-              </span>
+            {frontmatter.metrics.slice(0, 2).map((m, i) => (
+              <div
+                key={m.label}
+                className={`min-w-0 ${i > 0 ? "border-l border-hj-line pl-6 max-[640px]:border-l-0 max-[640px]:pl-0" : ""}`}
+              >
+                <div className="font-hj-mono text-[10.5px] uppercase tracking-[0.06em] text-hj-muted">{m.label}</div>
+                <div className="mt-1.5">
+                  <ImpactValue value={m.value} />
+                </div>
+              </div>
             ))}
           </div>
         )}

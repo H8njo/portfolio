@@ -300,13 +300,19 @@ export const blackHole = {
   postUrl: '/work/webgl-blackhole',
 };
 
+export type CaseLink = { label: string; href: string };
 export type Timeline = {
   period: string;
   role: string;
   org: string;
+  /* 역할 아래에 붙는 성장·범위 신호 — 직급을 지어내지 않고 실제 오너십만
+     표기(디자인 시스템 코드오너 / 미들·시니어 / 프론트 주저자). */
+  scope?: string;
   description: string;
   tags: string[];
   current?: boolean;
+  /* 해당 시기의 대표 케이스로 유입 — /work/[slug] 상세 글로 연결. */
+  cases?: CaseLink[];
 };
 
 export const timeline: Timeline[] = [
@@ -314,26 +320,39 @@ export const timeline: Timeline[] = [
     period: '2024 — 현재',
     role: 'Frontend Engineer',
     org: '@Bookips',
+    scope: '디자인 시스템 코드오너',
     description:
-      '교육 콘텐츠 플랫폼 솔북(Solvook). A4 자동 페이징·서버 PDF 파이프라인,\n사내 엔진을 OSS(column-pager)로 공개, 디자인 시스템 공동 메인테이너.',
+      '교육 콘텐츠 플랫폼 솔북(Solvook). A4 자동 페이징·서버 PDF 파이프라인을 구축하고,\n2년 가까이 환불로 이어지던 조판 난제를 풀어 사내 엔진을 오픈소스(column-pager · npm·MIT)로 공개. 공용 디자인 시스템 공동 메인테이너.',
     tags: ['Next.js', 'TypeScript', 'Canvas', 'OSS'],
     current: true,
+    cases: [
+      { label: 'column-pager 오픈소스', href: '/work/column-count-layout' },
+      { label: '디자인 시스템 자동화', href: '/work/design-system' },
+    ],
   },
   {
     period: '2023 — 2024',
     role: 'Frontend Engineer',
     org: '@Sling',
+    scope: '미들·시니어',
     description:
-      '튜터용 수업 관리 앱 ORZO.\n대용량 교재 PDF를 OOM 없이 렌더하는 메모리·성능 최적화 (첫 화면 10분 → 1초).',
+      '튜터용 수업 관리 앱 ORZO. 300페이지 교재 PDF의 첫 조작까지를\n639,000ms → 1,310ms(약 488배)로 줄이고, OOM 없는 메모리 바운드 렌더링으로 재설계했다.',
     tags: ['Next.js', 'PDF', '성능', '메모리'],
+    cases: [{ label: 'PDF 메모리 최적화', href: '/work/pdf-memory' }],
   },
   {
     period: '2020 — 2023',
-    role: 'Frontend Engineer / Fullstack',
+    role: 'Frontend Engineer · Fullstack',
     org: '@Zipida',
+    scope: '보안관제 프론트 주저자',
     description:
-      '정부·기업 보안관제 SI(법무부·KISTI·현대오토에버). 메타데이터 화면 양산, 코드 없는 ML 학습 마법사,\n이중 데이터소스·NestJS BFF 설계.',
+      '정부·기업 보안관제 SI를 프론트 주저자(696커밋)로 이끌었다. 법무부 포털은 컬럼 정의 1벌로 59개 화면을 양산했고,\nKISTI는 코드 없이 탐지 ML을 학습시키는 마법사로, 현대오토에버 EDR은 이중 데이터소스·NestJS BFF로 설계했다.',
     tags: ['React', 'GraphQL', 'NestJS', 'RBAC'],
+    cases: [
+      { label: '59개 화면 포털', href: '/work/security-portal' },
+      { label: 'ML 학습 마법사', href: '/work/security-ai' },
+      { label: 'EDR 포털', href: '/work/edr-portal' },
+    ],
   },
   {
     period: '2019 — 2020',
