@@ -95,7 +95,7 @@ function CaseRow({ entry, no }: { entry: CaseEntry; no: string }) {
   return (
     <Link
       href={`/work/${slug}`}
-      className="group relative grid grid-cols-[40px_1fr_auto] items-start gap-5 rounded-hj-md p-[22px_20px] no-underline transition-[background,box-shadow] duration-150 hover:bg-hj-paper hover:shadow-hj-soft before:absolute before:left-0 before:top-3.5 before:bottom-3.5 before:w-0.5 before:rounded-[2px] before:bg-hj-blue before:origin-center before:scale-y-0 before:transition-transform before:duration-150 before:ease-[cubic-bezier(0.4,0,0.2,1)] before:content-[''] group-hover:before:scale-y-100 max-[640px]:grid-cols-1 max-[640px]:gap-2"
+      className="group relative grid grid-cols-[40px_1fr_auto] items-start gap-5 rounded-hj-md p-[28px_20px] no-underline transition-[background,box-shadow] duration-150 hover:bg-hj-paper hover:shadow-hj-soft before:absolute before:left-0 before:top-5 before:bottom-5 before:w-0.5 before:rounded-[2px] before:bg-hj-blue before:origin-center before:scale-y-0 before:transition-transform before:duration-150 before:ease-[cubic-bezier(0.4,0,0.2,1)] before:content-[''] group-hover:before:scale-y-100 max-[640px]:grid-cols-1 max-[640px]:gap-2"
     >
       <span className="pt-[3px] font-hj-mono text-[13px] tabular-nums text-hj-faint transition-colors duration-150 group-hover:text-hj-blue max-[640px]:order-first">{no}</span>
       <div className="min-w-0">
@@ -114,7 +114,7 @@ function CaseRow({ entry, no }: { entry: CaseEntry; no: string }) {
           </div>
         )}
         {frontmatter.metrics.length > 0 && (
-          <div className="mt-4 flex flex-wrap items-stretch gap-x-6 gap-y-3.5 border-t border-hj-line pt-3.5">
+          <div className="mt-5 flex flex-wrap items-stretch gap-x-6 gap-y-3.5">
             <span className="self-center font-hj-mono text-[10.5px] font-semibold uppercase tracking-[0.12em] text-hj-faint">IMPACT</span>
             {frontmatter.metrics.slice(0, 2).map((m, i) => (
               <div
