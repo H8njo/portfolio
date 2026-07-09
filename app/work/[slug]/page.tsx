@@ -66,8 +66,8 @@ function DemoBlock({ title, children }: { title: string; children: React.ReactNo
   return (
     <section aria-label="라이브 데모" className="mt-10">
       <div className="mb-[14px] flex items-center gap-[10px]">
-        <span aria-hidden className="h-2 w-2 rounded-full bg-hj-green animate-hj-pulse" />
-        <span className="font-hj-mono text-[12px] font-medium uppercase tracking-[0.1em] text-hj-green-deep">라이브 데모</span>
+        <span aria-hidden className="h-2 w-2 rounded-full bg-hj-blue animate-hj-pulse" />
+        <span className="font-hj-mono text-[12px] font-medium uppercase tracking-[0.1em] text-hj-blue-deep">LIVE DEMO</span>
       </div>
       <p className="max-w-[52ch] font-hj-serif text-[15px] leading-[1.6] text-hj-fg-secondary">{title}</p>
       <div className="mt-[18px] overflow-hidden rounded-hj-lg border border-hj-line bg-hj-paper p-[clamp(16px,2.4vw,24px)] shadow-hj-soft">
@@ -96,7 +96,8 @@ export default async function CaseDetail({ params }: { params: Promise<{ slug: s
       <header className="mt-7">
         <div className="flex flex-wrap gap-2">
           {frontmatter.featured && <Badge variant="green" dot>FEATURED</Badge>}
-          {frontmatter.tags.map((t) => <Tag key={t}>{t}</Tag>)}
+          {/* "라이브 데모"는 태그가 아니라 아래 데모 블록이 담당 — /work 리스트처럼 필터링. */}
+          {frontmatter.tags.filter((t) => !/^라이브\s*데모$/.test(t)).map((t) => <Tag key={t}>{t}</Tag>)}
         </div>
         <h1 className="mt-5 text-balance font-hj-serif text-[clamp(28px,4.4vw,44px)] font-semibold leading-[1.12] tracking-[-0.03em] text-hj-fg">
           {frontmatter.title}
@@ -161,7 +162,7 @@ export default async function CaseDetail({ params }: { params: Promise<{ slug: s
       {/* 다음 케이스 던지기 — 종이 카드로 끌림 구조 (hover는 group으로) */}
       <nav aria-label="케이스 이동" className="mt-16 flex flex-wrap items-center justify-between gap-5 border-t border-hj-line pt-8">
         <Link href="/" className="inline-flex items-center gap-[7px] font-hj-mono text-[13px] text-hj-muted">
-          <span aria-hidden>←</span> 홈
+          <span aria-hidden>←</span> 홈으로
         </Link>
         {next && next.slug !== slug && (
           <Link
