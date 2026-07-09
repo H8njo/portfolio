@@ -100,7 +100,7 @@ function CaseRow({ entry, no }: { entry: CaseEntry; no: string }) {
       <span className="pt-[3px] font-hj-mono text-[13px] tabular-nums text-hj-faint transition-colors duration-150 group-hover:text-hj-blue max-[640px]:order-first">{no}</span>
       {/* 큰 화면(≥900px)에선 [텍스트 | IMPACT] 2열 — IMPACT가 우측에 세로 1열로.
           작은 화면에선 세로 흐름(텍스트 아래 IMPACT 가로 배치). */}
-      <div className="min-w-0 min-[900px]:grid min-[900px]:grid-cols-[minmax(0,1fr)_auto] min-[900px]:gap-10 min-[900px]:items-start">
+      <div className="min-w-0 min-[900px]:grid min-[900px]:grid-cols-[minmax(0,1fr)_400px] min-[900px]:gap-10 min-[900px]:items-start">
         <div className="min-w-0">
           <h3 className="font-hj-serif text-[20px] font-semibold leading-[1.25] tracking-[-0.015em] text-hj-fg transition-colors duration-150 group-hover:text-hj-blue-deep">
             {frontmatter.title}
