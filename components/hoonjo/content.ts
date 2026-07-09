@@ -50,6 +50,9 @@ export const flagship = {
   title: '사내 페이지네이션 엔진 → 오픈소스',
   oneLiner:
     '인쇄물처럼 “고정 크기 페이지”로 자동 분할하는 엔진.\n사내 제작 도구 → npm 패키지.',
+  // /work 게시물의 훅과 동일 — 포트폴리오 PDF 플래그십의 첫 줄로 쓴다(단일 출처).
+  hook:
+    '프리랜서도 사내 FE도 못 풀어 2년째 환불 문의가 이어지던 문제. 다섯 번 갈아엎고, 실패한 방식을 응용해 풀었다.',
   problem:
     '교육 콘텐츠 편집기에서 문제들을 A4 두 칸(2단) 레이아웃으로 배치해야 했는데, 기존 구현은 한 칸 높이를 넘는 긴 카드(긴 본문)를 처리하지 못했다. 만든 문제지는 인쇄돼 학생에게 가는 거라, 문장이 중간에 잘리면 그대로 불량품 — 주력 서비스에서 2년 가까이 환불 문의가 이어졌다. 여러 명이 붙었지만 다들 같은 벽에서 멈췄다.',
   attempts: [
@@ -299,6 +302,48 @@ export const blackHole = {
   repo: 'https://github.com/H8njo/webgl-black-hole',
   postUrl: '/work/webgl-blackhole',
 };
+
+/* 그 외 사이드 프로젝트 — 블랙홀(위, 라이브 렌더)과 함께 "혼자 만든 것들" 묶음.
+   수치는 /work 게시물·커리어 볼트 실측값. loa-map-generator(OpenCV 지형 추출 도구,
+   H8njo/loa-map-generator)는 삼라만상 맵 타일의 출처라 그 카드에 note로 흡수한다. */
+export const sideProjects: {
+  title: string;
+  label: string;
+  body: string;
+  stats: [string, string][];
+  tags: string[];
+  note?: string;
+  repo?: string;
+  postUrl?: string;
+}[] = [
+  {
+    title: '게임 업적 2,222개를 OCR로 읽는 풀스택 서비스',
+    label: '개인 프로젝트 · 로스트아크',
+    body: '"다음에 뭘 해야 가장 빠를까"를 데이터로 답하려고 혼자 만든 서비스. 업적 2,222개의 달성 경로를 그래프 최적화로 추천하고, 게임 화면을 OCR로 읽어 진행도를 자동 동기화. 프론트·백엔드·데이터 시딩까지 단독.',
+    stats: [
+      ['업적 데이터', '2,222개'],
+      ['맵 타일 최적화', '268MB → 10.7MB'],
+      ['맵 뷰어', '208개'],
+    ],
+    tags: ['Next.js', 'NestJS · Prisma', 'OCR', '그래프 최적화'],
+    note: '월드맵 208장은 직접 만든 OpenCV 도구 loa-map-generator로 지형만 오려냈다 — "안쪽을 찾지 말고 바깥을 지우자"는 flood-fill 세그멘테이션.',
+    postUrl: '/work/samra-mansang',
+  },
+  {
+    title: 'AI 기다리는 시간에 딴짓하려 만든 맥 메뉴바 앱',
+    label: '개인 프로젝트 · macOS',
+    body: 'Claude Code 작업 상태를 감지해 시작하면 딴 앱, 끝나면 터미널로 자동 전환. 웹만 하던 내가 Xcode 없이 SPM만으로 네이티브 앱을 배포까지 끌고 갔다.',
+    stats: [
+      ['빌드', 'Xcode 없이 SPM'],
+      ['배포', 'Homebrew Tap'],
+      ['규모', '18커밋 · 단독'],
+    ],
+    tags: ['Swift', 'SwiftUI', 'macOS'],
+    note: '제일 오래 데인 건 언어가 아니라 “서명 안 된 앱”이라는 OS 벽 — 알림창을 직접 그려 넘었다.',
+    repo: 'https://github.com/H8njo/afk',
+    postUrl: '/work/afk',
+  },
+];
 
 export type CaseLink = { label: string; href: string };
 export type Timeline = {
@@ -694,7 +739,7 @@ export const education: { school: string; period: string; detail: string }[] = [
 
 export const oss = {
   repo: 'H8njo/column-pager',
-  desc: '어떤 React 화면이든 인쇄물처럼 “고정 크기 페이지”로 자동 분할하는 도구.\n페이지 나누기(레이아웃 계산)만 책임지고 PDF 변환 등은 사용처에 위임해 가볍게 유지.',
+  desc: '페이지 나누기(레이아웃 계산) 하나만 책임지는 작은 코어.\nPDF·저장 등 나머지는 사용처에 위임해, 어떤 React 화면에도 가볍게 얹힌다.',
   tags: ['TypeScript', 'React 18/19', 'Tree-shakeable'],
   install: 'npm i column-pager',
   importLine: "import { ColumnPager } from 'column-pager'",

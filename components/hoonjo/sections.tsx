@@ -357,7 +357,7 @@ export function OpenSource() {
     <section id="oss" className="bg-hj-ink relative overflow-hidden">
       <div aria-hidden className="absolute inset-0 opacity-50 bg-[linear-gradient(rgba(49,130,246,0.10)_1px,transparent_1px),linear-gradient(90deg,rgba(49,130,246,0.10)_1px,transparent_1px)] [background-size:40px_40px]" />
       <div className={`relative ${CONTAINER} ${SECTION_PY}`}>
-        <SectionHeader index={4} eyebrow="OPEN SOURCE" onInk title="사내 도구를, 누구나 쓰게" lead="제품에 묶여 있던 엔진을 클린 재설계해 npm에 공개." />
+        <SectionHeader index={4} eyebrow="OPEN SOURCE" onInk title="사내 도구를, 누구나 쓰게" lead="설치 한 줄로 붙고, 릴리스는 자동화 — 결정적 테스트로 회귀를 막는 패키지." />
         <div className="mt-12 bg-hj-ink-soft border border-[rgba(246,244,238,0.16)] rounded-hj-xl overflow-hidden">
           <div className="grid grid-cols-[1.2fr_1fr] max-[900px]:grid-cols-1">
             <div className="p-[clamp(24px,4vw,36px)] border-r border-[rgba(246,244,238,0.12)] max-[900px]:border-r-0 max-[900px]:border-b max-[900px]:border-[rgba(246,244,238,0.12)]">
