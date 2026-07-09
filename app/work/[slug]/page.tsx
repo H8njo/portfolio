@@ -25,6 +25,30 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 // 여기선 native 태그가 아닌 이미지(캡션)만 커스터마이즈한다.
 // 페이지 크롬(헤더·데모·네비)은 Tailwind hj-* 유틸(theme.css 토큰)로 짠다.
 // (.hoonjo 베이스 규칙은 globals.css @layer base라 유틸이 자연히 이겨 `!` 불필요.)
+// remark는 홀로 있는 이미지를 <p>로 감싼다. 그런데 img 컴포넌트가 <figure>/<figcaption>을
+// 그리므로 <p><figure>…</figure></p>가 되어 하이드레이션 에러가 난다(<p>는 블록 요소를 못 품음).
+// 이미지 하나만 든 <p>를 벗겨 figure가 최상위로 오게 한다. (rehype-unwrap-images 동작을 인라인으로)
+type HastNode = { type: string; tagName?: string; value?: string; children?: HastNode[] };
+function rehypeUnwrapImages() {
+  const isBlank = (n: HastNode) => n.type === "text" && !n.value?.trim();
+  return (tree: HastNode) => {
+    const walk = (node: HastNode) => {
+      if (!node.children) return;
+      node.children = node.children.flatMap((child) => {
+        if (child.type === "element" && child.tagName === "p") {
+          const meaningful = child.children?.filter((c) => !isBlank(c)) ?? [];
+          if (meaningful.length === 1 && meaningful[0].tagName === "img") {
+            return meaningful; // <p> 벗기고 <img>만 올린다
+          }
+        }
+        return [child];
+      });
+      node.children.forEach(walk);
+    };
+    walk(tree);
+  };
+}
+
 const mdxComponents = {
   img: ({ alt, ...p }: React.ComponentProps<"img">) => (
     <figure className="mt-[26px]">
@@ -126,6 +150,7 @@ export default async function CaseDetail({ params }: { params: Promise<{ slug: s
           options={{
             mdxOptions: {
               rehypePlugins: [
+                rehypeUnwrapImages,
                 [rehypePrettyCode, { theme: "github-dark", keepBackground: true, defaultLang: "txt" }],
               ],
             },
