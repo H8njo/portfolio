@@ -74,16 +74,15 @@ export function CaseMetrics({
     );
   }
 
+  // 리스트의 "선 걷어내기" 결을 따라 내부 셀 divider는 제거하고, 얇은 카드
+  // 컨테이너만 유지 — 강조 callout 지위는 살리되 boxed-in 무게는 덜었다.
   return (
     <div
-      className="grid border border-hj-line rounded-hj-lg overflow-hidden bg-hj-paper max-[560px]:grid-cols-1!"
+      className="grid gap-x-8 gap-y-6 rounded-hj-lg border border-hj-line bg-hj-paper p-[clamp(20px,2.4vw,26px)] max-[560px]:grid-cols-1!"
       style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
     >
-      {metrics.map((m, i) => (
-        <div
-          key={m.label}
-          className={`px-5 py-[18px] min-w-0 ${(i + 1) % cols === 0 ? "" : "border-r border-hj-line"} ${i >= cols ? "border-t border-hj-line" : ""} max-[560px]:border-r-0 ${i > 0 ? "max-[560px]:border-t max-[560px]:border-hj-line" : "max-[560px]:border-t-0"}`}
-        >
+      {metrics.map((m) => (
+        <div key={m.label} className="min-w-0">
           <MetricLabel>{m.label}</MetricLabel>
           <MetricValue value={m.value} size="grid" />
         </div>
