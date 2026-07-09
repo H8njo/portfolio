@@ -98,28 +98,32 @@ function CaseRow({ entry, no }: { entry: CaseEntry; no: string }) {
       className="group relative grid grid-cols-[40px_1fr_auto] items-start gap-5 rounded-hj-md p-[28px_20px] no-underline transition-[background,box-shadow] duration-150 hover:bg-hj-paper hover:shadow-hj-soft before:absolute before:left-0 before:top-5 before:bottom-5 before:w-0.5 before:rounded-[2px] before:bg-hj-blue before:origin-center before:scale-y-0 before:transition-transform before:duration-150 before:ease-[cubic-bezier(0.4,0,0.2,1)] before:content-[''] group-hover:before:scale-y-100 max-[640px]:grid-cols-1 max-[640px]:gap-2"
     >
       <span className="pt-[3px] font-hj-mono text-[13px] tabular-nums text-hj-faint transition-colors duration-150 group-hover:text-hj-blue max-[640px]:order-first">{no}</span>
-      <div className="min-w-0">
-        <h3 className="font-hj-serif text-[20px] font-semibold leading-[1.25] tracking-[-0.015em] text-hj-fg transition-colors duration-150 group-hover:text-hj-blue-deep">
-          {frontmatter.title}
-        </h3>
-        <p className="mt-2 max-w-[62ch] font-hj-serif text-[15px] leading-[1.6] text-hj-muted">
-          {frontmatter.summary}
-        </p>
-        {(hasDemo || frontmatter.tags.length > 0) && (
-          <div className="mt-3.5 flex flex-wrap gap-2">
-            {hasDemo && <DemoBadge />}
-            {frontmatter.tags.map((t) => (
-              <span key={t} className={TAG_CHIP}>{t}</span>
-            ))}
-          </div>
-        )}
+      {/* 큰 화면(≥900px)에선 [텍스트 | IMPACT] 2열 — IMPACT가 우측에 세로 1열로.
+          작은 화면에선 세로 흐름(텍스트 아래 IMPACT 가로 배치). */}
+      <div className="min-w-0 min-[900px]:grid min-[900px]:grid-cols-[minmax(0,1fr)_auto] min-[900px]:gap-10 min-[900px]:items-start">
+        <div className="min-w-0">
+          <h3 className="font-hj-serif text-[20px] font-semibold leading-[1.25] tracking-[-0.015em] text-hj-fg transition-colors duration-150 group-hover:text-hj-blue-deep">
+            {frontmatter.title}
+          </h3>
+          <p className="mt-2 max-w-[62ch] font-hj-serif text-[15px] leading-[1.6] text-hj-muted">
+            {frontmatter.summary}
+          </p>
+          {(hasDemo || frontmatter.tags.length > 0) && (
+            <div className="mt-3.5 flex flex-wrap gap-2">
+              {hasDemo && <DemoBadge />}
+              {frontmatter.tags.map((t) => (
+                <span key={t} className={TAG_CHIP}>{t}</span>
+              ))}
+            </div>
+          )}
+        </div>
         {frontmatter.metrics.length > 0 && (
-          <div className="mt-5 flex flex-wrap items-stretch gap-x-6 gap-y-3.5">
-            <span className="self-center font-hj-mono text-[10.5px] font-semibold uppercase tracking-[0.12em] text-hj-faint">IMPACT</span>
+          <div className="mt-5 flex flex-wrap items-stretch gap-x-6 gap-y-3.5 min-[900px]:mt-0 min-[900px]:flex-col min-[900px]:flex-nowrap min-[900px]:items-start min-[900px]:gap-3.5">
+            <span className="self-center font-hj-mono text-[10.5px] font-semibold uppercase tracking-[0.12em] text-hj-faint min-[900px]:self-auto">IMPACT</span>
             {frontmatter.metrics.slice(0, 2).map((m, i) => (
               <div
                 key={m.label}
-                className={`min-w-0 ${i > 0 ? "border-l border-hj-line pl-6 max-[640px]:border-l-0 max-[640px]:pl-0" : ""}`}
+                className={`min-w-0 ${i > 0 ? "border-l border-hj-line pl-6 max-[640px]:border-l-0 max-[640px]:pl-0 min-[900px]:border-l-0 min-[900px]:pl-0" : ""}`}
               >
                 <div className="font-hj-mono text-[10.5px] uppercase tracking-[0.06em] text-hj-muted">{m.label}</div>
                 <div className="mt-1.5">
@@ -170,7 +174,7 @@ export default function WorkIndex() {
                 <span className="font-hj-mono text-[11px] font-medium uppercase tracking-[0.14em] text-hj-muted">더 많은 작업</span>
                 <span aria-hidden className="h-px flex-1 bg-hj-line" />
               </div>
-              <div className="border-t border-hj-line">
+              <div>
                 {rest.map((entry, i) => (
                   <div key={entry.slug} className={i > 0 ? "border-t border-hj-line" : undefined}>
                     <CaseRow entry={entry} no={String(i + (featured ? 2 : 1)).padStart(2, "0")} />
