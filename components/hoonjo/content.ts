@@ -16,7 +16,7 @@ export type ProjImage = { src: string; alt: string };
 /* All copy + data for the Hoonjo portfolio, grounded in his real résumé and
    his own project write-ups. Numbers are his actual figures — no invented
    metrics. Company convention: "@회사" marks the employer; the product/client
-   (솔북, ORZO, 법무부…) is named in prose so the two never blur. */
+   (쏠북, ORZO, 법무부…) is named in prose so the two never blur. */
 
 export const profile = {
   name: 'Hoonjo',
@@ -83,8 +83,8 @@ export const flagship = {
   insight:
     '새로 발명한 게 아니라, 망한 시도를 버리지 않고 각도만 바꿔 합쳤다 — 1번이 실패한 “자연스러운 줄 자르기”를 2번의 column-count가 공짜로 해준다는 걸, 카드 단위 크롭 도구로만 끌어 썼다.',
   generations: [
-    ['v1', '솔북 문제 에디터', '다섯 번을 거쳐, 도메인에 박힌 채 동작한 원형'],
-    ['v2', '솔북 다른 제품', '임의 콘텐츠로 일반화. 핵심 훅이 210줄까지 비대'],
+    ['v1', '쏠북 문제 에디터', '다섯 번을 거쳐, 도메인에 박힌 채 동작한 원형'],
+    ['v2', '쏠북 다른 제품', '임의 콘텐츠로 일반화. 핵심 훅이 210줄까지 비대'],
     [
       'v3',
       'npm · column-pager',
@@ -322,11 +322,12 @@ export const timeline: Timeline[] = [
     org: '@Bookips',
     scope: '디자인 시스템 코드오너',
     description:
-      '교육 콘텐츠 플랫폼 솔북(Solvook). A4 자동 페이징·서버 PDF 파이프라인을 구축하고,\n2년 가까이 환불로 이어지던 조판 난제를 풀어 사내 엔진을 오픈소스(column-pager · npm·MIT)로 공개. 공용 디자인 시스템 공동 메인테이너.',
+      '교육 콘텐츠 플랫폼 쏠북(Solvook). 메인 서비스 엑스퍼트의 A4 다단 조판 난제를 풀어 사내 엔진을 오픈소스(column-pager · npm·MIT)로 공개하고,\n그 엔진을 축으로 콘텐츠 저작툴을 새 프로젝트로 단독 구축(1,682커밋). 저작툴에서 파생된 쏠북패스 출시로 메인 매출까지 이어졌다. 공용 디자인 시스템 공동 메인테이너.',
     tags: ['Next.js', 'TypeScript', 'Canvas', 'OSS'],
     current: true,
     cases: [
       { label: 'column-pager 오픈소스', href: '/work/column-count-layout' },
+      { label: '저작툴 본문 에디터', href: '/work/problem-editor' },
       { label: '디자인 시스템 자동화', href: '/work/design-system' },
     ],
   },
