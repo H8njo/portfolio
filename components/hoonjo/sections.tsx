@@ -1,15 +1,18 @@
 "use client";
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
 import {
   Button, Tag, Badge, Eyebrow, SectionHeader, BlueprintGrid, MetricRow, TimelineItem,
 } from './components';
 import type { WorkCase } from './content';
 import { profile, impact, cases, blackHole, timeline, capabilities, oss } from './content';
-import { BlackHole } from './BlackHole';
 import { Flagship } from './Flagship';
 import { Gallery } from './Lightbox';
+
+// 라이브 블랙홀 — 실제 black-hole-effect 패키지. window 접근이 렌더 중 일어나 ssr:false.
+const BlackholeLive = dynamic(() => import('@/components/demos/blackhole-live'), { ssr: false, loading: () => null });
 const portrait = '/hoonjo/portrait.jpg';
 
 /* Layout rhythm — container 1200px, section padding 96px desktop → 56px mobile
@@ -260,7 +263,7 @@ export function Work() {
           </div>
         </div>
         <div className="bg-hj-ink-deep relative min-h-[clamp(300px,42vw,380px)] overflow-hidden">
-          <BlackHole />
+          <div className="absolute inset-0"><BlackholeLive /></div>
           <span className="absolute top-3.5 right-3.5 inline-flex items-center gap-[7px] font-hj-mono text-[11px] tracking-[0.06em] uppercase text-hj-on-ink bg-[rgba(12,11,8,0.5)] border border-[rgba(246,244,238,0.18)] rounded-hj-pill px-[11px] py-[5px] backdrop-blur-[4px]">
             <span aria-hidden className="w-[7px] h-[7px] rounded-full bg-hj-green-bright animate-hj-pulse" />
             실시간 렌더
