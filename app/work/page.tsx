@@ -125,7 +125,10 @@ function CaseRow({ entry, no }: { entry: CaseEntry; no: string }) {
             <div className="mt-3 grid grid-cols-[auto_auto] items-baseline justify-start gap-x-6 gap-y-2.5">
               {frontmatter.metrics.slice(0, 2).map((m) => (
                 <Fragment key={m.label}>
-                  <div className="font-hj-mono text-[11px] uppercase leading-none tracking-[0.04em] text-hj-muted">{m.label}</div>
+                  <div className="flex items-center gap-1.5 font-hj-mono text-[11px] font-medium uppercase leading-none tracking-[0.04em] text-hj-fg-secondary">
+                    <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-hj-green" />
+                    {m.label}
+                  </div>
                   <ImpactValue value={m.value} />
                 </Fragment>
               ))}
