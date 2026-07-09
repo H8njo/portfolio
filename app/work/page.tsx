@@ -13,11 +13,11 @@ export const metadata = {
 const TAG_CHIP =
   "inline-flex items-center h-6 px-[9px] font-hj-mono text-[12px] leading-none text-hj-fg-secondary bg-hj-fog border border-hj-steel rounded-hj-xs whitespace-nowrap";
 
-// 라이브 데모 뱃지 — 데모 보유 케이스를 초록으로 또렷하게 표시(기존 흐린 점 대체).
+// 라이브 데모 뱃지 — 데모 보유 케이스를 파란색으로 또렷하게 표시(기존 흐린 점 대체).
 function DemoBadge() {
   return (
-    <span className="inline-flex items-center gap-1.5 h-6 px-[9px] font-hj-mono text-[11.5px] font-semibold tracking-[0.03em] leading-none uppercase text-hj-green-deep bg-hj-green-soft border border-hj-green-line rounded-hj-xs whitespace-nowrap">
-      <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-hj-green animate-hj-pulse" />
+    <span className="inline-flex items-center gap-1.5 h-6 px-[9px] font-hj-mono text-[11.5px] font-semibold tracking-[0.03em] leading-none uppercase text-hj-blue-deep bg-hj-blue-soft border border-hj-blue-line rounded-hj-xs whitespace-nowrap">
+      <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-hj-blue animate-hj-pulse" />
       LIVE DEMO
     </span>
   );
