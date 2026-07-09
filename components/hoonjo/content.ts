@@ -309,6 +309,9 @@ export type Timeline = {
      표기(디자인 시스템 코드오너 / 미들·시니어 / 프론트 주저자). */
   scope?: string;
   description: string;
+  /* description(한 줄 리드) 아래에 붙는 성과 항목 — 한 문장에 몰아넣지 않고
+     "어떤 걸 했는지"가 스캔되게 줄 단위로 쪼갠다. 없으면 description만 보인다. */
+  lines?: string[];
   tags: string[];
   current?: boolean;
   /* 해당 시기의 대표 케이스로 유입 — /work/[slug] 상세 글로 연결. */
@@ -320,10 +323,16 @@ export const timeline: Timeline[] = [
     period: '2024 — 현재',
     role: 'Frontend Engineer',
     org: '@Bookips',
-    scope: '디자인 시스템 코드오너',
-    description:
-      '교육 콘텐츠 플랫폼 쏠북(Solvook). 메인 서비스 엑스퍼트의 A4 다단 조판 난제를 풀어 사내 엔진을 오픈소스(column-pager · npm·MIT)로 공개하고,\n그 엔진을 축으로 콘텐츠 저작툴을 새 프로젝트로 단독 구축(1,682커밋). 저작툴에서 파생된 쏠북패스 출시로 메인 매출까지 이어졌다. 공용 디자인 시스템 공동 메인테이너.',
-    tags: ['Next.js', 'TypeScript', 'Canvas', 'OSS'],
+    scope: '디자인 시스템 · PDF 레이아웃 렌더러 핵심 개발자',
+    description: '교육 콘텐츠 플랫폼 쏠북(Solvook)의 프론트엔드.',
+    lines: [
+      '메인 서비스 엑스퍼트에서 문제·지문을 인쇄물처럼 **A4 다단 자동 조판하는 난제 해결**',
+      '그 페이지네이션 엔진을 앱에서 분리해 **오픈소스로 공개** — column-pager (npm · MIT)',
+      '이 엔진을 축으로 **콘텐츠 저작툴을 새 프로젝트로 단독 구축** (1,682커밋 · 전체의 95%)',
+      '저작툴에서 파생된 **쏠북패스 출시 — 현재 메인 매출 담당**',
+      '공용 **디자인 시스템(@bookips/sds) 공동 메인테이너** — 릴리스·PR 리뷰 총괄',
+    ],
+    tags: ['Zustand', 'TanStack Query', 'Radix · CVA', 'svgr 코드젠', 'semantic-release'],
     current: true,
     cases: [
       { label: 'column-pager 오픈소스', href: '/work/column-count-layout' },
@@ -336,9 +345,13 @@ export const timeline: Timeline[] = [
     role: 'Frontend Engineer',
     org: '@Sling',
     scope: '미들·시니어',
-    description:
-      '튜터용 수업 관리 앱 ORZO. 300페이지 교재 PDF의 첫 조작까지를\n639,000ms → 1,310ms(약 488배)로 줄이고, OOM 없는 메모리 바운드 렌더링으로 재설계했다.',
-    tags: ['Next.js', 'PDF', '성능', '메모리'],
+    description: '튜터용 수업 관리 앱 ORZO의 프론트엔드.',
+    lines: [
+      '300페이지 교재 PDF의 첫 조작까지 **639,000ms → 1,310ms(약 488배) 단축**',
+      '전체 페이지 자동선택 시 터지던 메모리를 청크 처리 + page.cleanup() + 온디맨드 렌더로 **OOM 없이 제어** (메모리·정확도 트레이드오프 설계)',
+      '인증 모델을 인메모리 토큰 → **서버 발급 세션 쿠키 + SSR 가드로 전환**, 서버 로그아웃(refresh token revoke)까지',
+    ],
+    tags: ['PDF.js', 'SWR', 'Firebase Auth', 'Turborepo'],
     cases: [{ label: 'PDF 메모리 최적화', href: '/work/pdf-memory' }],
   },
   {
@@ -346,9 +359,14 @@ export const timeline: Timeline[] = [
     role: 'Frontend Engineer · Fullstack',
     org: '@Zipida',
     scope: '보안관제 프론트 주저자',
-    description:
-      '정부·기업 보안관제 SI를 프론트 주저자(696커밋)로 이끌었다. 법무부 포털은 컬럼 정의 1벌로 59개 화면을 양산했고,\nKISTI는 코드 없이 탐지 ML을 학습시키는 마법사로, 현대오토에버 EDR은 이중 데이터소스·NestJS BFF로 설계했다.',
-    tags: ['React', 'GraphQL', 'NestJS', 'RBAC'],
+    description: '정부·기업 보안관제 SI를 프론트 주저자(696커밋)로 이끈 3년.',
+    lines: [
+      '법무부 포털: Table 컴포넌트 하나가 컬럼 정의 메타에서 목록·검색·정렬·엑셀·폼 생성 — **정의 1벌로 59개 화면 양산**, 라우트 정의에서 메뉴·권한트리 동시 파생(RBAC)',
+      'KISTI AI 관제: **코드 없이 탐지 ML을 학습·배포하는 5단계 마법사**를 URL-as-state·immer 상태머신으로 구현 (풀스택 54%)',
+      '현대오토에버 EDR: 비밀번호·권한 필터를 **NestJS BFF 프록시에서 통제**, 정형=PostgreSQL·가변=MongoDB **이중 DB 설계**',
+      '그 외 문체부 관제 포털·사이버 훈련 CTF·통일부 서버사이드 페이징 등 보안관제 프로젝트 다수',
+    ],
+    tags: ['Apollo GraphQL', 'NestJS', 'Elasticsearch', 'immer 상태머신', 'RBAC'],
     cases: [
       { label: '59개 화면 포털', href: '/work/security-portal' },
       { label: 'ML 학습 마법사', href: '/work/security-ai' },
@@ -359,9 +377,13 @@ export const timeline: Timeline[] = [
     period: '2019 — 2020',
     role: 'Frontend Engineer',
     org: '@옐로오투오',
-    description:
-      'PHP 예약 시스템에서 시작해 React로 전환하며 컴포넌트 분리·반응형 설계 기반을 익혔습니다.',
-    tags: ['React', 'PHP', '반응형'],
+    description: '클라이언트 사이트 주문을 받아 개발하는 웹 에이전시.',
+    lines: [
+      '그누보드 등 기존 템플릿 위에 프로젝트별 요구사항을 구현',
+      '사이트 성격에 맞춘 **커스텀 플러그인 제작** (예: 펜션 홈페이지 → 예약 플러그인)',
+      'PHP 예약 시스템에서 시작해 **React로 전환**, 컴포넌트 분리·반응형 설계 기반 습득',
+    ],
+    tags: ['그누보드5', 'PHP 플러그인', 'jQuery', 'React 전환'],
   },
 ];
 
