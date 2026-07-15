@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react';
 import type { Metric } from './components';
 import { Tag, MetricRow } from './components';
-import { profile, timeline, capabilities, flagship, cases, blackHole, impact, oss, resumeSummary, resumeSkills, resumeExperience, education } from './content';
+import { profile, timeline, capabilities, flagship, cases, blackHole, sideProjects, impact, oss, resumeSummary, resumeSkills, resumeExperience, education } from './content';
 import type { ProjImage, ExpCompany } from './content';
 import { BlackHole } from './BlackHole';
 const portrait = '/hoonjo/portrait.jpg';
@@ -58,10 +58,13 @@ function SectionLabel({ children }: { children: ReactNode }) {
   return <div className="font-hj-mono text-[11px] tracking-[0.1em] uppercase text-hj-muted">{children}</div>;
 }
 
-function DocSection({ label, breakPage, children }: { label: string; breakPage?: boolean; children: ReactNode }) {
+/* `flow` = 여러 페이지에 걸쳐 흐를 수 있는 긴 섹션(경력·대표 프로젝트). 짧은
+   섹션은 기본값(break-inside:avoid)으로 한 페이지에 묶는다. 라벨엔 break-after:avoid
+   를 걸어 섹션 제목이 페이지 맨 아래에 홀로 남지 않게 한다. */
+function DocSection({ label, flow, children }: { label: string; flow?: boolean; children: ReactNode }) {
   return (
-    <section className={`mt-[26px] break-inside-avoid ${breakPage ? '[break-before:page] print:pt-[14mm]' : ''}`}>
-      <h2 className="font-hj-mono text-[12px] tracking-[0.12em] uppercase text-hj-muted mt-0 mb-3.5 pb-2 border-b border-hj-line">{label}</h2>
+    <section className={`mt-[26px] ${flow ? '' : 'break-inside-avoid'}`}>
+      <h2 className="font-hj-mono text-[12px] tracking-[0.12em] uppercase text-hj-muted mt-0 mb-3.5 pb-2 border-b border-hj-line break-after-avoid">{label}</h2>
       {children}
     </section>
   );
@@ -80,63 +83,146 @@ function Bullets({ items }: { items: string[] }) {
   );
 }
 
-/* ---- project data (bullet-friendly, reused from content) ---------------- */
+/* ---- supporting projects (3 cases; flagship handled by FlagshipBlock) --- */
 type Project = { title: string; company?: string; problem: string[]; structure: string[]; metrics: Metric[]; tags: string[]; images?: ProjImage[]; code?: { caption: string; lines: string } };
 
-const FLAGSHIP_PROBLEM = [
-  'A4 2단 레이아웃에서 한 칸 높이를 넘는 긴 카드(긴 본문)를 기존 구현이 처리 못 함',
-  '인쇄물이라 문장이 잘리면 그대로 불량품\n— 2년 가까이 환불 문의',
-  '여러 명이 붙었지만 다들 같은 벽에서 멈춤',
-];
-const FLAGSHIP_STRUCTURE = [
-  '앱에서 분리 → 순수 코어 / 측정 / 렌더 3계층으로 클린 재설계',
-  '망한 시도를 버리지 않고 각도만 바꿔 합친 3세대 엔진',
-  '결정적 테스트 49개로 측정부를 교체 가능하게 추상화',
-];
+const PROJECTS: Project[] = cases.map((c): Project => ({
+  title: c.title, company: c.company, problem: c.problem, structure: c.structure,
+  metrics: c.metrics, tags: c.tags, images: c.images, code: c.code,
+}));
 
-const PROJECTS: Project[] = [
-  { title: flagship.title, company: flagship.company, problem: FLAGSHIP_PROBLEM, structure: FLAGSHIP_STRUCTURE, metrics: flagship.results, tags: ['TypeScript', 'React 18/19', '측정-우선 레이아웃', 'semantic-release'], images: flagship.images },
-  ...cases.map((c): Project => ({ title: c.title, company: c.company, problem: c.problem, structure: c.structure, metrics: c.metrics, tags: c.tags, images: c.images, code: c.code })),
-];
-
-function ProjectBlock({ p, withImages = false }: { p: Project; withImages?: boolean }) {
-  return (
-    <section className="pt-[22px] border-t border-hj-line break-inside-avoid">
-      <div className="flex items-baseline gap-2.5 flex-wrap">
-        <h3 className="font-hj-serif text-[20px] font-semibold tracking-[-0.01em] text-hj-fg">{p.title}</h3>
-        {p.company && <span className="font-hj-mono text-[12.5px] text-hj-muted">{p.company}</span>}
+/* 프로젝트 시각 자료 — 실제 화면(최대 3장) 또는 코드 패널. 인쇄에서 쪼개지지 않게 묶는다. */
+function ProjectVisual({ p, cols = 3 }: { p: Project; cols?: number }) {
+  if (p.images && p.images.length > 0) {
+    return (
+      <div className="grid gap-2.5 mt-4 break-inside-avoid" style={{ gridTemplateColumns: `repeat(${Math.min(p.images.length, cols)}, 1fr)` }}>
+        {p.images.map((im, i) => (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img key={i} src={im.src} alt={im.alt} className="w-full aspect-[4/3] object-cover rounded-hj-md border border-hj-line" />
+        ))}
       </div>
-      {withImages && p.images && p.images.length > 0 && (
-        <div className="grid gap-2.5 mt-4" style={{ gridTemplateColumns: `repeat(${Math.min(p.images.length, 3)}, 1fr)` }}>
-          {p.images.map((im, i) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img key={i} src={im.src} alt={im.alt} className="w-full aspect-[4/3] object-cover rounded-hj-md border border-hj-line break-inside-avoid" />
-          ))}
+    );
+  }
+  if (p.code) {
+    return (
+      <div className="mt-4 bg-hj-ink border border-hj-ink-soft rounded-hj-md px-5 py-[18px] overflow-x-auto break-inside-avoid">
+        {p.code.lines.split('\n').map((ln, i) => {
+          const t = ln.trim();
+          const color = t.startsWith('//') ? 'text-hj-on-ink-muted' : t.startsWith('$') ? 'text-hj-blue-bright' : 'text-hj-on-ink';
+          return <div key={i} className={`font-hj-mono text-[12px] leading-[1.8] whitespace-pre min-h-[1.3em] ${color}`}>{ln || ' '}</div>;
+        })}
+        <div className="font-hj-mono text-[10.5px] text-hj-on-ink-muted mt-3 pt-2.5 border-t border-[rgba(246,244,238,0.14)]">{p.code.caption}</div>
+      </div>
+    );
+  }
+  return null;
+}
+
+/* 지원 케이스 — 제목·시각자료 / Problem·Structure / Impact·태그. 강제 페이지 분할 없이
+   흐르되 각 덩어리(제목+시각자료, P·S 그리드, Impact)는 안 쪼개지게 묶는다. */
+function ProjectBlock({ p }: { p: Project }) {
+  return (
+    <section className="pt-[22px] border-t border-hj-line">
+      <div className="break-inside-avoid break-after-avoid">
+        <div className="flex items-baseline gap-2.5 flex-wrap">
+          <h3 className="font-hj-serif text-[20px] font-semibold tracking-[-0.01em] text-hj-fg">{p.title}</h3>
+          {p.company && <span className="font-hj-mono text-[12.5px] text-hj-muted">{p.company}</span>}
         </div>
-      )}
-      {withImages && (!p.images || p.images.length === 0) && p.code && (
-        <div className="mt-4 bg-hj-ink border border-hj-ink-soft rounded-hj-md px-5 py-[18px] overflow-x-auto">
-          {p.code.lines.split('\n').map((ln, i) => {
-            const t = ln.trim();
-            const color = t.startsWith('//') ? 'text-hj-on-ink-muted' : t.startsWith('$') ? 'text-hj-blue-bright' : 'text-hj-on-ink';
-            return <div key={i} className={`font-hj-mono text-[12px] leading-[1.8] whitespace-pre min-h-[1.3em] ${color}`}>{ln || ' '}</div>;
-          })}
-          <div className="font-hj-mono text-[10.5px] text-hj-on-ink-muted mt-3 pt-2.5 border-t border-[rgba(246,244,238,0.14)]">{p.code.caption}</div>
-        </div>
-      )}
-      <div className="grid grid-cols-2 gap-6 mt-4 max-[720px]:grid-cols-1">
+        <ProjectVisual p={p} />
+      </div>
+      <div className="grid grid-cols-2 gap-6 mt-4 break-inside-avoid max-[720px]:grid-cols-1">
         <div><SectionLabel>Problem</SectionLabel><div className="mt-[9px]"><Bullets items={p.problem} /></div></div>
         <div><SectionLabel>Structure</SectionLabel><div className="mt-[9px]"><Bullets items={p.structure} /></div></div>
       </div>
-      <div className="mt-[18px] pt-4 border-t border-hj-line">
+      <div className="mt-[18px] pt-4 border-t border-hj-line break-inside-avoid">
         <SectionLabel>Impact</SectionLabel>
         <div className="mt-3.5"><MetricRow stats={p.metrics} /></div>
-      </div>
-      {withImages && (
         <div className="flex flex-wrap gap-1.5 mt-4">
           {p.tags.map((t) => <Tag key={t}>{t}</Tag>)}
         </div>
-      )}
+      </div>
+    </section>
+  );
+}
+
+/* ---- Flagship — the anchor: full "다섯 번 시도 → 세대 진화 → 정직한 한계" story,
+   ported from the /work 게시물 목소리. 오픈소스(column-pager) 사실을 여기 흡수해
+   별도 섹션 중복을 없앤다. */
+const FLAGSHIP_TAGS = ['TypeScript', 'React 18/19', '측정-우선 레이아웃', 'semantic-release', 'MIT'];
+
+function FlagshipBlock() {
+  return (
+    <section className="pt-[22px] border-t-2 border-hj-fg">
+      {/* 헤더 + 훅 + 실제 PDF 출력 2장 — 붙어 있게 */}
+      <div className="break-inside-avoid break-after-avoid">
+        <div className="flex items-baseline gap-2.5 flex-wrap">
+          <h3 className="font-hj-serif text-[22px] font-bold tracking-[-0.015em] text-hj-fg">{flagship.title}</h3>
+          <span className="font-hj-mono text-[12.5px] text-hj-muted">{flagship.company}</span>
+          <span className="inline-flex items-center gap-1.5 font-hj-mono text-[10.5px] font-semibold tracking-[0.08em] uppercase text-hj-green-deep bg-hj-green-soft border border-hj-green-line rounded-hj-xs px-2 py-[3px]">
+            <span aria-hidden className="w-[5px] h-[5px] rotate-45 bg-hj-green flex-none" />
+            {flagship.badge}
+          </span>
+        </div>
+        <p className="mt-2.5 max-w-[64ch] font-hj-serif text-[14px] leading-[1.6] text-hj-fg-secondary">{flagship.hook}</p>
+        <div className="grid grid-cols-2 gap-2.5 mt-4">
+          {flagship.images.map((im, i) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img key={i} src={im.src} alt={im.alt} className="w-full aspect-[4/3] object-cover rounded-hj-md border border-hj-line" />
+          ))}
+        </div>
+      </div>
+
+      {/* 다섯 번의 시도 — 시그니처 서사. 각 시도는 안 쪼개지게. */}
+      <div className="mt-5 break-inside-avoid">
+        <SectionLabel>다섯 번의 시도</SectionLabel>
+        <ol className="list-none m-0 p-0 mt-3 flex flex-col gap-2.5">
+          {flagship.attempts.map((a) => (
+            <li key={a.n} className="grid grid-cols-[26px_1fr] gap-2.5 break-inside-avoid">
+              <span className={`font-hj-mono text-[12px] font-semibold pt-[1px] ${a.win ? 'text-hj-green-deep' : 'text-hj-faint'}`}>{a.n}</span>
+              <div>
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <span className="font-hj-serif text-[13.5px] font-semibold leading-[1.4] text-hj-fg">{a.head}</span>
+                  {a.win && <span className="font-hj-mono text-[9.5px] font-semibold tracking-[0.12em] uppercase text-hj-green-deep bg-hj-green-soft border border-hj-green-line rounded-hj-xs px-1.5 py-[1px]">정답</span>}
+                </div>
+                <p className="font-hj-serif text-[12.5px] leading-[1.55] text-hj-muted mt-1">{a.miss}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+        <p className="mt-3.5 max-w-[68ch] font-hj-serif text-[12.5px] leading-[1.6] text-hj-fg-secondary border-l-2 border-hj-blue-line pl-3">{flagship.insight}</p>
+      </div>
+
+      {/* 세대 진화 v1→v2→v3 */}
+      <div className="mt-5 break-inside-avoid">
+        <SectionLabel>한 번에 끝나지 않았다 · 세대 진화</SectionLabel>
+        <div className="grid grid-cols-3 gap-2.5 mt-3 max-[720px]:grid-cols-1">
+          {flagship.generations.map(([v, where, what]) => (
+            <div key={v} className="border border-hj-line rounded-hj-md p-3">
+              <div className="font-hj-mono text-[12px] font-semibold text-hj-blue-deep">{v}</div>
+              <div className="font-hj-serif text-[12.5px] font-semibold text-hj-fg mt-1">{where}</div>
+              <div className="font-hj-serif text-[11.5px] leading-[1.5] text-hj-muted mt-1">{what}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Impact + 정직한 한계 + 오픈소스 흡수 */}
+      <div className="mt-5 pt-4 border-t border-hj-line break-inside-avoid">
+        <SectionLabel>Impact</SectionLabel>
+        <div className="mt-3.5"><MetricRow stats={flagship.results} /></div>
+        <p className="mt-4 max-w-[68ch] font-hj-serif text-[12.5px] leading-[1.55] text-hj-muted">{flagship.resultNote}</p>
+        <p className="mt-2.5 max-w-[68ch] font-hj-serif text-[12.5px] leading-[1.55] text-hj-muted border-l-2 border-hj-line pl-3">
+          <span className="font-hj-mono text-[9.5px] font-semibold tracking-[0.14em] uppercase text-hj-faint mr-1.5">한계</span>
+          {flagship.honesty}
+        </p>
+        <div className="mt-4 flex flex-wrap items-center gap-x-3.5 gap-y-2">
+          <span className="font-hj-mono text-[12px] text-hj-fg-secondary"><span className="text-hj-blue-deep">$</span> {oss.install}</span>
+          <a href={flagship.link.href} target="_blank" rel="noreferrer" className="font-hj-mono text-[12px] text-hj-blue-deep">{flagship.link.label} ↗</a>
+        </div>
+        <div className="flex flex-wrap gap-1.5 mt-3">
+          {FLAGSHIP_TAGS.map((t) => <Tag key={t}>{t}</Tag>)}
+        </div>
+      </div>
     </section>
   );
 }
@@ -195,8 +281,10 @@ function ResumeHeader() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={portrait} alt={profile.nameKo} className="flex-none w-[104px] h-[124px] object-cover object-[center_22%] rounded-hj-lg border border-hj-line" />
       </div>
+      {/* lead("7년차 …")는 위 role 서브타이틀과 중복이라 렌더에서 뺀다 — hook을 굵은
+          첫 줄로 승격해 요약이 곧바로 강점으로 시작하게 한다. */}
       <div className="mt-[18px] flex flex-col gap-[7px] max-w-[72ch]">
-        {resumeSummary.map((line, i) => {
+        {resumeSummary.filter((line) => line.kind !== 'lead').map((line, i) => {
           if (line.kind === 'close') {
             const [pre, post] = line.t.split(' : ');
             return (
@@ -207,11 +295,11 @@ function ResumeHeader() {
               </p>
             );
           }
-          const sizeCls = line.kind === 'lead' ? 'text-[18px]' : line.kind === 'hook' ? 'text-[15.5px]' : 'text-[14px]';
-          const weightCls = line.kind === 'lead' ? 'font-bold' : line.kind === 'body' ? 'font-normal' : 'font-semibold';
+          const sizeCls = line.kind === 'hook' ? 'text-[18px]' : 'text-[14px]';
+          const weightCls = line.kind === 'body' ? 'font-normal' : 'font-bold';
           const colorCls = line.kind === 'body' ? 'text-hj-fg-secondary' : 'text-hj-fg';
           return (
-            <p key={i} className={`font-hj-serif leading-[1.5] ${line.kind === 'hook' ? 'mt-[3px]' : ''} ${line.kind === 'lead' ? 'tracking-[-0.01em]' : ''} ${sizeCls} ${weightCls} ${colorCls}`}>{line.t}</p>
+            <p key={i} className={`font-hj-serif leading-[1.5] ${line.kind === 'hook' ? 'tracking-[-0.01em]' : ''} ${sizeCls} ${weightCls} ${colorCls}`}>{line.t}</p>
           );
         })}
       </div>
@@ -234,53 +322,59 @@ function ResumeSkills() {
   );
 }
 
-/* 회사 하나 = 기간(왼쪽) + 회사/제품/역할 헤더 + 스택 + 성과 불릿(오른쪽). */
+/* 회사 하나 = 기간+회사 헤더(붙어 있어야 함) + 성과 하이라이트(각각은 안 쪼개지되,
+   회사 블록 전체는 여러 페이지에 걸쳐 흐를 수 있음). 인쇄 신뢰성을 위해 기간을 왼쪽
+   레일 그리드로 고정하지 않고 헤더 클러스터로 묶는다 — 긴 회사(하이라이트 4개)가 페이지
+   경계를 넘어도 그리드 행이 쪼개지지 않는다. 하이라이트는 172px 들여써 헤더 정렬을 맞춘다. */
 function ExperienceBlock({ c, first = false }: { c: ExpCompany; first?: boolean }) {
   return (
-    <section className={`grid grid-cols-[150px_1fr] gap-[22px] break-inside-avoid max-[720px]:grid-cols-1 max-[720px]:gap-2 ${first ? 'pt-1' : 'pt-[22px] border-t border-hj-line'}`}>
-      <div className={`flex items-center gap-2 font-hj-mono text-[13px] font-medium pt-[3px] ${c.current ? 'text-hj-green-deep' : 'text-hj-muted'}`}>
-        {c.current && <span aria-hidden className="w-[7px] h-[7px] rounded-[1px] rotate-45 bg-hj-green flex-none" />}
-        {c.period}
+    <section className={first ? 'pt-1' : 'pt-[22px] border-t border-hj-line'}>
+      {/* 헤더 클러스터 — 기간+회사+역할+스택을 한 덩어리로 묶어 페이지 하단에 홀로 남지 않게. */}
+      <div className="grid grid-cols-[150px_1fr] gap-[22px] break-inside-avoid break-after-avoid max-[720px]:grid-cols-1 max-[720px]:gap-1.5">
+        <div className={`flex items-center gap-2 font-hj-mono text-[13px] font-medium pt-[3px] ${c.current ? 'text-hj-green-deep' : 'text-hj-muted'}`}>
+          {c.current && <span aria-hidden className="w-[7px] h-[7px] rounded-[1px] rotate-45 bg-hj-green flex-none" />}
+          {c.period}
+        </div>
+        <div className="min-w-0">
+          <div className="flex items-baseline gap-2.5 flex-wrap">
+            <h3 className="font-hj-serif text-[21px] font-semibold tracking-[-0.01em] text-hj-fg">{c.company}</h3>
+            <span className="font-hj-serif text-[13.5px] text-hj-muted">{c.product}</span>
+          </div>
+          <div className="font-hj-serif text-[13.5px] font-medium text-hj-fg-secondary mt-1">{c.role}</div>
+          <div className="flex flex-wrap gap-1.5 mt-3">
+            {c.stack.map((t) => <Tag key={t}>{t}</Tag>)}
+          </div>
+        </div>
       </div>
-      <div className="min-w-0">
-        <div className="flex items-baseline gap-2.5 flex-wrap">
-          <h3 className="font-hj-serif text-[21px] font-semibold tracking-[-0.01em] text-hj-fg">{c.company}</h3>
-          <span className="font-hj-serif text-[13.5px] text-hj-muted">{c.product}</span>
-        </div>
-        <div className="font-hj-serif text-[13.5px] font-medium text-hj-fg-secondary mt-1">{c.role}</div>
-        <div className="flex flex-wrap gap-1.5 mt-3">
-          {c.stack.map((t) => <Tag key={t}>{t}</Tag>)}
-        </div>
-        <ul className="list-none mt-3.5 p-0 flex flex-col gap-[11px]">
-          {c.highlights.map((h) => (
-            <li key={h.head} className="grid grid-cols-[auto_1fr] gap-2.5 break-inside-avoid">
-              <span aria-hidden className="w-[5px] h-[5px] mt-[7px] rounded-[1px] bg-hj-blue rotate-45 flex-none" />
-              <div>
-                <div className="font-hj-serif text-[14.5px] font-semibold leading-[1.45] text-hj-fg">{h.head}</div>
-                <ul className="list-none mt-1.5 p-0 flex flex-col gap-[3px]">
-                  {h.points.map((pt, i) => (
-                    <li key={i} className="grid grid-cols-[auto_1fr] gap-2 font-hj-serif text-[13.5px] leading-[1.55] text-hj-fg-secondary">
-                      <span aria-hidden className="text-hj-faint">–</span>
-                      <span>{pt}</span>
-                    </li>
+      <ul className="list-none mt-3.5 p-0 flex flex-col gap-[11px] pl-[172px] max-[720px]:pl-0">
+        {c.highlights.map((h) => (
+          <li key={h.head} className="grid grid-cols-[auto_1fr] gap-2.5 break-inside-avoid">
+            <span aria-hidden className="w-[5px] h-[5px] mt-[7px] rounded-[1px] bg-hj-blue rotate-45 flex-none" />
+            <div>
+              <div className="font-hj-serif text-[14.5px] font-semibold leading-[1.45] text-hj-fg">{h.head}</div>
+              <ul className="list-none mt-1.5 p-0 flex flex-col gap-[3px]">
+                {h.points.map((pt, i) => (
+                  <li key={i} className="grid grid-cols-[auto_1fr] gap-2 font-hj-serif text-[13.5px] leading-[1.55] text-hj-fg-secondary">
+                    <span aria-hidden className="text-hj-faint">–</span>
+                    <span>{pt}</span>
+                  </li>
+                ))}
+              </ul>
+              {h.results && h.results.length > 0 && (
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-[7px] mt-2.5">
+                  <span className="inline-flex items-center gap-1.5 font-hj-mono text-[10.5px] font-semibold tracking-[0.14em] uppercase text-hj-green-deep">
+                    <span aria-hidden className="w-[5px] h-[5px] rotate-45 bg-hj-green flex-none" />
+                    성과
+                  </span>
+                  {h.results.map((r) => (
+                    <span key={r} className="font-hj-serif text-[12.5px] font-semibold text-hj-fg bg-hj-cloud border border-hj-line rounded-hj-xs px-2.5 py-1 leading-[1.35]">{r}</span>
                   ))}
-                </ul>
-                {h.results && h.results.length > 0 && (
-                  <div className="flex flex-wrap items-center gap-x-2 gap-y-[7px] mt-2.5">
-                    <span className="inline-flex items-center gap-1.5 font-hj-mono text-[10.5px] font-semibold tracking-[0.14em] uppercase text-hj-green-deep">
-                      <span aria-hidden className="w-[5px] h-[5px] rotate-45 bg-hj-green flex-none" />
-                      성과
-                    </span>
-                    {h.results.map((r) => (
-                      <span key={r} className="font-hj-serif text-[12.5px] font-semibold text-hj-fg bg-hj-cloud border border-hj-line rounded-hj-xs px-2.5 py-1 leading-[1.35]">{r}</span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
+                </div>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
@@ -301,29 +395,129 @@ function Education() {
   );
 }
 
+/* 이력서용 사이드 프로젝트 — Obsidian 커리어 볼트 기준. 제목=프로젝트명, 그 아래
+   "무엇인지" 한 줄 + 실제로 한 일 불릿 + 스택. 왼쪽 레일 없이 전체폭(경력 하이라이트와
+   같은 대시 불릿 리듬). loa-map-generator는 samra-mansang 불릿에 흡수. */
+type ResumeSide = { name: string; meta: string; what: string; points: string[]; stack: string[]; repo?: string };
+const RESUME_SIDE: ResumeSide[] = [
+  {
+    name: 'samra-mansang',
+    meta: '풀스택 · 178커밋 · 단독',
+    what: '로스트아크 업적 추적·관리 + 공략 위키 웹 서비스 (Next.js·NestJS 모노레포).',
+    points: [
+      'OCR로 업적 데이터를 일괄 등록하고, Leaflet 맵에 위치 마커·추가요청, TipTap 공략 위키까지 풀스택 단독 구현',
+      'PC 화면을 캡처해 WebRTC로 폰에 맵 데이터를 실시간 전송하는 게임 컴패니언 — 차별 기능',
+      '맵 타일은 직접 만든 OpenCV 도구 loa-map-generator로 지형만 추출 (flood-fill 세그멘테이션 — "안쪽 말고 바깥을 지운다")',
+    ],
+    stack: ['Next.js', 'NestJS · Prisma', 'Leaflet', 'WebRTC', 'OpenCV'],
+  },
+  {
+    name: 'afk',
+    meta: 'macOS 유틸 · 단독 · Homebrew 배포',
+    what: 'Claude Code 작업 상태를 감지해 앱 포커스를 자동 전환하는 macOS 메뉴바 앱.',
+    points: [
+      'AI가 작업하는 동안 break 앱(Safari·YouTube)으로 전환하고, 끝나면 알림·자동 복귀로 코딩 앱에 돌아온다',
+      'Xcode 없이 Command Line Tools + SPM만으로 SwiftUI(MenuBarExtra) 앱을 빌드, Homebrew Tap으로 배포',
+      '서명 없는 앱의 알림 제약을 borderless NSWindow + .screenSaver 레벨 플로팅 배너로 우회',
+    ],
+    stack: ['Swift', 'SwiftUI', 'SPM', 'Homebrew'],
+    repo: 'https://github.com/H8njo/afk',
+  },
+  {
+    name: 'webgl-black-hole',
+    meta: '그래픽스 · 단독',
+    what: 'WebGL 프래그먼트 셰이더로 블랙홀 중력렌즈 왜곡을 실시간 렌더링하는 그래픽스 프로젝트.',
+    points: [
+      'Canvas 2D로 별 8,000~10,000개를 절차 생성해 매 프레임 텍스처로 업로드하는 2-레이어 합성',
+      '종횡비 보정 → 거리 → radius falloff → UV 회전 왜곡까지 셰이더 한 장에 직접 작성 (그래픽 라이브러리 없이)',
+    ],
+    stack: ['WebGL 1.0', 'GLSL', 'Canvas 2D', 'React'],
+    repo: 'https://github.com/H8njo/webgl-black-hole',
+  },
+];
+
+/* 이력서 사이드 프로젝트 항목 — 제목(프로젝트명)+메타+무엇인지 한 줄+한 일 불릿+스택.
+   경력 하이라이트와 같은 대시 불릿, 왼쪽 레일 없이 전체폭. */
+function ResumeSideProject({ p, first }: { p: ResumeSide; first?: boolean }) {
+  return (
+    <section className={`break-inside-avoid ${first ? '' : 'pt-4 border-t border-hj-line'}`}>
+      <div className="flex items-baseline gap-2.5 flex-wrap">
+        <h3 className="font-hj-serif text-[16px] font-semibold tracking-[-0.01em] text-hj-fg">{p.name}</h3>
+        <span className="font-hj-mono text-[11.5px] text-hj-muted">{p.meta}</span>
+        {p.repo && <a href={p.repo} target="_blank" rel="noreferrer" className="font-hj-mono text-[11.5px] text-hj-blue-deep">github ↗</a>}
+      </div>
+      <p className="font-hj-serif text-[13.5px] font-medium leading-[1.55] text-hj-fg mt-1.5">{p.what}</p>
+      <ul className="list-none m-0 p-0 mt-2 flex flex-col gap-1">
+        {p.points.map((pt, i) => (
+          <li key={i} className="grid grid-cols-[auto_1fr] gap-2 font-hj-serif text-[13px] leading-[1.55] text-hj-fg-secondary">
+            <span aria-hidden className="text-hj-faint">–</span>
+            <span>{pt}</span>
+          </li>
+        ))}
+      </ul>
+      <div className="flex flex-wrap gap-1.5 mt-2.5">
+        {p.stack.map((s) => <Tag key={s}>{s}</Tag>)}
+      </div>
+    </section>
+  );
+}
+
 /* ---- 이력서: 회사 위주로 읽는 CV --------------------------------------- */
+/* 위계 순서: 요약 → 경력 → 역량 → 학력. 7년차 시니어이므로 경력이 1순위 — 첫 페이지가
+   경력으로 시작하고, 학력(2012~2013)은 맨 뒤로. 강제 페이지 분할 없이 흐르게 두되
+   회사/하이라이트 단위만 안 쪼개지게 해 빈 페이지를 없앤다. */
 export function Resume() {
   return (
     <DocShell tab="이력서">
       <ResumeHeader />
-      <DocSection label="핵심 역량"><ResumeSkills /></DocSection>
-      <DocSection label="학력 · 교육"><Education /></DocSection>
-      <DocSection label="경력 기술" breakPage>
+      <DocSection label="경력 기술" flow>
         <div className="flex flex-col gap-2">
-          <ExperienceBlock c={resumeExperience[0]} first />
-          <ExperienceBlock c={resumeExperience[1]} />
+          {resumeExperience.map((c, i) => (
+            <ExperienceBlock key={c.company} c={c} first={i === 0} />
+          ))}
         </div>
       </DocSection>
-      <section className="mt-2 [break-before:page] print:pt-[14mm] break-inside-avoid">
-        <div className="flex flex-col gap-2">
-          {resumeExperience.slice(2).map((c) => <ExperienceBlock key={c.company} c={c} />)}
+      <DocSection label="사이드 프로젝트" flow>
+        <div className="flex flex-col gap-4">
+          {RESUME_SIDE.map((p, i) => <ResumeSideProject key={p.name} p={p} first={i === 0} />)}
         </div>
-      </section>
+      </DocSection>
+      <DocSection label="핵심 역량"><ResumeSkills /></DocSection>
+      <DocSection label="학력 · 교육"><Education /></DocSection>
     </DocShell>
   );
 }
 
+/* 사이드 프로젝트 카드 — 라이브 렌더가 없는 개인 프로젝트(사만·afk)용. note는
+   접힌 곁가지(사만의 loa-map-generator 등)를 헤어라인 인용으로 흘린다. */
+function SideProjectCard({ p }: { p: (typeof sideProjects)[number] }) {
+  return (
+    <div className="border border-hj-line rounded-hj-lg p-[18px] break-inside-avoid flex flex-col">
+      <div className="font-hj-mono text-[10.5px] tracking-[0.1em] uppercase text-hj-muted">{p.label}</div>
+      <div className="flex items-baseline gap-2 flex-wrap mt-2">
+        <h3 className="font-hj-serif text-[16px] font-semibold tracking-[-0.01em] leading-[1.25] text-hj-fg">{p.title}</h3>
+        {p.repo && <a href={p.repo} target="_blank" rel="noreferrer" className="font-hj-mono text-[11px] text-hj-blue-deep whitespace-nowrap">github ↗</a>}
+      </div>
+      <p className="font-hj-serif text-[13px] leading-[1.55] text-hj-fg-secondary mt-2 max-w-[62ch]">{p.body}</p>
+      <div className="flex flex-wrap gap-x-4 gap-y-1.5 mt-3">
+        {p.stats.map(([k, v]) => (
+          <div key={k}><span className="font-hj-mono text-[10.5px] text-hj-muted">{k} · </span><span className="font-hj-mono text-[12.5px] font-semibold text-hj-fg">{v}</span></div>
+        ))}
+      </div>
+      {p.note && (
+        <p className="font-hj-serif text-[12px] leading-[1.5] text-hj-muted mt-3 border-l-2 border-hj-line pl-2.5 max-w-[64ch]">{p.note}</p>
+      )}
+      <div className="flex flex-wrap gap-1.5 mt-3">
+        {p.tags.map((t) => <Tag key={t}>{t}</Tag>)}
+      </div>
+    </div>
+  );
+}
+
 /* ---- 포트폴리오 PDF: the whole portfolio as one document ----------------- */
+/* 정보 구조는 홈과 같은 순서: Hero → 대표 임팩트 → 대표 프로젝트(플래그십 먼저) →
+   사이드 → 경력 → 전문 영역. 강제 페이지 분할 없이 흐르게 조판해 빈 페이지를 없앤다
+   (— 측정-우선 조판이 문서 자체로 증명되게). 오픈소스는 플래그십에 흡수. */
 export function PortfolioPdf() {
   return (
     <DocShell tab="포트폴리오 PDF">
@@ -345,19 +539,18 @@ export function PortfolioPdf() {
         </div>
       </DocSection>
 
+      {/* 경력 개요를 임팩트 바로 뒤에 둬 1페이지를 "정체성"으로 채우고, 대표 프로젝트가
+          다음 페이지를 깨끗이 시작하게 한다(빈 페이지 방지 + 정체성→깊이 흐름). */}
       <DocSection label="경력"><CareerList /></DocSection>
 
-      <DocSection label="대표 프로젝트" breakPage>
-        <ProjectBlock p={PROJECTS[0]} withImages />
-        {PROJECTS.slice(1).map((p) => (
-          <div key={p.title} className="[break-before:page] print:pt-[14mm] mt-8">
-            <ProjectBlock p={p} withImages />
-          </div>
-        ))}
+      <DocSection label="대표 프로젝트" flow>
+        <FlagshipBlock />
+        {PROJECTS.map((p) => <ProjectBlock key={p.title} p={p} />)}
       </DocSection>
 
-      <DocSection label="사이드 프로젝트" breakPage>
-        <div className="grid grid-cols-[1fr_0.82fr] gap-6 items-stretch max-[720px]:grid-cols-1">
+      <DocSection label="사이드 프로젝트" flow>
+        {/* 블랙홀 — 라이브 WebGL 렌더가 있는 대표 사이드 프로젝트 */}
+        <div className="grid grid-cols-[1fr_0.82fr] gap-6 items-stretch break-inside-avoid max-[720px]:grid-cols-1">
           <div>
             <div className="flex items-baseline gap-2.5 flex-wrap">
               <h3 className="font-hj-serif text-[19px] font-semibold text-hj-fg">{blackHole.title.join(' ')}</h3>
@@ -381,22 +574,13 @@ export function PortfolioPdf() {
             </span>
           </div>
         </div>
+        {/* 그 외 개인 프로젝트 — 사만(+loa-map-generator), afk */}
+        <div className="grid grid-cols-2 gap-4 mt-5 max-[720px]:grid-cols-1">
+          {sideProjects.map((p) => <SideProjectCard key={p.title} p={p} />)}
+        </div>
       </DocSection>
 
-      <div className="[break-before:page] print:pt-[14mm] [break-inside:avoid]">
-        <DocSection label="오픈소스">
-          <div className="flex items-baseline gap-2.5 flex-wrap">
-            <span className="font-hj-mono text-[15px] font-medium text-hj-fg">{oss.repo}</span>
-            <a href={oss.href} target="_blank" rel="noreferrer" className="font-hj-mono text-[12.5px] text-hj-blue-deep">github ↗</a>
-          </div>
-          <p className="font-hj-serif text-[13.5px] leading-[1.55] text-hj-fg-secondary mt-2 whitespace-pre-line">{oss.desc}</p>
-          <div className="flex flex-wrap gap-1.5 mt-3.5">
-            {oss.tags.map((t) => <Tag key={t}>{t}</Tag>)}
-          </div>
-        </DocSection>
-
-        <DocSection label="전문 영역"><Skills /></DocSection>
-      </div>
+      <DocSection label="전문 영역"><Skills /></DocSection>
     </DocShell>
   );
 }
