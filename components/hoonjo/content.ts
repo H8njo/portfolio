@@ -376,6 +376,7 @@ export const timeline: Timeline[] = [
       '이 엔진을 축으로 **콘텐츠 저작툴을 새 프로젝트로 단독 구축** (1,682커밋 · 전체의 95%)',
       '저작툴에서 파생된 **쏠북패스 출시 — 현재 메인 매출 담당**',
       '공용 **디자인 시스템(@bookips/sds) 공동 메인테이너** — 릴리스·PR 리뷰 총괄',
+      '룰도 없던 코드베이스를 **상태관리(XState→Zustand)·컨벤션·강제 게이트·오류 모니터링까지 표준화**하고, 그 표준을 형제 서비스로 확산',
     ],
     tags: ['Zustand', 'TanStack Query', 'Radix · CVA', 'svgr 코드젠', 'semantic-release'],
     current: true,
@@ -383,6 +384,7 @@ export const timeline: Timeline[] = [
       { label: 'column-pager 오픈소스', href: '/work/column-count-layout' },
       { label: '저작툴 본문 에디터', href: '/work/problem-editor' },
       { label: '디자인 시스템 자동화', href: '/work/design-system' },
+      { label: '코드베이스 표준화', href: '/work/expert-conventions' },
     ],
   },
   {
@@ -619,6 +621,16 @@ export const resumeExperience: ExpCompany[] = [
           'Figma SVG를 svgr 코드젠으로 자동 컴포넌트화 (아이콘 160개)',
           'push 전 type-check·빌드 게이트로 릴리스 품질 관리',
         ],
+      },
+      {
+        head: '룰 없던 코드베이스 표준화 — 상태관리부터 오류 모니터링까지 재설계',
+        points: [
+          '섞여 있던 XState를 걷어내고 Zustand로 통일 — 복잡한 상태를 feature별 작은 store로 분리',
+          'ESLint·Prettier 룰 + git 훅(pre-commit lint·type-check / pre-push test)으로 규칙을 기계가 강제',
+          '컴포넌트 UpperPascalCase·Radix 헤드리스+Tailwind 컨벤션 정립, PR 템플릿·CODEOWNERS 도입',
+          'Sentry 오류 모니터링 도입 — 안 보이던 프로덕션 버그 추적, 미사용 라이브러리·데드코드 정리',
+        ],
+        results: ['첫 커밋이 ESLint 설정', '동일 표준을 형제 서비스로 확산'],
       },
     ],
   },
