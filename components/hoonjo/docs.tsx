@@ -328,7 +328,10 @@ function ResumeSkills() {
    경계를 넘어도 그리드 행이 쪼개지지 않는다. 하이라이트는 172px 들여써 헤더 정렬을 맞춘다. */
 function ExperienceBlock({ c, first = false }: { c: ExpCompany; first?: boolean }) {
   return (
-    <section className={first ? 'pt-1' : 'pt-[22px] border-t border-hj-line'}>
+    // 회사 블록은 통째로 묶어 페이지 경계에서 회사 중간이 잘리지 않게 한다(한 페이지에
+    // 안 들어갈 만큼 길면 브라우저가 어쩔 수 없이 나눈다). break-inside 없이 flow에만
+    // 맡기면 이어지는 페이지에 회사명이 사라져 맥락을 잃는다.
+    <section className={`break-inside-avoid ${first ? 'pt-1' : 'pt-[22px] border-t border-hj-line'}`}>
       {/* 헤더 클러스터 — 기간+회사+역할+스택을 한 덩어리로 묶어 페이지 하단에 홀로 남지 않게. */}
       <div className="grid grid-cols-[150px_1fr] gap-[22px] break-inside-avoid break-after-avoid max-[720px]:grid-cols-1 max-[720px]:gap-1.5">
         <div className={`flex items-center gap-2 font-hj-mono text-[13px] font-medium pt-[3px] ${c.current ? 'text-hj-green-deep' : 'text-hj-muted'}`}>
