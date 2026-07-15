@@ -16,7 +16,7 @@ export type ProjImage = { src: string; alt: string };
 /* All copy + data for the Hoonjo portfolio, grounded in his real résumé and
    his own project write-ups. Numbers are his actual figures — no invented
    metrics. Company convention: "@회사" marks the employer; the product/client
-   (솔북, ORZO, 법무부…) is named in prose so the two never blur. */
+   (쏠북, ORZO, 법무부…) is named in prose so the two never blur. */
 
 export const profile = {
   name: 'Hoonjo',
@@ -50,6 +50,9 @@ export const flagship = {
   title: '사내 페이지네이션 엔진 → 오픈소스',
   oneLiner:
     '인쇄물처럼 “고정 크기 페이지”로 자동 분할하는 엔진.\n사내 제작 도구 → npm 패키지.',
+  // /work 게시물의 훅과 동일 — 포트폴리오 PDF 플래그십의 첫 줄로 쓴다(단일 출처).
+  hook:
+    '프리랜서도 사내 FE도 못 풀어 2년째 환불 문의가 이어지던 문제. 다섯 번 갈아엎고, 실패한 방식을 응용해 풀었다.',
   problem:
     '교육 콘텐츠 편집기에서 문제들을 A4 두 칸(2단) 레이아웃으로 배치해야 했는데, 기존 구현은 한 칸 높이를 넘는 긴 카드(긴 본문)를 처리하지 못했다. 만든 문제지는 인쇄돼 학생에게 가는 거라, 문장이 중간에 잘리면 그대로 불량품 — 주력 서비스에서 2년 가까이 환불 문의가 이어졌다. 여러 명이 붙었지만 다들 같은 벽에서 멈췄다.',
   attempts: [
@@ -83,8 +86,8 @@ export const flagship = {
   insight:
     '새로 발명한 게 아니라, 망한 시도를 버리지 않고 각도만 바꿔 합쳤다 — 1번이 실패한 “자연스러운 줄 자르기”를 2번의 column-count가 공짜로 해준다는 걸, 카드 단위 크롭 도구로만 끌어 썼다.',
   generations: [
-    ['v1', '솔북 문제 에디터', '다섯 번을 거쳐, 도메인에 박힌 채 동작한 원형'],
-    ['v2', '솔북 다른 제품', '임의 콘텐츠로 일반화. 핵심 훅이 210줄까지 비대'],
+    ['v1', '쏠북 문제 에디터', '다섯 번을 거쳐, 도메인에 박힌 채 동작한 원형'],
+    ['v2', '쏠북 다른 제품', '임의 콘텐츠로 일반화. 핵심 훅이 210줄까지 비대'],
     [
       'v3',
       'npm · column-pager',
@@ -300,13 +303,64 @@ export const blackHole = {
   postUrl: '/work/webgl-blackhole',
 };
 
+/* 그 외 사이드 프로젝트 — 블랙홀(위, 라이브 렌더)과 함께 "혼자 만든 것들" 묶음.
+   수치는 /work 게시물·커리어 볼트 실측값. loa-map-generator(OpenCV 지형 추출 도구,
+   H8njo/loa-map-generator)는 삼라만상 맵 타일의 출처라 그 카드에 note로 흡수한다. */
+export const sideProjects: {
+  title: string;
+  label: string;
+  body: string;
+  stats: [string, string][];
+  tags: string[];
+  note?: string;
+  repo?: string;
+  postUrl?: string;
+}[] = [
+  {
+    title: '게임 업적 2,222개를 OCR로 읽는 풀스택 서비스',
+    label: '개인 프로젝트 · 로스트아크',
+    body: '"다음에 뭘 해야 가장 빠를까"를 데이터로 답하려고 혼자 만든 서비스. 업적 2,222개의 달성 경로를 그래프 최적화로 추천하고, 게임 화면을 OCR로 읽어 진행도를 자동 동기화. 프론트·백엔드·데이터 시딩까지 단독.',
+    stats: [
+      ['업적 데이터', '2,222개'],
+      ['맵 타일 최적화', '268MB → 10.7MB'],
+      ['맵 뷰어', '208개'],
+    ],
+    tags: ['Next.js', 'NestJS · Prisma', 'OCR', '그래프 최적화'],
+    note: '월드맵 208장은 직접 만든 OpenCV 도구 loa-map-generator로 지형만 오려냈다 — "안쪽을 찾지 말고 바깥을 지우자"는 flood-fill 세그멘테이션.',
+    postUrl: '/work/samra-mansang',
+  },
+  {
+    title: 'AI 기다리는 시간에 딴짓하려 만든 맥 메뉴바 앱',
+    label: '개인 프로젝트 · macOS',
+    body: 'Claude Code 작업 상태를 감지해 시작하면 딴 앱, 끝나면 터미널로 자동 전환. 웹만 하던 내가 Xcode 없이 SPM만으로 네이티브 앱을 배포까지 끌고 갔다.',
+    stats: [
+      ['빌드', 'Xcode 없이 SPM'],
+      ['배포', 'Homebrew Tap'],
+      ['규모', '18커밋 · 단독'],
+    ],
+    tags: ['Swift', 'SwiftUI', 'macOS'],
+    note: '제일 오래 데인 건 언어가 아니라 “서명 안 된 앱”이라는 OS 벽 — 알림창을 직접 그려 넘었다.',
+    repo: 'https://github.com/H8njo/afk',
+    postUrl: '/work/afk',
+  },
+];
+
+export type CaseLink = { label: string; href: string };
 export type Timeline = {
   period: string;
   role: string;
   org: string;
+  /* 역할 아래에 붙는 성장·범위 신호 — 직급을 지어내지 않고 실제 오너십만
+     표기(디자인 시스템 코드오너 / 미들·시니어 / 프론트 주저자). */
+  scope?: string;
   description: string;
+  /* description(한 줄 리드) 아래에 붙는 성과 항목 — 한 문장에 몰아넣지 않고
+     "어떤 걸 했는지"가 스캔되게 줄 단위로 쪼갠다. 없으면 description만 보인다. */
+  lines?: string[];
   tags: string[];
   current?: boolean;
+  /* 해당 시기의 대표 케이스로 유입 — /work/[slug] 상세 글로 연결. */
+  cases?: CaseLink[];
 };
 
 export const timeline: Timeline[] = [
@@ -314,34 +368,69 @@ export const timeline: Timeline[] = [
     period: '2024 — 현재',
     role: 'Frontend Engineer',
     org: '@Bookips',
-    description:
-      '교육 콘텐츠 플랫폼 솔북(Solvook). A4 자동 페이징·서버 PDF 파이프라인,\n사내 엔진을 OSS(column-pager)로 공개, 디자인 시스템 공동 메인테이너.',
-    tags: ['Next.js', 'TypeScript', 'Canvas', 'OSS'],
+    scope: '디자인 시스템 · PDF 레이아웃 렌더러 핵심 개발자',
+    description: '교육 콘텐츠 플랫폼 쏠북(Solvook)의 프론트엔드.',
+    lines: [
+      '메인 서비스 엑스퍼트에서 문제·지문을 인쇄물처럼 **A4 다단 자동 조판하는 난제 해결**',
+      '그 페이지네이션 엔진을 앱에서 분리해 **오픈소스로 공개** — column-pager (npm · MIT)',
+      '이 엔진을 축으로 **콘텐츠 저작툴을 새 프로젝트로 단독 구축** (1,682커밋 · 전체의 95%)',
+      '저작툴에서 파생된 **쏠북패스 출시 — 현재 메인 매출 담당**',
+      '공용 **디자인 시스템(@bookips/sds) 공동 메인테이너** — 릴리스·PR 리뷰 총괄',
+      '룰도 없던 코드베이스를 **상태관리(XState→Zustand)·컨벤션·강제 게이트·오류 모니터링까지 표준화**하고, 그 표준을 형제 서비스로 확산',
+    ],
+    tags: ['Zustand', 'TanStack Query', 'Radix · CVA', 'svgr 코드젠', 'semantic-release'],
     current: true,
+    cases: [
+      { label: 'column-pager 오픈소스', href: '/work/column-count-layout' },
+      { label: '저작툴 본문 에디터', href: '/work/problem-editor' },
+      { label: '디자인 시스템 자동화', href: '/work/design-system' },
+      { label: '코드베이스 표준화', href: '/work/expert-conventions' },
+    ],
   },
   {
     period: '2023 — 2024',
     role: 'Frontend Engineer',
     org: '@Sling',
-    description:
-      '튜터용 수업 관리 앱 ORZO.\n대용량 교재 PDF를 OOM 없이 렌더하는 메모리·성능 최적화 (첫 화면 10분 → 1초).',
-    tags: ['Next.js', 'PDF', '성능', '메모리'],
+    scope: '미들·시니어',
+    description: '튜터용 수업 관리 앱 ORZO의 프론트엔드.',
+    lines: [
+      '300페이지 교재 PDF의 첫 조작까지 **639,000ms → 1,310ms(약 488배) 단축**',
+      '전체 페이지 자동선택 시 터지던 메모리를 청크 처리 + page.cleanup() + 온디맨드 렌더로 **OOM 없이 제어** (메모리·정확도 트레이드오프 설계)',
+      '인증 모델을 인메모리 토큰 → **서버 발급 세션 쿠키 + SSR 가드로 전환**, 서버 로그아웃(refresh token revoke)까지',
+    ],
+    tags: ['PDF.js', 'SWR', 'Firebase Auth', 'Turborepo'],
+    cases: [{ label: 'PDF 메모리 최적화', href: '/work/pdf-memory' }],
   },
   {
     period: '2020 — 2023',
-    role: 'Frontend Engineer / Fullstack',
+    role: 'Frontend Engineer · Fullstack',
     org: '@Zipida',
-    description:
-      '정부·기업 보안관제 SI(법무부·KISTI·현대오토에버). 메타데이터 화면 양산, 코드 없는 ML 학습 마법사,\n이중 데이터소스·NestJS BFF 설계.',
-    tags: ['React', 'GraphQL', 'NestJS', 'RBAC'],
+    scope: '보안관제 프론트 주저자',
+    description: '정부·기업 보안관제 SI를 프론트 주저자(696커밋)로 이끈 3년.',
+    lines: [
+      '법무부 포털: Table 컴포넌트 하나가 컬럼 정의 메타에서 목록·검색·정렬·엑셀·폼 생성 — **정의 1벌로 59개 화면 양산**, 라우트 정의에서 메뉴·권한트리 동시 파생(RBAC)',
+      'KISTI AI 관제: **코드 없이 탐지 ML을 학습·배포하는 5단계 마법사**를 URL-as-state·immer 상태머신으로 구현 (풀스택 54%)',
+      '현대오토에버 EDR: 비밀번호·권한 필터를 **NestJS BFF 프록시에서 통제**, 정형=PostgreSQL·가변=MongoDB **이중 DB 설계**',
+      '그 외 문체부 관제 포털·사이버 훈련 CTF·통일부 서버사이드 페이징 등 보안관제 프로젝트 다수',
+    ],
+    tags: ['Apollo GraphQL', 'NestJS', 'Elasticsearch', 'immer 상태머신', 'RBAC'],
+    cases: [
+      { label: '59개 화면 포털', href: '/work/security-portal' },
+      { label: 'ML 학습 마법사', href: '/work/security-ai' },
+      { label: 'EDR 포털', href: '/work/edr-portal' },
+    ],
   },
   {
     period: '2019 — 2020',
     role: 'Frontend Engineer',
     org: '@옐로오투오',
-    description:
-      'PHP 예약 시스템에서 시작해 React로 전환하며 컴포넌트 분리·반응형 설계 기반을 익혔습니다.',
-    tags: ['React', 'PHP', '반응형'],
+    description: '클라이언트 사이트 주문을 받아 개발하는 웹 에이전시.',
+    lines: [
+      '그누보드 등 기존 템플릿 위에 프로젝트별 요구사항을 구현',
+      '사이트 성격에 맞춘 **커스텀 플러그인 제작** (예: 펜션 홈페이지 → 예약 플러그인)',
+      'PHP 예약 시스템에서 시작해 **React로 전환**, 컴포넌트 분리·반응형 설계 기반 습득',
+    ],
+    tags: ['그누보드5', 'PHP 플러그인', 'jQuery', 'React 전환'],
   },
 ];
 
@@ -533,6 +622,16 @@ export const resumeExperience: ExpCompany[] = [
           'push 전 type-check·빌드 게이트로 릴리스 품질 관리',
         ],
       },
+      {
+        head: '룰 없던 코드베이스 표준화 — 상태관리부터 오류 모니터링까지 재설계',
+        points: [
+          '섞여 있던 XState를 걷어내고 Zustand로 통일 — 복잡한 상태를 feature별 작은 store로 분리',
+          'ESLint·Prettier 룰 + git 훅(pre-commit lint·type-check / pre-push test)으로 규칙을 기계가 강제',
+          '컴포넌트 UpperPascalCase·Radix 헤드리스+Tailwind 컨벤션 정립, PR 템플릿·CODEOWNERS 도입',
+          'Sentry 오류 모니터링 도입 — 안 보이던 프로덕션 버그 추적, 미사용 라이브러리·데드코드 정리',
+        ],
+        results: ['첫 커밋이 ESLint 설정', '동일 표준을 형제 서비스로 확산'],
+      },
     ],
   },
   {
@@ -652,7 +751,7 @@ export const education: { school: string; period: string; detail: string }[] = [
 
 export const oss = {
   repo: 'H8njo/column-pager',
-  desc: '어떤 React 화면이든 인쇄물처럼 “고정 크기 페이지”로 자동 분할하는 도구.\n페이지 나누기(레이아웃 계산)만 책임지고 PDF 변환 등은 사용처에 위임해 가볍게 유지.',
+  desc: '페이지 나누기(레이아웃 계산) 하나만 책임지는 작은 코어.\nPDF·저장 등 나머지는 사용처에 위임해, 어떤 React 화면에도 가볍게 얹힌다.',
   tags: ['TypeScript', 'React 18/19', 'Tree-shakeable'],
   install: 'npm i column-pager',
   importLine: "import { ColumnPager } from 'column-pager'",

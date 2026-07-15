@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import Link from "next/link";
 import { getAllCases } from "@/lib/cases";
 import type { CaseEntry } from "@/lib/cases.schema";
@@ -13,13 +14,33 @@ export const metadata = {
 const TAG_CHIP =
   "inline-flex items-center h-6 px-[9px] font-hj-mono text-[12px] leading-none text-hj-fg-secondary bg-hj-fog border border-hj-steel rounded-hj-xs whitespace-nowrap";
 
-// 라이브 데모 뱃지 — 데모 보유 케이스를 초록으로 또렷하게 표시(기존 흐린 점 대체).
+// 라이브 데모 뱃지 — 데모 보유 케이스를 파란색으로 또렷하게 표시(기존 흐린 점 대체).
 function DemoBadge() {
   return (
-    <span className="inline-flex items-center gap-1.5 h-6 px-[9px] font-hj-mono text-[11.5px] font-semibold tracking-[0.03em] leading-none uppercase text-hj-green-deep bg-hj-green-soft border border-hj-green-line rounded-hj-xs whitespace-nowrap">
-      <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-hj-green animate-hj-pulse" />
+    <span className="inline-flex items-center gap-1.5 h-6 px-[9px] font-hj-mono text-[11.5px] font-semibold tracking-[0.03em] leading-none uppercase text-hj-blue-deep bg-hj-blue-soft border border-hj-blue-line rounded-hj-xs whitespace-nowrap">
+      <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-hj-blue animate-hj-pulse" />
       LIVE DEMO
     </span>
+  );
+}
+
+// 지표 값 렌더 — "옛값 → 새값" 꼴이면 payoff-dominant로(히어로 임팩트 스트립과 동일
+// 결): 옛값은 작게+취소선+faint, 화살표 faint, 새값은 크게 bold ink. 화살표가 없거나
+// "v1 → v2 → npm"처럼 2조각이 아닌 값은 취소선 오적용을 피해 그냥 bold로.
+function ImpactValue({ value }: { value: string }) {
+  const parts = value.split("→");
+  if (parts.length === 2) {
+    const [before, after] = parts.map((s) => s.trim());
+    return (
+      <span className="inline-flex items-baseline gap-1.5 font-hj-mono tabular-nums whitespace-nowrap">
+        <span className="text-[12px] text-hj-faint line-through decoration-hj-steel">{before}</span>
+        <span aria-hidden className="text-[12px] text-hj-faint">→</span>
+        <span className="text-[16px] font-bold tracking-[-0.01em] text-hj-fg">{after}</span>
+      </span>
+    );
+  }
+  return (
+    <span className="font-hj-mono tabular-nums text-[15px] font-bold tracking-[-0.01em] text-hj-fg">{value}</span>
   );
 }
 
@@ -75,33 +96,43 @@ function CaseRow({ entry, no }: { entry: CaseEntry; no: string }) {
   return (
     <Link
       href={`/work/${slug}`}
-      className="group relative grid grid-cols-[40px_1fr_auto] items-start gap-5 rounded-hj-md p-[22px_20px] no-underline transition-[background,box-shadow] duration-150 hover:bg-hj-paper hover:shadow-hj-soft before:absolute before:left-0 before:top-3.5 before:bottom-3.5 before:w-0.5 before:rounded-[2px] before:bg-hj-blue before:origin-center before:scale-y-0 before:transition-transform before:duration-150 before:ease-[cubic-bezier(0.4,0,0.2,1)] before:content-[''] group-hover:before:scale-y-100 max-[640px]:grid-cols-1 max-[640px]:gap-2"
+      className="group relative grid grid-cols-[40px_1fr_auto] items-start gap-5 rounded-hj-md p-[28px_20px] no-underline transition-[background,box-shadow] duration-150 hover:bg-hj-paper hover:shadow-hj-soft before:absolute before:left-0 before:top-5 before:bottom-5 before:w-0.5 before:rounded-[2px] before:bg-hj-blue before:origin-center before:scale-y-0 before:transition-transform before:duration-150 before:ease-[cubic-bezier(0.4,0,0.2,1)] before:content-[''] group-hover:before:scale-y-100 max-[640px]:grid-cols-1 max-[640px]:gap-2"
     >
       <span className="pt-[3px] font-hj-mono text-[13px] tabular-nums text-hj-faint transition-colors duration-150 group-hover:text-hj-blue max-[640px]:order-first">{no}</span>
-      <div className="min-w-0">
-        <h3 className="font-hj-serif text-[20px] font-semibold leading-[1.25] tracking-[-0.015em] text-hj-fg transition-colors duration-150 group-hover:text-hj-blue-deep">
-          {frontmatter.title}
-        </h3>
-        <p className="mt-2 max-w-[62ch] font-hj-serif text-[15px] leading-[1.6] text-hj-muted">
-          {frontmatter.summary}
-        </p>
-        {(hasDemo || frontmatter.tags.length > 0) && (
-          <div className="mt-3.5 flex flex-wrap gap-2">
-            {hasDemo && <DemoBadge />}
-            {frontmatter.tags.map((t) => (
-              <span key={t} className={TAG_CHIP}>{t}</span>
-            ))}
-          </div>
-        )}
+      {/* 큰 화면(≥900px)에선 [텍스트 | IMPACT] 2열 — IMPACT가 우측에 세로 1열로.
+          작은 화면에선 세로 흐름(텍스트 아래 IMPACT 가로 배치). */}
+      <div className="min-w-0 min-[900px]:grid min-[900px]:grid-cols-[minmax(0,1fr)_300px] min-[900px]:gap-10 min-[900px]:items-start">
+        <div className="min-w-0">
+          <h3 className="font-hj-serif text-[20px] font-semibold leading-[1.25] tracking-[-0.015em] text-hj-fg transition-colors duration-150 group-hover:text-hj-blue-deep">
+            {frontmatter.title}
+          </h3>
+          <p className="mt-2 max-w-[62ch] font-hj-serif text-[15px] leading-[1.6] text-hj-muted">
+            {frontmatter.summary}
+          </p>
+          {(hasDemo || frontmatter.tags.length > 0) && (
+            <div className="mt-3.5 flex flex-wrap gap-2">
+              {hasDemo && <DemoBadge />}
+              {frontmatter.tags.map((t) => (
+                <span key={t} className={TAG_CHIP}>{t}</span>
+              ))}
+            </div>
+          )}
+        </div>
         {frontmatter.metrics.length > 0 && (
-          <div className="mt-4 flex flex-wrap items-baseline gap-x-6 gap-y-2 border-t border-hj-line pt-3.5">
-            <span className="self-center font-hj-mono text-[10.5px] font-semibold uppercase tracking-[0.12em] text-hj-faint">IMPACT</span>
-            {frontmatter.metrics.slice(0, 2).map((m) => (
-              <span key={m.label} className="inline-flex items-baseline gap-2 font-hj-mono tabular-nums whitespace-nowrap">
-                <span className="text-[11px] text-hj-muted">{m.label}</span>
-                <span className="text-[14.5px] font-bold tracking-[-0.01em] text-hj-fg">{m.value}</span>
-              </span>
-            ))}
+          <div className="mt-5 min-[900px]:mt-0">
+            <div className="font-hj-mono text-[10.5px] font-semibold uppercase tracking-[0.12em] text-hj-faint">IMPACT</div>
+            {/* 라벨 │ 값 정렬 표 — 라벨끼리·값끼리 세로 정렬돼 한눈에 스캔된다. */}
+            <div className="mt-3 grid grid-cols-[auto_auto] items-baseline justify-start gap-x-3 gap-y-2.5">
+              {frontmatter.metrics.slice(0, 2).map((m) => (
+                <Fragment key={m.label}>
+                  <div className="flex items-center gap-1.5 font-hj-mono text-[11px] font-medium uppercase leading-[1.4] tracking-[0.04em] text-hj-fg-secondary">
+                    <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-hj-green" />
+                    {m.label}
+                  </div>
+                  <ImpactValue value={m.value} />
+                </Fragment>
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -145,7 +176,7 @@ export default function WorkIndex() {
                 <span className="font-hj-mono text-[11px] font-medium uppercase tracking-[0.14em] text-hj-muted">더 많은 작업</span>
                 <span aria-hidden className="h-px flex-1 bg-hj-line" />
               </div>
-              <div className="border-t border-hj-line">
+              <div>
                 {rest.map((entry, i) => (
                   <div key={entry.slug} className={i > 0 ? "border-t border-hj-line" : undefined}>
                     <CaseRow entry={entry} no={String(i + (featured ? 2 : 1)).padStart(2, "0")} />

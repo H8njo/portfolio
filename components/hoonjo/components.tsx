@@ -227,23 +227,44 @@ export function MetricRow({ stats }: { stats: Metric[] }) {
 }
 
 /* ---- TimelineItem ------------------------------------------------------- */
-export function TimelineItem({ period, role, org, description, tags = [], current = false, style }: {
-  period: string; role: string; org?: string; description?: string; tags?: string[]; current?: boolean; style?: CSSProperties;
+export function TimelineItem({ period, role, org, scope, description, lines = [], tags = [], current = false, cases = [], style }: {
+  period: string; role: string; org?: string; scope?: string; description?: string; lines?: string[]; tags?: string[]; current?: boolean; cases?: { label: string; href: string }[]; style?: CSSProperties;
 }) {
   return (
     <div className="relative grid grid-cols-[150px_1fr] gap-7 pb-10 max-[560px]:grid-cols-1 max-[560px]:gap-1.5" style={style}>
-      <span aria-hidden className={`absolute -left-[33px] top-1.5 w-[11px] h-[11px] rounded-[1px] rotate-45 border-[1.5px] ${current ? 'bg-hj-green border-hj-green' : 'bg-hj-canvas border-hj-steel'}`} />
+      <span aria-hidden className={`absolute -left-[39px] top-1.5 w-[11px] h-[11px] rounded-[1px] rotate-45 border-[1.5px] ${current ? 'bg-hj-green border-hj-green' : 'bg-hj-canvas border-hj-steel'}`} />
       <div className={`font-hj-mono text-[13px] font-medium tracking-[0.02em] pt-[3px] leading-[1.4] ${current ? 'text-hj-green-deep' : 'text-hj-muted'}`}>{period}</div>
       <div>
-        <div className="flex items-baseline gap-2.5 flex-wrap">
+        <div className="flex items-baseline gap-x-2.5 gap-y-1 flex-wrap">
           <h4 className="font-hj-serif text-[21px] font-semibold text-hj-fg leading-[1.2]">{role}</h4>
           {org && <span className="font-hj-serif text-[15px] text-hj-muted">· {org}</span>}
+          {scope && <span className="font-hj-mono text-[11px] font-medium tracking-[0.08em] uppercase text-hj-muted self-center">{scope}</span>}
         </div>
         {description && <p className="font-hj-serif text-[15px] leading-[1.6] text-hj-fg-secondary mt-2.5">{description.replace(/\n/g, ' ')}</p>}
+        {lines.length > 0 && (
+          <ul className="mt-2.5 flex flex-col gap-1.5">
+            {lines.map((ln) => (
+              <li key={ln} className="relative pl-4 font-hj-serif text-[15px] leading-[1.6] text-hj-fg-secondary">
+                <span aria-hidden className={`absolute left-0 top-[11px] w-[5px] h-[5px] rounded-[1px] rotate-45 ${current ? 'bg-hj-green' : 'bg-hj-steel'}`} />
+                {ln.split(/\*\*(.+?)\*\*/g).map((seg, i) => (i % 2 === 1 ? <strong key={i} className="font-semibold text-hj-fg">{seg}</strong> : seg))}
+              </li>
+            ))}
+          </ul>
+        )}
         {tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mt-3.5">
             {tags.map((t) => (
               <span key={t} className="font-hj-mono text-[12px] text-hj-fg-secondary bg-hj-fog border border-hj-steel rounded-hj-xs px-2 py-[3px] whitespace-nowrap">{t}</span>
+            ))}
+          </div>
+        )}
+        {cases.length > 0 && (
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 mt-3.5">
+            {cases.map((c) => (
+              <a key={c.href} href={c.href} className="group inline-flex items-center gap-1 font-hj-serif text-[13.5px] font-medium text-hj-blue-deep no-underline transition-colors duration-150 hover:text-hj-blue">
+                {c.label}
+                <span aria-hidden className="transition-transform duration-150 group-hover:translate-x-0.5">→</span>
+              </a>
             ))}
           </div>
         )}

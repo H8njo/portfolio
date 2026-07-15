@@ -1,15 +1,18 @@
 "use client";
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
 import {
   Button, Tag, Badge, Eyebrow, SectionHeader, BlueprintGrid, MetricRow, TimelineItem,
 } from './components';
 import type { WorkCase } from './content';
 import { profile, impact, cases, blackHole, timeline, capabilities, oss } from './content';
-import { BlackHole } from './BlackHole';
 import { Flagship } from './Flagship';
 import { Gallery } from './Lightbox';
+
+// 라이브 블랙홀 — 실제 black-hole-effect 패키지. window 접근이 렌더 중 일어나 ssr:false.
+const BlackholeLive = dynamic(() => import('@/components/demos/blackhole-live'), { ssr: false, loading: () => null });
 const portrait = '/hoonjo/portrait.jpg';
 
 /* Layout rhythm — container 1200px, section padding 96px desktop → 56px mobile
@@ -260,7 +263,7 @@ export function Work() {
           </div>
         </div>
         <div className="bg-hj-ink-deep relative min-h-[clamp(300px,42vw,380px)] overflow-hidden">
-          <BlackHole />
+          <div className="absolute inset-0"><BlackholeLive /></div>
           <span className="absolute top-3.5 right-3.5 inline-flex items-center gap-[7px] font-hj-mono text-[11px] tracking-[0.06em] uppercase text-hj-on-ink bg-[rgba(12,11,8,0.5)] border border-[rgba(246,244,238,0.18)] rounded-hj-pill px-[11px] py-[5px] backdrop-blur-[4px]">
             <span aria-hidden className="w-[7px] h-[7px] rounded-full bg-hj-green-bright animate-hj-pulse" />
             실시간 렌더
@@ -354,7 +357,7 @@ export function OpenSource() {
     <section id="oss" className="bg-hj-ink relative overflow-hidden">
       <div aria-hidden className="absolute inset-0 opacity-50 bg-[linear-gradient(rgba(49,130,246,0.10)_1px,transparent_1px),linear-gradient(90deg,rgba(49,130,246,0.10)_1px,transparent_1px)] [background-size:40px_40px]" />
       <div className={`relative ${CONTAINER} ${SECTION_PY}`}>
-        <SectionHeader index={4} eyebrow="OPEN SOURCE" onInk title="사내 도구를, 누구나 쓰게" lead="제품에 묶여 있던 엔진을 클린 재설계해 npm에 공개." />
+        <SectionHeader index={4} eyebrow="OPEN SOURCE" onInk title="사내 도구를, 누구나 쓰게" lead="설치 한 줄로 붙고, 릴리스는 자동화 — 결정적 테스트로 회귀를 막는 패키지." />
         <div className="mt-12 bg-hj-ink-soft border border-[rgba(246,244,238,0.16)] rounded-hj-xl overflow-hidden">
           <div className="grid grid-cols-[1.2fr_1fr] max-[900px]:grid-cols-1">
             <div className="p-[clamp(24px,4vw,36px)] border-r border-[rgba(246,244,238,0.12)] max-[900px]:border-r-0 max-[900px]:border-b max-[900px]:border-[rgba(246,244,238,0.12)]">
