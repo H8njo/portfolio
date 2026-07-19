@@ -697,6 +697,15 @@ export const resumeExperience: ExpCompany[] = [
         ],
       },
       {
+        head: '프론트엔드에 과적용된 DDD 레이어를 걷어내자고 제안·주도',
+        points: [
+          '백엔드 DDD를 프론트에 그대로 포팅한 구조 — 도메인 모델은 Firestore 스키마를 베낀 빈(anemic) 타입, DTO↔도메인 매퍼는 같은 필드를 거의 1:1로 옮기는 보일러플레이트',
+          '한 개념(Problem)이 domain/model · domain/service · repositories(firestore·algolia·functions) · data-transfers · service로 흩어져, 필드 하나 바꿔도 여러 겹을 동시에 수정 — 실질 이득 없이 변경·온보딩 비용만',
+          '프론트의 본질은 fetch·캐시·렌더라 판단해 레이어를 걷어내고, 타입 스키마 + 데이터 패칭(SWR)에 직접 얹어 단순화 — 로직은 feature 옆 함수·훅으로 콜로케이션',
+        ],
+        results: ['DDD 레이어 제거 주도', '변경·온보딩 비용 감소'],
+      },
+      {
         head: '인증 모델 전환 · 팀 개발 관행 개선 (ORZO Admin)',
         points: [
           '클라 인메모리 ID 토큰 → 서버 발급 Firebase 세션 쿠키 + SSR 인증 가드',
