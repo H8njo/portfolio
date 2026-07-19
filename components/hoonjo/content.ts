@@ -403,15 +403,17 @@ export const timeline: Timeline[] = [
   },
   {
     period: '2020 — 2023',
-    role: 'Team Lead · Full-stack',
+    role: 'Frontend → Team Lead',
     org: '@Zipida',
-    scope: '프론트·백엔드 아우른 팀 리드',
-    description: '정부·기업 보안관제 SI를 프론트·백엔드 아우르는 팀장으로 이끈 3년(696커밋).',
+    scope: '프론트 주도 → 풀스택 팀 리드',
+    description: '정부·기업 보안관제 SI 2년 11개월. 5명이던 회사가 30명대로 크는 동안, 프론트로 시작해 팀 리드가 됐다.',
     lines: [
+      '**2년 11개월간 약 14개** 보안관제·포털 프로젝트를 기획 미팅부터 디자인·개발·배포·유지보수까지 전 과정으로 (프론트 주도, 696커밋)',
       '법무부 포털: Table 컴포넌트 하나가 컬럼 정의 메타에서 목록·검색·정렬·엑셀·폼 생성 — **정의 1벌로 59개 화면 양산**, 라우트 정의에서 메뉴·권한트리 동시 파생(RBAC)',
-      'KISTI AI 관제: **코드 없이 탐지 ML을 학습·배포하는 5단계 마법사**를 URL-as-state·immer 상태머신으로 구현 (풀스택 54%)',
+      'KISTI AI 관제(회사 최대 규모 · **약 4억**): **코드 없이 탐지 ML을 학습·배포하는 5단계 마법사**를 URL-as-state·immer 상태머신으로 구현 (풀스택 54%)',
       '현대오토에버 EDR: 비밀번호·권한 필터를 **NestJS BFF 프록시에서 통제**, 정형=PostgreSQL·가변=MongoDB **이중 DB 설계**',
       '그 외 문체부 관제 포털·사이버 훈련 CTF·통일부 서버사이드 페이징 등 보안관제 프로젝트 다수',
+      '회사가 5명 → 30명대로 크는 동안 다른 팀 프로젝트까지 도우며 **한 팀의 리드로 성장**, 유지보수로 고객사 재계약까지 연결',
     ],
     tags: ['Apollo GraphQL', 'NestJS', 'Elasticsearch', 'immer 상태머신', 'RBAC'],
     cases: [
@@ -662,8 +664,8 @@ export const resumeExperience: ExpCompany[] = [
   {
     period: '2020 — 2023',
     company: 'Zipida',
-    product: '정부·기업 보안관제 SI · 풀스택',
-    role: '팀 리드 · 풀스택 (프론트·백엔드)',
+    product: '정부·기업 보안관제 SI · 회사 주력 매출',
+    role: '프론트 주도 → 풀스택 팀 리드',
     stack: [
       'React',
       'Apollo GraphQL',
@@ -673,6 +675,15 @@ export const resumeExperience: ExpCompany[] = [
       'Redux',
     ],
     highlights: [
+      {
+        head: '프론트에서 팀 리드로 — 5명 → 30명대 성장기',
+        points: [
+          '2년 11개월간 약 14개 보안관제·포털 프로젝트를 기획 미팅부터 디자인·개발·배포·유지보수까지 전 과정으로',
+          '회사 주 수입원인 보안관제·포털 시스템을 맡고, 유지보수로 고객사 관계·재계약까지 연결',
+          '다른 개발팀 프로젝트를 도우며 한 팀의 리드로 성장',
+        ],
+        results: ['프론트 주도 → 팀 리드', '약 14개 프로젝트', '2년 11개월'],
+      },
       {
         head: '컬럼 정의 1벌로 59개 화면을 양산 (법무부 보안관제 포털)',
         points: [
@@ -695,9 +706,9 @@ export const resumeExperience: ExpCompany[] = [
           '패킷 payload(HEX)를 디코딩 → 엔트로피 → TCP flag 추출해 ML 특징으로 변환',
         ],
         results: [
+          '회사 최대 규모 · 약 4억',
           '풀스택 기여 54%',
           '비개발자용 5단계 GUI 학습',
-          'NestJS·Prisma+Knex',
         ],
       },
       {
