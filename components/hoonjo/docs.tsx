@@ -277,6 +277,8 @@ function ResumeHeader() {
           <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3 font-hj-mono text-[12.5px]">
             <a href={`mailto:${profile.email}`} className="text-hj-blue-deep">{profile.email}</a>
             <a href={profile.github} target="_blank" rel="noreferrer" className="text-hj-blue-deep">{profile.githubHandle}</a>
+            <a href={profile.portfolio} target="_blank" rel="noreferrer" className="text-hj-blue-deep">{profile.portfolioLabel}</a>
+            <a href={profile.blog} target="_blank" rel="noreferrer" className="text-hj-blue-deep">{profile.blogLabel}</a>
           </div>
         </div>
         {/* eslint-disable-next-line @next/next/no-img-element */}
