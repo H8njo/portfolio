@@ -527,15 +527,31 @@ export const resumeOwnership: {
   ],
 };
 
+/* 팀 리딩 · 개발 문화 — '주도성'이 제품 각도라면 이건 사람·조직 각도.
+   관리가 아니라 동료가 더 잘 일하도록 지원한 리더십, 협업 방식·문화 개선, 조직 확산. */
+export const resumeLeadership: {
+  claim: string;
+  items: { at: string; t: string }[];
+} = {
+  claim: '관리보다, 동료가 더 잘 일하도록 지원하는 쪽 — 협업 방식과 개발 문화를 구조로 개선하고 조직으로 확산.',
+  items: [
+    { at: '팀 리딩', t: 'Zipida에서 팀 리드로 — 막히던 타 팀 프로젝트까지 들어가 함께 해결' },
+    { at: '협업 · 문화', t: 'PR 템플릿·CODEOWNERS·컨벤션·git 게이트(lint·type-check·test)로 "누가 와도 같은 규율", async·상태 끌어올리기·네이밍 등 팀 관행 정리·공유' },
+    { at: '조직 확산', t: '룰 없던 코드베이스를 표준화해 형제 서비스로 전파 / 공용 디자인 시스템 공동 메인테이너(릴리스·PR 리뷰 총괄)' },
+    { at: '기술 의사결정', t: '조직의 스택 방향 주도 — MUI → Radix + Tailwind v2, XState → Zustand 통일' },
+  ],
+};
+
 /* 텍스트 뭉치가 아니라 뱃지로 스캔되게 항목을 배열로 둔다. */
 export const resumeSkills: { label: string; items: string[] }[] = [
   {
-    label: '렌더링 · 성능',
+    label: '렌더링 · 성능 · 접근성',
     items: [
       'Canvas 2D / WebGL',
       '측정-우선 PDF 조판',
       '대용량 가상화',
       '메모리 바운드 처리',
+      'ARIA · 헤드리스 접근성',
     ],
   },
   {

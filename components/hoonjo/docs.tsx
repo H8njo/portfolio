@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react';
 import type { Metric } from './components';
 import { Tag, MetricRow } from './components';
-import { profile, timeline, capabilities, flagship, cases, blackHole, sideProjects, impact, oss, resumeSummary, resumeOwnership, resumeSkills, resumeExperience, education } from './content';
+import { profile, timeline, capabilities, flagship, cases, blackHole, sideProjects, impact, oss, resumeSummary, resumeOwnership, resumeLeadership, resumeSkills, resumeExperience, education } from './content';
 import type { ProjImage, ExpCompany } from './content';
 import { BlackHole } from './BlackHole';
 const portrait = '/hoonjo/portrait.jpg';
@@ -308,12 +308,12 @@ function ResumeHeader() {
   );
 }
 
-function ResumeOwnership() {
+function ClaimSection({ data }: { data: { claim: string; items: { at: string; t: string }[] } }) {
   return (
     <div>
-      <p className="font-hj-serif text-[14px] font-semibold leading-[1.5] text-hj-fg max-w-[74ch]">{resumeOwnership.claim}</p>
+      <p className="font-hj-serif text-[14px] font-semibold leading-[1.5] text-hj-fg max-w-[74ch]">{data.claim}</p>
       <ul className="list-none m-0 p-0 mt-[14px] flex flex-col gap-2.5">
-        {resumeOwnership.items.map((it) => (
+        {data.items.map((it) => (
           <li key={it.at} className="grid grid-cols-[140px_1fr] gap-3.5 items-baseline break-inside-avoid max-[720px]:grid-cols-1 max-[720px]:gap-0.5">
             <span className="font-hj-mono text-[12px] font-medium text-hj-blue-deep pt-[2px]">{it.at}</span>
             <span className="font-hj-serif text-[13.5px] leading-[1.55] text-hj-fg-secondary">{it.t}</span>
@@ -490,7 +490,8 @@ export function Resume() {
   return (
     <DocShell tab="이력서">
       <ResumeHeader />
-      <DocSection label="주도성 · 제품 오너십"><ResumeOwnership /></DocSection>
+      <DocSection label="주도성 · 제품 오너십"><ClaimSection data={resumeOwnership} /></DocSection>
+      <DocSection label="팀 리딩 · 개발 문화"><ClaimSection data={resumeLeadership} /></DocSection>
       <DocSection label="경력 기술" flow>
         <div className="flex flex-col gap-2">
           {resumeExperience.map((c, i) => (
