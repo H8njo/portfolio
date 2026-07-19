@@ -617,12 +617,14 @@ export const resumeExperience: ExpCompany[] = [
         ],
       },
       {
-        head: '공용 디자인 시스템 공동 메인테이너 (@bookips/sds)',
+        head: 'MUI 기반 v1을 Radix + Tailwind v2로 재설계 (공용 디자인 시스템 @bookips/sds 공동 메인테이너)',
         points: [
+          'v1(MUI)은 개발자가 Figma만 보고 수동으로 맞춰, 정작 개발에 필요한 기능·커스터마이징·확장성이 부족했다',
+          'v2는 동작·접근성은 Radix 헤드리스에 맡기고 스타일은 Tailwind로 분리 — 세밀한 커스터마이징과, 그간 쌓인 요구를 반영한 확장을 열었다',
           'single/multi Select를 하나의 판별 유니온 API로 통합 — 오용은 컴파일 타임 차단',
-          'Figma SVG를 svgr 코드젠으로 자동 컴포넌트화 (아이콘 160개)',
-          'push 전 type-check·빌드 게이트로 릴리스 품질 관리',
+          'Figma SVG를 svgr 코드젠으로 자동 컴포넌트화(아이콘 160개), push 전 type-check·빌드 게이트로 릴리스 관리',
         ],
+        results: ['MUI → Radix + Tailwind 재설계', '공동 메인테이너 · 릴리스 관리'],
       },
       {
         head: '룰 없던 코드베이스 표준화 — 상태관리부터 오류 모니터링까지 재설계',
