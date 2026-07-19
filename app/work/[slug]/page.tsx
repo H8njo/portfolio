@@ -62,7 +62,7 @@ const mdxComponents = {
 };
 
 // 라이브 데모 블록 — 종이 카드에 담아 홈 카드와 같은 결로.
-function DemoBlock({ title, children }: { title: string; children: React.ReactNode }) {
+function DemoBlock({ title, href, children }: { title: string; href?: string; children: React.ReactNode }) {
   return (
     <section aria-label="라이브 데모" className="mt-10">
       <div className="mb-[14px] flex items-center gap-[10px]">
@@ -70,8 +70,14 @@ function DemoBlock({ title, children }: { title: string; children: React.ReactNo
         <span className="font-hj-mono text-[12px] font-medium uppercase tracking-[0.1em] text-hj-blue-deep">LIVE DEMO</span>
       </div>
       <p className="max-w-[52ch] font-hj-serif text-[15px] leading-[1.6] text-hj-fg-secondary">{title}</p>
-      <div className="mt-[18px] overflow-hidden rounded-hj-lg border border-hj-line bg-hj-paper p-[clamp(16px,2.4vw,24px)] shadow-hj-soft">
+      {/* 인쇄(PDF)에선 인터랙티브 데모가 빈 박스로 나오므로 라이브 URL 안내로 대체한다. */}
+      <div className="mt-[18px] overflow-hidden rounded-hj-lg border border-hj-line bg-hj-paper p-[clamp(16px,2.4vw,24px)] shadow-hj-soft print:hidden">
         {children}
+      </div>
+      <div className="mt-[18px] hidden rounded-hj-lg border border-hj-line bg-hj-cloud px-5 py-4 print:block">
+        <span className="font-hj-serif text-[14px] text-hj-fg-secondary">
+          라이브 데모는 웹에서 직접 동작합니다{href ? ` — ${href}` : " (h8njo.vercel.app/work)"}
+        </span>
       </div>
     </section>
   );
@@ -115,17 +121,17 @@ export default async function CaseDetail({ params }: { params: Promise<{ slug: s
       )}
 
       {frontmatter.demo === "column-pager" && (
-        <DemoBlock title="탭으로 column-pager의 실제 동작을 확인해 보세요 — 긴 카드 슬라이스, 2컬럼, 컬럼 수 변경, 데이터 수정.">
+        <DemoBlock href={`https://h8njo.vercel.app/work/${slug}`} title="탭으로 column-pager의 실제 동작을 확인해 보세요 — 긴 카드 슬라이스, 2컬럼, 컬럼 수 변경, 데이터 수정.">
           <FeaturedDemo />
         </DemoBlock>
       )}
       {frontmatter.demo === "blackhole" && (
-        <DemoBlock title="셰이더가 브라우저에서 실시간으로 도는 모습입니다. 클릭해 보세요.">
+        <DemoBlock href={`https://h8njo.vercel.app/work/${slug}`} title="셰이더가 브라우저에서 실시간으로 도는 모습입니다. 클릭해 보세요.">
           <BlackholeDemo />
         </DemoBlock>
       )}
       {frontmatter.demo === "range-editor" && (
-        <DemoBlock title="단어를 클릭(시작) → 다시 클릭(끝)으로 범위를 잡아 보세요. 끝을 먼저 찍어도 [min, max]로 정규화됩니다.">
+        <DemoBlock href={`https://h8njo.vercel.app/work/${slug}`} title="단어를 클릭(시작) → 다시 클릭(끝)으로 범위를 잡아 보세요. 끝을 먼저 찍어도 [min, max]로 정규화됩니다.">
           <RangeEditorDemo />
         </DemoBlock>
       )}
