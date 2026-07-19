@@ -38,8 +38,10 @@ date: 2026-06-08
 여기에 타입으로 안전장치를 걸었다.
 
 ```ts
-type SelectV2SingleProps = Common & { multiple?: false; value?: string;  onValueChange?: (v: string)   => void }
-type SelectV2MultiProps  = Common & { multiple: true;  value: string[];  onValueChange:  (v: string[]) => void }
+type SelectV2SingleProps = Common & {
+  multiple?: false; value?: string; onValueChange?: (v: string) => void }
+type SelectV2MultiProps = Common & {
+  multiple: true; value: string[]; onValueChange: (v: string[]) => void }
 export type SelectV2Props = SelectV2SingleProps | SelectV2MultiProps
 ```
 
