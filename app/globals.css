@@ -251,6 +251,9 @@ body {
    inherits to descendants). */
 @media print {
   @page {
+    /* A4로 고정 — 종이 크기를 명시하지 않으면 브라우저 기본값(Letter/A4)에 따라
+       페이지 브레이크 위치가 달라져 검증 결과와 실제 출력이 어긋난다. 한국 이력서는 A4. */
+    size: A4;
     margin: 0;
   }
 }

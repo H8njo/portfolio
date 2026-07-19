@@ -354,8 +354,11 @@ function ExperienceBlock({ c, first = false }: { c: ExpCompany; first?: boolean 
     // 대신 글머리(bullet) 단위로만 쪼개지게 하고, 제목은 break-after-avoid로 첫 내용과 붙여
     // 페이지 하단에 홀로 남지 않게 한다 — 회사도 항목도 흐르며 페이지를 자연스럽게 채운다.
     <section className={`${first ? 'pt-1' : 'pt-[22px] border-t border-hj-line'}`}>
-      {/* 헤더 클러스터 — 기간+회사+역할+스택을 한 덩어리로 묶어 페이지 하단에 홀로 남지 않게. */}
-      <div className="grid grid-cols-[150px_1fr] gap-[22px] break-inside-avoid break-after-avoid max-[720px]:grid-cols-1 max-[720px]:gap-1.5">
+      {/* 헤더 클러스터 — 기간+회사+역할+스택은 break-inside-avoid로 한 덩어리(안 쪼개짐)로 두되,
+          break-after-avoid는 걸지 않는다 — 그걸 걸면 "섹션 라벨+헤더+첫 하이라이트"가 한 사슬로
+          묶여 페이지 하단 여백에 못 들어가면 통째로 다음 장으로 밀리며 큰 빈 공간을 남긴다.
+          헤더 뒤에서 페이지가 나뉘게 두면 헤더가 하단을 채우고 하이라이트가 다음 장으로 흐른다. */}
+      <div className="grid grid-cols-[150px_1fr] gap-[22px] break-inside-avoid max-[720px]:grid-cols-1 max-[720px]:gap-1.5">
         <div className={`flex items-center gap-2 font-hj-mono text-[13px] font-medium pt-[3px] ${c.current ? 'text-hj-green-deep' : 'text-hj-muted'}`}>
           {c.current && <span aria-hidden className="w-[7px] h-[7px] rounded-[1px] rotate-45 bg-hj-green flex-none" />}
           {c.period}
@@ -509,7 +512,7 @@ export function Resume() {
           {RESUME_SIDE.map((p, i) => <ResumeSideProject key={p.name} p={p} first={i === 0} />)}
         </div>
       </DocSection>
-      <DocSection label="핵심 역량" breakBefore><ResumeSkills /></DocSection>
+      <DocSection label="핵심 역량" flow><ResumeSkills /></DocSection>
       <DocSection label="학력 · 교육"><Education /></DocSection>
     </DocShell>
   );
