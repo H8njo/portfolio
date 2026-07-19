@@ -39,9 +39,9 @@ export const profile = {
 export const impact = {
   lead: '반복을 구조로, 결과를 숫자로.',
   stats: [
+    { k: 'PDF 첫 조작 (300p)', before: '639,000ms', after: '1,310ms · 488배' },
     { k: '같은 모양 화면 59개', before: '화면마다 코딩', after: '정의 하나로' },
     { k: '페이지네이션 엔진', before: '사내 전용', after: 'npm 공개' },
-    { k: '탐지 모델 학습', before: '직접 코딩', after: 'GUI 5단계' },
   ] as { k: string; before: string; after: string }[],
 };
 
@@ -220,7 +220,7 @@ export const cases: WorkCase[] = [
         after: '폴더 드롭',
         gain: '손으로 쓰던 export 0',
       },
-      { label: '역할', after: '코드오너', gain: '모든 PR 리뷰·머지·릴리스' },
+      { label: '역할', after: '공동 메인테이너', gain: '릴리스·PR 리뷰 총괄' },
     ],
     code: {
       caption: 'API는 하나, 잘못 쓰면 컴파일에서 막힌다',
@@ -502,7 +502,11 @@ export const resumeSummary: {
   kind: 'lead' | 'hook' | 'body' | 'close';
 }[] = [
   { t: '7년차 프론트엔드 엔지니어', kind: 'lead' },
-  { t: '남들이 막힌 화면을 직접 측정해 되게 만듭니다.', kind: 'hook' },
+  { t: '안 되던 화면을 측정해서 되게 만듭니다.', kind: 'hook' },
+  {
+    t: 'PDF 첫 조작 639,000ms → 1,310ms(약 488배) · 컬럼 정의 1벌로 59개 화면 · 사내 페이지네이션 엔진 npm(MIT) 오픈소스화.',
+    kind: 'body',
+  },
   {
     t: '성능 · 대용량 렌더링 · 복잡한 상태를 풀고, 복잡하거나 반복되는 문제는 단순한 추상으로 (재사용 구조·라이브러리).',
     kind: 'body',
@@ -542,20 +546,20 @@ export const resumeLeadership: {
     { at: '팀 리딩', t: 'Zipida에서 팀 리드로 — 막히던 타 팀 프로젝트까지 들어가 함께 해결' },
     { at: '협업 · 문화', t: 'PR 템플릿·CODEOWNERS·컨벤션·git 게이트(lint·type-check·test)로 "누가 와도 같은 규율", async·상태 끌어올리기·네이밍 등 팀 관행 정리·공유' },
     { at: '조직 확산', t: '룰 없던 코드베이스를 표준화해 형제 서비스로 전파 / 공용 디자인 시스템 공동 메인테이너(릴리스·PR 리뷰 총괄)' },
-    { at: '기술 의사결정', t: '조직의 스택 방향 주도 — MUI → Radix + Tailwind v2, XState → Zustand 통일' },
+    { at: '기술 의사결정', t: '조직의 스택 방향 주도 — MUI → Radix + Tailwind v2 재설계 / 일부 화면에 오버킬로 얹혀 있던 XState를 걷어내고 feature별 작은 store(Zustand)로 통일 (형식 상태머신이 필요한 자리는 URL + reducer로 별도 설계)' },
   ],
 };
 
 /* 텍스트 뭉치가 아니라 뱃지로 스캔되게 항목을 배열로 둔다. */
 export const resumeSkills: { label: string; items: string[] }[] = [
   {
-    label: '렌더링 · 성능 · 접근성',
+    label: '렌더링 · 성능',
     items: [
       'Canvas 2D / WebGL',
       '측정-우선 PDF 조판',
       '대용량 가상화',
       '메모리 바운드 처리',
-      'ARIA · 헤드리스 접근성',
+      '헤드리스 접근성(Radix)',
     ],
   },
   {
@@ -590,8 +594,9 @@ export const resumeSkills: { label: string; items: string[] }[] = [
     items: [
       'TypeScript',
       'React 18/19',
-      'Next.js',
+      'Next.js · SSR/SSG',
       'NestJS',
+      'Turborepo (모노레포)',
       'Vite / Rollup',
       'semantic-release',
     ],
@@ -653,7 +658,7 @@ export const resumeExperience: ExpCompany[] = [
           'JSON 편집에 의존하던 검수 화면을 마우스만으로 검수·수정·삭제·추가하는 GUI 시스템으로 재설계',
           '가변 높이 아이템을 청크(30개) 단위로 측정해 다단 페이지 조판, 7종 데코레이터를 discriminated union으로 타입세이프 모델링',
         ],
-        results: ['프론트 단독 · 1,682 커밋(95%)', 'JSON 암기 → 마우스 GUI 검수'],
+        results: ['저작도구 프론트 아키텍처 단독 설계·소유', 'JSON 암기 → 마우스 GUI 검수'],
       },
       {
         head: '시험지 제작 스튜디오 페이징·PDF (Solvook Expert)',
@@ -693,12 +698,13 @@ export const resumeExperience: ExpCompany[] = [
     stack: ['Next.js', 'TypeScript', 'SWR', 'Firebase', 'antd', 'Turborepo'],
     highlights: [
       {
-        head: '대용량 교재 PDF를 브라우저에서 OOM 없이 렌더 (ORZO Class)',
+        head: '300p 교재 PDF 첫 조작 639,000ms → 1,310ms (약 488배) — 전 페이지 선렌더 구조 재설계 (ORZO Class)',
         points: [
-          '전체 페이지 자동 선택 시 메모리 폭증을 청크 처리 + page.cleanup()으로 고정',
-          'gate 제거 → 캐시 우선 온디맨드 렌더로 전환',
+          '전체 페이지를 미리 그리던 구조 → 온디맨드 + 백그라운드 청크 렌더로 전환, 첫 조작 대기를 페이지 수에 비례하지 않게',
+          '자동 선택 시 메모리 폭증을 청크 처리 + page.cleanup()으로 peak 메모리를 청크 크기에 고정',
           '대용량 문서 첫 렌더 안정화 (메모리-정확도 트레이드오프 설계)',
         ],
+        results: ['첫 조작 488배', 'peak 메모리 고정'],
       },
       {
         head: '프론트엔드에 과적용된 DDD 레이어를 걷어내자고 제안·주도',
@@ -751,21 +757,19 @@ export const resumeExperience: ExpCompany[] = [
         results: [
           '프론트 개발',
           '59개 화면 재사용',
-          '696 / 1,299 커밋',
           '약 2년',
         ],
       },
       {
-        head: '코드 없이 탐지 ML을 학습시키는 마법사 (KISTI AI 관제) · 풀스택',
+        head: '코드 없이 탐지 ML을 학습시키는 마법사 (KISTI AI 관제) · 풀스택 — 회사 최대 규모(계약 약 4억)',
         points: [
           'crawl·feature·train 5단계 학습 파이프라인을 URL-as-state + immer 상태머신으로 구현',
           'react-awesome-query-builder로 Elasticsearch bool 쿼리를 GUI 조립',
           '패킷 payload(HEX)를 디코딩 → 엔트로피 → TCP flag 추출해 ML 특징으로 변환',
         ],
         results: [
-          '회사 최대 규모 · 약 4억',
-          '풀스택 기여 54%',
           '비개발자용 5단계 GUI 학습',
+          '프론트 + 백 설계·구현',
         ],
       },
       {
