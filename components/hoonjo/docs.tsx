@@ -331,7 +331,7 @@ function ResumeSkills() {
     <div className="grid grid-cols-2 gap-x-[30px] gap-y-[18px] max-[720px]:grid-cols-1">
       {resumeSkills.map((s) => (
         <div key={s.label} className="grid grid-cols-[132px_1fr] gap-3.5 items-start break-inside-avoid max-[720px]:grid-cols-1 max-[720px]:gap-1">
-          <div className="font-hj-serif text-[13.5px] font-semibold text-hj-fg pt-[3px]">{s.label}</div>
+          <div className="font-hj-serif text-[13.5px] font-semibold text-hj-fg pt-[3px] break-keep">{s.label}</div>
           <div className="flex flex-wrap gap-1.5">
             {s.items.map((it) => <Tag key={it}>{it}</Tag>)}
           </div>
@@ -347,10 +347,11 @@ function ResumeSkills() {
    경계를 넘어도 그리드 행이 쪼개지지 않는다. 하이라이트는 172px 들여써 헤더 정렬을 맞춘다. */
 function ExperienceBlock({ c, first = false }: { c: ExpCompany; first?: boolean }) {
   return (
-    // 회사 블록은 통째로 묶어 페이지 경계에서 회사 중간이 잘리지 않게 한다(한 페이지에
-    // 안 들어갈 만큼 길면 브라우저가 어쩔 수 없이 나눈다). break-inside 없이 flow에만
-    // 맡기면 이어지는 페이지에 회사명이 사라져 맥락을 잃는다.
-    <section className={`break-inside-avoid ${first ? 'pt-1' : 'pt-[22px] border-t border-hj-line'}`}>
+    // 회사 블록은 페이지에 걸쳐 흐르게 둔다(break-inside-avoid로 통째 묶으면 큰 회사가
+    // 남은 공간에 안 들어가 통째로 다음 장으로 밀려 하단에 빈 공간이 크게 남는다).
+    // 헤더 클러스터는 break-after-avoid로 페이지 하단에 홀로 남지 않게 하고, 각 하이라이트는
+    // break-inside-avoid로 안 쪼개지게 해 — 회사는 흐르되 헤더/개별 성과는 온전하다.
+    <section className={`${first ? 'pt-1' : 'pt-[22px] border-t border-hj-line'}`}>
       {/* 헤더 클러스터 — 기간+회사+역할+스택을 한 덩어리로 묶어 페이지 하단에 홀로 남지 않게. */}
       <div className="grid grid-cols-[150px_1fr] gap-[22px] break-inside-avoid break-after-avoid max-[720px]:grid-cols-1 max-[720px]:gap-1.5">
         <div className={`flex items-center gap-2 font-hj-mono text-[13px] font-medium pt-[3px] ${c.current ? 'text-hj-green-deep' : 'text-hj-muted'}`}>
