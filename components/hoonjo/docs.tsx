@@ -27,7 +27,7 @@ function DocShell({ tab, children }: { tab: string; children: ReactNode }) {
           인쇄 · PDF 저장
         </button>
       </header>
-      <article className="max-w-[820px] mx-auto my-8 bg-hj-paper border border-hj-line rounded-hj-lg shadow-hj-soft p-[clamp(28px,5vw,56px)] print:max-w-none print:m-0 print:border-0 print:rounded-none print:shadow-none print:p-[0_14mm]">{children}</article>
+      <article className="max-w-[820px] mx-auto my-8 bg-hj-paper border border-hj-line rounded-hj-lg shadow-hj-soft p-[clamp(28px,5vw,56px)] print:max-w-none print:m-0 print:border-0 print:rounded-none print:shadow-none print:p-[16mm_14mm]">{children}</article>
     </div>
   );
 }
@@ -371,9 +371,13 @@ function ExperienceBlock({ c, first = false }: { c: ExpCompany; first?: boolean 
           {c.stack.map((t) => <Tag key={t}>{t}</Tag>)}
         </div>
       </div>
-      <ul className="list-none mt-3.5 p-0 flex flex-col gap-[11px]">
+      {/* 각 성과 항목은 break-inside-avoid로 통째 유지 → 페이지 상단엔 항상 온전한 항목이 와서
+          print:pt(상단 간격)가 확실히 먹고, 안 들어가 다음 장으로 밀리면 이전 페이지 하단에
+          자연스러운 여백이 남는다. @page margin:0(머리글/바닥글 없음)에서 페이지 넘김 위/아래
+          간격을 얻는 방법. print:gap-0으로 화면 gap과 print 간격(pt)이 겹치지 않게 한다. */}
+      <ul className="list-none mt-3.5 p-0 flex flex-col gap-[11px] print:gap-0">
         {c.highlights.map((h) => (
-          <li key={h.head} className="grid grid-cols-[auto_1fr] gap-2.5">
+          <li key={h.head} className="grid grid-cols-[auto_1fr] gap-2.5 break-inside-avoid print:pt-[14px]">
             <span aria-hidden className="w-[5px] h-[5px] mt-[7px] rounded-[1px] bg-hj-blue rotate-45 flex-none" />
             <div>
               <div className="font-hj-serif text-[14.5px] font-semibold leading-[1.45] text-hj-fg break-after-avoid">{h.head}</div>
