@@ -349,8 +349,10 @@ function ExperienceBlock({ c, first = false }: { c: ExpCompany; first?: boolean 
   return (
     // 회사 블록은 페이지에 걸쳐 흐르게 둔다(break-inside-avoid로 통째 묶으면 큰 회사가
     // 남은 공간에 안 들어가 통째로 다음 장으로 밀려 하단에 빈 공간이 크게 남는다).
-    // 헤더 클러스터는 break-after-avoid로 페이지 하단에 홀로 남지 않게 하고, 각 하이라이트는
-    // break-inside-avoid로 안 쪼개지게 해 — 회사는 흐르되 헤더/개별 성과는 온전하다.
+    // 하이라이트도 통째로 묶지 않는다 — 항목 하나가 페이지 끝에 안 들어가면 통째로 다음 장으로
+    // 점프해 하단에 빈 공간이 생기기 때문(브라우저 인쇄의 A4+기본여백에서 특히 잦다).
+    // 대신 글머리(bullet) 단위로만 쪼개지게 하고, 제목은 break-after-avoid로 첫 내용과 붙여
+    // 페이지 하단에 홀로 남지 않게 한다 — 회사도 항목도 흐르며 페이지를 자연스럽게 채운다.
     <section className={`${first ? 'pt-1' : 'pt-[22px] border-t border-hj-line'}`}>
       {/* 헤더 클러스터 — 기간+회사+역할+스택을 한 덩어리로 묶어 페이지 하단에 홀로 남지 않게. */}
       <div className="grid grid-cols-[150px_1fr] gap-[22px] break-inside-avoid break-after-avoid max-[720px]:grid-cols-1 max-[720px]:gap-1.5">
@@ -371,20 +373,20 @@ function ExperienceBlock({ c, first = false }: { c: ExpCompany; first?: boolean 
       </div>
       <ul className="list-none mt-3.5 p-0 flex flex-col gap-[11px] pl-[172px] max-[720px]:pl-0">
         {c.highlights.map((h) => (
-          <li key={h.head} className="grid grid-cols-[auto_1fr] gap-2.5 break-inside-avoid">
+          <li key={h.head} className="grid grid-cols-[auto_1fr] gap-2.5">
             <span aria-hidden className="w-[5px] h-[5px] mt-[7px] rounded-[1px] bg-hj-blue rotate-45 flex-none" />
             <div>
-              <div className="font-hj-serif text-[14.5px] font-semibold leading-[1.45] text-hj-fg">{h.head}</div>
+              <div className="font-hj-serif text-[14.5px] font-semibold leading-[1.45] text-hj-fg break-after-avoid">{h.head}</div>
               <ul className="list-none mt-1.5 p-0 flex flex-col gap-[3px]">
                 {h.points.map((pt, i) => (
-                  <li key={i} className="grid grid-cols-[auto_1fr] gap-2 font-hj-serif text-[13.5px] leading-[1.55] text-hj-fg-secondary">
+                  <li key={i} className="grid grid-cols-[auto_1fr] gap-2 font-hj-serif text-[13.5px] leading-[1.55] text-hj-fg-secondary break-inside-avoid">
                     <span aria-hidden className="text-hj-faint">–</span>
                     <span>{pt}</span>
                   </li>
                 ))}
               </ul>
               {h.results && h.results.length > 0 && (
-                <div className="flex flex-wrap items-center gap-x-2 gap-y-[7px] mt-2.5">
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-[7px] mt-2.5 break-inside-avoid">
                   <span className="inline-flex items-center gap-1.5 font-hj-mono text-[10.5px] font-semibold tracking-[0.14em] uppercase text-hj-green-deep">
                     <span aria-hidden className="w-[5px] h-[5px] rotate-45 bg-hj-green flex-none" />
                     성과
