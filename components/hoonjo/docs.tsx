@@ -430,6 +430,17 @@ function Education() {
 type ResumeSide = { name: string; meta: string; what: string; points: string[]; stack: string[]; repo?: string };
 const RESUME_SIDE: ResumeSide[] = [
   {
+    name: 'velto',
+    meta: '모바일 앱 · 단독 · 기획·설계',
+    what: "음악인 크루가 작업 클립을 나누는 모바일 앱 — 좋아요·팔로워·알고리즘 없이 '공유 압박'을 설계로 제거.",
+    points: [
+      '좋아요·팔로워·피드 대신 7일 자연 만료로 큐레이션 압박을 차단, 합주는 강제 아닌 옵션 레이어링(친구 클립 위에 덧붙이기)으로 설계',
+      '핵심 기술 리스크(iOS 동시 재생+녹화)를 PoC로 먼저 검증, 실패 대비 Async-only 폴백(부모 재생 후 녹화)까지 설계해 핵심 가치 보존',
+      'Supabase(Postgres·Storage·Edge Functions·Cron) + RLS로 크루 다중관계 보안, 자식 클립이 살아있으면 부모를 보존하는 Time-decay 만료 로직 설계',
+    ],
+    stack: ['Expo · React Native', 'TypeScript', 'Supabase', 'FFmpeg'],
+  },
+  {
     name: 'samra-mansang',
     meta: '풀스택 · 178커밋 · 단독',
     what: '로스트아크 업적 추적·관리 + 공략 위키 웹 서비스 (Next.js·NestJS 모노레포).',
