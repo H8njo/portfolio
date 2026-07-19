@@ -509,6 +509,20 @@ export const resumeSummary: {
   },
 ];
 
+/* 주도성 · 제품 오너십 — PO·기획자 공백을 메우고 사용자 목소리로 재설계한 패턴을
+   회사별 한 줄 증거로. 상세는 경력 하이라이트에 있고, 여기선 "일회성이 아닌 방식"임을 못 박는다. */
+export const resumeOwnership: {
+  claim: string;
+  items: { at: string; t: string }[];
+} = {
+  claim: '주어진 개발에 그치지 않고 — PO·기획자 공백을 스스로 메우며 제품을 주도, 사용자 목소리로 문제를 발견해 재설계한 경험 다수.',
+  items: [
+    { at: 'Solvook Creator', t: 'PO 공백 시 제품 결정 대행 — 검수자(사용자) 피드백으로 JSON 편집 화면을 마우스만으로 되는 GUI 검수로 전면 재설계' },
+    { at: '본문분석 에디터', t: '기획자 공백 시 기획·디자인·개발까지 일괄 주도' },
+    { at: 'Zipida', t: '프론트로 합류 → 회사 5 → 30명 성장기에 팀 리드로, 타 팀 프로젝트까지 지원' },
+  ],
+};
+
 /* 텍스트 뭉치가 아니라 뱃지로 스캔되게 항목을 배열로 둔다. */
 export const resumeSkills: { label: string; items: string[] }[] = [
   {
