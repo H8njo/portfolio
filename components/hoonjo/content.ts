@@ -403,10 +403,10 @@ export const timeline: Timeline[] = [
   },
   {
     period: '2020 — 2023',
-    role: 'Frontend Engineer · Fullstack',
+    role: 'Team Lead · Full-stack',
     org: '@Zipida',
-    scope: '보안관제 프론트 주저자',
-    description: '정부·기업 보안관제 SI를 프론트 주저자(696커밋)로 이끈 3년.',
+    scope: '프론트·백엔드 아우른 팀 리드',
+    description: '정부·기업 보안관제 SI를 프론트·백엔드 아우르는 팀장으로 이끈 3년(696커밋).',
     lines: [
       '법무부 포털: Table 컴포넌트 하나가 컬럼 정의 메타에서 목록·검색·정렬·엑셀·폼 생성 — **정의 1벌로 59개 화면 양산**, 라우트 정의에서 메뉴·권한트리 동시 파생(RBAC)',
       'KISTI AI 관제: **코드 없이 탐지 ML을 학습·배포하는 5단계 마법사**를 URL-as-state·immer 상태머신으로 구현 (풀스택 54%)',
@@ -663,7 +663,7 @@ export const resumeExperience: ExpCompany[] = [
     period: '2020 — 2023',
     company: 'Zipida',
     product: '정부·기업 보안관제 SI · 풀스택',
-    role: '프론트엔드 개발 · 풀스택',
+    role: '팀 리드 · 풀스택 (프론트·백엔드)',
     stack: [
       'React',
       'Apollo GraphQL',
