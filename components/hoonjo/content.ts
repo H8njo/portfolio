@@ -500,7 +500,11 @@ export const resumeSummary: {
   { t: '7년차 프론트엔드 엔지니어', kind: 'lead' },
   { t: '남들이 막힌 화면을 직접 측정해 되게 만듭니다.', kind: 'hook' },
   {
-    t: '성능 · 대용량 렌더링 · 복잡한 상태를 풀고, 반복을 재사용 가능한 구조·라이브러리로.',
+    t: '성능 · 대용량 렌더링 · 복잡한 상태를 풀고, 복잡하거나 반복되는 문제는 단순한 추상으로 (재사용 구조·라이브러리).',
+    kind: 'body',
+  },
+  {
+    t: '레거시는 최신 스택으로 점진 이관하고, ML·Elasticsearch·WebGL처럼 모르던 스택도 실무에서 학습해 출시까지 갑니다.',
     kind: 'body',
   },
   {
@@ -550,6 +554,15 @@ export const resumeSkills: { label: string; items: string[] }[] = [
       'NestJS BFF',
       'GraphQL · 이중 데이터소스',
       '비동기 파이프라인',
+    ],
+  },
+  {
+    label: '레거시 현대화 · 점진 이관',
+    items: [
+      'MUI → Radix + Tailwind v2',
+      'XState → Zustand',
+      '위저드 → React Hook Form',
+      'PHP → React',
     ],
   },
   {
@@ -641,7 +654,7 @@ export const resumeExperience: ExpCompany[] = [
         results: ['MUI → Radix + Tailwind 재설계', '공동 메인테이너 · 릴리스 관리'],
       },
       {
-        head: '룰 없던 코드베이스 표준화 — 상태관리부터 오류 모니터링까지 재설계',
+        head: '룰 없던 코드베이스 표준화 — 상태관리·컨벤션·오류 모니터링으로 안정적 서비스 기반 구축',
         points: [
           '섞여 있던 XState를 걷어내고 Zustand로 통일 — 복잡한 상태를 feature별 작은 store로 분리',
           'ESLint·Prettier 룰 + git 훅(pre-commit lint·type-check / pre-push test)으로 규칙을 기계가 강제',
