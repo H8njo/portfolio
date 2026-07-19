@@ -64,7 +64,7 @@ function SectionLabel({ children }: { children: ReactNode }) {
    `breakBefore` = 이 섹션을 무조건 새 페이지에서 시작(페이지 하단에서 잘리는 걸 방지). */
 function DocSection({ label, flow, breakBefore, children }: { label: string; flow?: boolean; breakBefore?: boolean; children: ReactNode }) {
   return (
-    <section className={`mt-[26px] ${flow ? '' : 'break-inside-avoid'} ${breakBefore ? 'print:break-before-page print:pt-[2mm]' : ''}`}>
+    <section className={`mt-[26px] ${flow ? '' : 'break-inside-avoid'} ${breakBefore ? 'print:break-before-page print:pt-[16mm]' : ''}`}>
       <h2 className="font-hj-mono text-[12px] tracking-[0.12em] uppercase text-hj-muted mt-0 mb-3.5 pb-2 border-b border-hj-line break-after-avoid">{label}</h2>
       {children}
     </section>
@@ -508,12 +508,12 @@ export function Resume() {
           ))}
         </div>
       </DocSection>
-      <DocSection label="사이드 프로젝트" flow>
+      <DocSection label="사이드 프로젝트" flow breakBefore>
         <div className="flex flex-col gap-4">
           {RESUME_SIDE.map((p, i) => <ResumeSideProject key={p.name} p={p} first={i === 0} />)}
         </div>
       </DocSection>
-      <DocSection label="핵심 역량" flow><ResumeSkills /></DocSection>
+      <DocSection label="핵심 역량" flow breakBefore><ResumeSkills /></DocSection>
       <DocSection label="학력 · 교육"><Education /></DocSection>
     </DocShell>
   );
