@@ -38,7 +38,7 @@ const NAV_ROUTES: { label: string; href: string; external?: boolean }[] = [
 const NAV_LINK_CLS =
   'font-hj-serif text-[15px] text-hj-fg-secondary px-3 py-2.5 no-underline rounded-hj-md transition-colors duration-150 hover:text-hj-fg hover:bg-hj-cloud';
 const NAV_MOBILE_CLS =
-  'block font-hj-serif text-[18px] text-hj-fg py-3 border-b border-hj-line no-underline';
+  'block font-hj-serif text-[18px] text-hj-fg py-3.5 border-b border-hj-line no-underline';
 
 export function Nav() {
   const [open, setOpen] = useState(false);
