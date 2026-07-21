@@ -107,7 +107,7 @@ export function Hero() {
             <div>
               <Eyebrow tone="blue">FRONTEND ENGINEER · 7 YEARS</Eyebrow>
               <h1 className="mt-[26px] font-hj-serif font-semibold text-[clamp(30px,4.4vw,52px)] leading-[1.1] tracking-[-0.035em] text-hj-fg">
-                {profile.tagline[0]} <span className="font-extrabold">되게</span> 만듭니다.
+                {profile.tagline[0]} <span className="font-extrabold">{profile.tagline[1]}</span> {profile.tagline[2]}
               </h1>
               <p className="mt-7 max-w-[46ch] font-hj-serif text-[clamp(16px,2vw,19px)] leading-[1.6] text-hj-fg-secondary whitespace-pre-line">
                 {profile.role}. {profile.lead}

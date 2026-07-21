@@ -3,21 +3,20 @@ import { pretendard, jetbrainsMono } from "@/lib/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  // TODO(T0): 실제 도메인으로 교체
-  metadataBase: new URL("https://hoonjo.dev"),
-  title: "hoonjo — Frontend Engineer",
-  description: "측정 가능한 임팩트로 어려운 프론트엔드 문제를 푸는 7년차 개발자.",
+  metadataBase: new URL("https://h8njo.vercel.app"),
+  title: "조영훈 — Frontend Engineer",
+  description: "PDF 첫 조작을 약 10분 30초에서 1.3초로, 컬럼 정의 한 벌로 화면 59개를 찍어낸 7년차 프론트엔드 엔지니어.",
   openGraph: {
-    title: "hoonjo — Frontend Engineer",
-    description: "측정 가능한 임팩트로 어려운 프론트엔드 문제를 푸는 7년차 개발자.",
+    title: "조영훈 — Frontend Engineer",
+    description: "PDF 첫 조작을 약 10분 30초에서 1.3초로, 컬럼 정의 한 벌로 화면 59개를 찍어낸 7년차 프론트엔드 엔지니어.",
     type: "website",
-    siteName: "hoonjo.dev",
+    siteName: "조영훈 · 포트폴리오",
     locale: "ko_KR",
   },
   twitter: {
     card: "summary_large_image",
-    title: "hoonjo — Frontend Engineer",
-    description: "측정 가능한 임팩트로 어려운 프론트엔드 문제를 푸는 7년차 개발자.",
+    title: "조영훈 — Frontend Engineer",
+    description: "PDF 첫 조작을 약 10분 30초에서 1.3초로, 컬럼 정의 한 벌로 화면 59개를 찍어낸 7년차 프론트엔드 엔지니어.",
   },
 };
 
