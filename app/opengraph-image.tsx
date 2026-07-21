@@ -21,7 +21,7 @@ export default function OgImage() {
           fontFamily: "monospace",
         }}
       >
-        <div style={{ fontSize: 30, color: "#3182f6" }}>hoonjo.dev</div>
+        <div style={{ fontSize: 30, color: "#3182f6" }}>h8njo.vercel.app</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
           <div
             style={{

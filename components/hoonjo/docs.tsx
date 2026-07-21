@@ -442,7 +442,7 @@ const RESUME_SIDE: ResumeSide[] = [
   },
   {
     name: 'samra-mansang',
-    meta: '풀스택 · 178커밋 · 단독',
+    meta: '풀스택 · 단독 개발',
     what: '로스트아크 업적 추적·관리 + 공략 위키 웹 서비스 (Next.js·NestJS 모노레포).',
     points: [
       'OCR로 업적 데이터를 일괄 등록하고, Leaflet 맵에 위치 마커·추가요청, TipTap 공략 위키까지 풀스택 단독 구현',
@@ -563,7 +563,7 @@ function SideProjectCard({ p }: { p: (typeof sideProjects)[number] }) {
 export function PortfolioPdf() {
   return (
     <DocShell tab="포트폴리오 PDF">
-      <DocHeader tagline="안 되던 화면을 되게 만듭니다." summary={profile.lead.replace(/\n/g, ' ')} />
+      <DocHeader tagline="안 되던 화면을 측정해서 되게 만듭니다." summary={profile.lead.replace(/\n/g, ' ')} />
 
       <DocSection label="대표 임팩트">
         <div className="font-hj-serif text-[14.5px] text-hj-fg-secondary -mt-1 mb-3">{impact.lead}</div>

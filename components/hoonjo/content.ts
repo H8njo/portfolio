@@ -30,8 +30,8 @@ export const profile = {
   portfolioLabel: '포트폴리오 · h8njo.vercel.app',
   blog: 'https://h8njo.vercel.app/work',
   blogLabel: '블로그 · h8njo.vercel.app/work',
-  tagline: ['안 되던 화면을', '되게 만듭니다.'],
-  lead: '성능, 복잡한 상태, 까다로운 렌더링\n: 직접 측정하고, 끝까지 동작하게.',
+  tagline: ['안 되던 화면을', '측정해서 되게 만듭니다.'],
+  lead: '성능, 복잡한 상태, 까다로운 렌더링 — 직접 측정하고, 끝까지 동작하게 만듭니다.',
   heroTags: ['성능 최적화', '대용량 렌더링', '복잡한 상태', 'Canvas / WebGL'],
 };
 
@@ -39,7 +39,7 @@ export const profile = {
 export const impact = {
   lead: '반복을 구조로, 결과를 숫자로.',
   stats: [
-    { k: 'PDF 첫 조작 (300p)', before: '639,000ms', after: '1,310ms · 488배' },
+    { k: 'PDF 첫 조작 (300p)', before: '약 10분 30초', after: '1.3초' },
     { k: '같은 모양 화면 59개', before: '화면마다 코딩', after: '정의 하나로' },
     { k: '페이지네이션 엔진', before: '사내 전용', after: 'npm 공개' },
   ] as { k: string; before: string; after: string }[],
@@ -99,7 +99,7 @@ export const flagship = {
     ],
   ] as [string, string, string][],
   results: [
-    { label: '환불 문의', after: '대폭 감소', gain: '2년 이어지던 불량 환불' },
+    { label: '인쇄 불량 환불', after: '하루 4건 → 주 2건', gain: '2년 이어지던 반복 문의' },
     {
       label: '100장 재배치',
       after: '55–66',
@@ -114,7 +114,7 @@ export const flagship = {
     },
   ] as Metric[],
   resultNote:
-    '재사용성을 확보한 덕에 후속 저작 도구, 나아가 AI 문제 생성 서비스(현재 메인 매출의 한 축)로 이어졌다 — 그즈음 매출이 전년의 약 150%가 됐다.',
+    '재사용 가능한 코어로 분리한 덕에, 이 엔진이 후속 저작 도구와 AI 문제 생성 서비스(현재 메인 매출의 한 축)의 기반 기술이 됐다.',
   honesty:
     '표처럼 중간에서 쪼개면 안 되는 요소, 페이지를 넘는 카드 이동의 미세한 끊김은 아직 못 푼 한계로 문서에 그대로 적어뒀다. 못 푼 걸 안 푼 척하지 않는 게 라이브러리 쓰는 사람한테 정직한 거라고 본다.',
   images: [
@@ -177,10 +177,9 @@ export const cases: WorkCase[] = [
         gain: '버그도 한 곳에서 수정',
       },
       {
-        label: '내 커밋 · 프론트 개발',
-        after: '696',
-        unit: '/1,299',
-        gain: '약 2년',
+        label: '프론트 개발',
+        after: '핵심 주도',
+        gain: '약 2년 · 도메인 100여 개',
       },
     ],
     metricsNote:
@@ -220,7 +219,7 @@ export const cases: WorkCase[] = [
         after: '폴더 드롭',
         gain: '손으로 쓰던 export 0',
       },
-      { label: '역할', after: '공동 메인테이너', gain: '릴리스·PR 리뷰 총괄' },
+      { label: '역할', after: '공동 메인테이너', gain: '릴리스·PR 리뷰 공동 운영' },
     ],
     code: {
       caption: 'API는 하나, 잘못 쓰면 컴파일에서 막힌다',
@@ -296,7 +295,7 @@ export const blackHole = {
   company: '개인 프로젝트',
   title: ['빛이 휘는 블랙홀을', '셰이더로 직접 구현'],
   body: '중력이 빛을 휘게 하는 효과를 그래픽 라이브러리 없이 직접 구현. Canvas 별 수천 개 위에 WebGL 셰이더로 빛의 굴절을 표현.',
-  aside: '옆 화면은 지금 브라우저에서 실시간으로 도는 결과입니다.',
+  aside: '옆 화면은 지금 브라우저에서 실시간으로 도는 자립형 재현본입니다. 마우스 추적·질량 ease-in까지 넣은 완전판은 레포에 있습니다.',
   tags: ['WebGL', 'GLSL 셰이더', 'Canvas 2D', '좌표 수학'],
   stats: [
     ['별 개수', '8,000+'],
@@ -340,7 +339,7 @@ export const sideProjects: {
     stats: [
       ['빌드', 'Xcode 없이 SPM'],
       ['배포', 'Homebrew Tap'],
-      ['규모', '18커밋 · 단독'],
+      ['규모', '단독 개발'],
     ],
     tags: ['Swift', 'SwiftUI', 'macOS'],
     note: '제일 오래 데인 건 언어가 아니라 “서명 안 된 앱”이라는 OS 벽 — 알림창을 직접 그려 넘었다.',
@@ -370,16 +369,16 @@ export type Timeline = {
 export const timeline: Timeline[] = [
   {
     period: '2024 — 현재',
-    role: 'Frontend Engineer',
+    role: 'Senior Frontend Engineer',
     org: '@Bookips',
     scope: '디자인 시스템 · PDF 레이아웃 렌더러 핵심 개발자',
     description: '교육 콘텐츠 플랫폼 쏠북(Solvook)의 프론트엔드.',
     lines: [
       '메인 서비스 엑스퍼트에서 문제·지문을 인쇄물처럼 **A4 다단 자동 조판하는 난제 해결**',
       '그 페이지네이션 엔진을 앱에서 분리해 **오픈소스로 공개** — column-pager (npm · MIT)',
-      '이 엔진을 축으로 **콘텐츠 저작툴을 새 프로젝트로 단독 구축** (1,682커밋 · 전체의 95%)',
-      '저작툴에서 파생된 **쏠북패스 출시 — 현재 메인 매출 담당**',
-      '공용 **디자인 시스템(@bookips/sds) 공동 메인테이너** — 릴리스·PR 리뷰 총괄',
+      '이 엔진을 축으로 **콘텐츠 저작툴을 새 프로젝트로 단독 구축** (프론트 아키텍처 단독 소유)',
+      '저작툴을 기반으로 파생된 **쏠북패스 출시 — 회사 메인 매출 제품의 프론트 담당**',
+      '공용 **디자인 시스템(@bookips/sds) 공동 메인테이너** — 릴리스·PR 리뷰 공동 운영',
       '룰도 없던 코드베이스를 **상태관리(XState→Zustand)·컨벤션·강제 게이트·오류 모니터링까지 표준화**하고, 그 표준을 형제 서비스로 확산',
     ],
     tags: ['Zustand', 'TanStack Query', 'Radix · CVA', 'svgr 코드젠', 'semantic-release'],
@@ -398,7 +397,7 @@ export const timeline: Timeline[] = [
     scope: '미들·시니어',
     description: '튜터용 수업 관리 앱 ORZO의 프론트엔드.',
     lines: [
-      '300페이지 교재 PDF의 첫 조작까지 **639,000ms → 1,310ms(약 488배) 단축**',
+      '300페이지 교재 PDF의 첫 조작 대기를 **약 10분 30초 → 1.3초로 단축** — 전 페이지 선렌더를 온디맨드 + 청크 렌더로 재설계',
       '전체 페이지 자동선택 시 터지던 메모리를 청크 처리 + page.cleanup() + 온디맨드 렌더로 **OOM 없이 제어** (메모리·정확도 트레이드오프 설계)',
       '인증 모델을 인메모리 토큰 → **서버 발급 세션 쿠키 + SSR 가드로 전환**, 서버 로그아웃(refresh token revoke)까지',
     ],
@@ -407,17 +406,17 @@ export const timeline: Timeline[] = [
   },
   {
     period: '2020 — 2023',
-    role: 'Frontend → Team Lead',
+    role: 'Frontend → Tech Lead',
     org: '@Zipida',
-    scope: '프론트 주도 → 풀스택 팀 리드',
-    description: '정부·기업 보안관제 SI 2년 11개월. 5명이던 회사가 30명대로 크는 동안, 프론트로 시작해 팀 리드가 됐다.',
+    scope: '프론트 주도 → 풀스택 기술 리드',
+    description: '정부·기업 보안관제 SI 2년 11개월. 5명이던 회사가 30명대로 크는 동안, 프론트로 시작해 기술 리드 역할을 맡았다.',
     lines: [
-      '**2년 11개월간 약 14개** 보안관제·포털 프로젝트를 기획 미팅부터 디자인·개발·배포·유지보수까지 전 과정으로 (프론트 주도, 696커밋)',
+      '**2년 11개월간 약 14개** 보안관제·포털 프로젝트를 기획 미팅부터 디자인·개발·배포·유지보수까지 전 과정으로 (프론트 주도)',
       '법무부 포털: Table 컴포넌트 하나가 컬럼 정의 메타에서 목록·검색·정렬·엑셀·폼 생성 — **정의 1벌로 59개 화면 양산**, 라우트 정의에서 메뉴·권한트리 동시 파생(RBAC)',
-      'KISTI AI 관제(회사 최대 규모 · **약 4억**): **코드 없이 탐지 ML을 학습·배포하는 5단계 마법사**를 URL-as-state·immer 상태머신으로 구현 (풀스택 54%)',
+      'KISTI AI 관제(전사 최대 규모 프로젝트): **코드 없이 탐지 ML을 학습·배포하는 5단계 마법사**를 URL-as-state·immer 상태머신으로 풀스택 구현',
       '현대오토에버 EDR: 비밀번호·권한 필터를 **NestJS BFF 프록시에서 통제**, 정형=PostgreSQL·가변=MongoDB **이중 DB 설계**',
       '그 외 문체부 관제 포털·사이버 훈련 CTF·통일부 서버사이드 페이징 등 보안관제 프로젝트 다수',
-      '회사가 5명 → 30명대로 크는 동안 다른 팀 프로젝트까지 도우며 **한 팀의 리드로 성장**, 유지보수로 고객사 재계약까지 연결',
+      '회사가 5명 → 30명대로 크는 동안 다른 팀의 막힌 프로젝트까지 들어가 함께 풀며 **기술 리드로 성장**, 유지보수로 고객사 재계약까지 연결',
     ],
     tags: ['Apollo GraphQL', 'NestJS', 'Elasticsearch', 'immer 상태머신', 'RBAC'],
     cases: [
@@ -504,11 +503,11 @@ export const resumeSummary: {
   { t: '7년차 프론트엔드 엔지니어', kind: 'lead' },
   { t: '안 되던 화면을 측정해서 되게 만듭니다.', kind: 'hook' },
   {
-    t: 'PDF 첫 조작 639,000ms → 1,310ms(약 488배) · 컬럼 정의 1벌로 59개 화면 · 사내 페이지네이션 엔진 npm(MIT) 오픈소스화.',
+    t: 'PDF 첫 조작을 약 10분 30초 → 1.3초로 · 컬럼 정의 1벌로 59개 화면 · 사내 페이지네이션 엔진 npm(MIT) 오픈소스화.',
     kind: 'body',
   },
   {
-    t: '성능 · 대용량 렌더링 · 복잡한 상태를 풀고, 복잡하거나 반복되는 문제는 단순한 추상으로 (재사용 구조·라이브러리).',
+    t: '성능 · 대용량 렌더링 · 복잡한 상태를 풀고, 반복되는 문제는 재사용 구조와 라이브러리로 단순하게 만듭니다.',
     kind: 'body',
   },
   {
@@ -516,7 +515,7 @@ export const resumeSummary: {
     kind: 'body',
   },
   {
-    t: '보안관제 SI 풀스택부터 교육 플랫폼 사내 엔진 오픈소스화까지 : 도메인이 바뀌어도 문제를 구조로 푸는 방식은 같습니다.',
+    t: '보안관제 SI 풀스택부터 교육 플랫폼 사내 엔진 오픈소스화까지 — 도메인이 바뀌어도 문제를 구조로 푸는 방식은 같습니다.',
     kind: 'close',
   },
 ];
@@ -531,7 +530,7 @@ export const resumeOwnership: {
   items: [
     { at: 'Solvook Creator', t: 'PO 공백 시 제품 결정을 대행 — 검수자(사용자) 피드백을 직접 듣고, JSON 구조를 외워야 하던 검수 화면을 마우스만으로 검수·수정·삭제·추가하는 GUI로 전면 재설계. 신규 검수자 온보딩 비용 제거' },
     { at: '본문분석 에디터', t: '기획자 공백 시 인터랙션 설계부터 개발까지 주도 — 드래그 대신 클릭-클릭 범위 선택 같은 UX 결정을 직접' },
-    { at: 'Zipida', t: '프론트로 합류해 회사 5 → 30명 성장기에 팀 리드로, 막히던 타 팀 프로젝트까지 지원' },
+    { at: 'Zipida', t: '프론트로 합류해 회사 5 → 30명 성장기에 기술 리드로, 막히던 타 팀 프로젝트까지 지원' },
   ],
 };
 
@@ -543,10 +542,11 @@ export const resumeLeadership: {
 } = {
   claim: '관리보다, 동료가 더 잘 일하도록 지원하는 쪽 — 협업 방식과 개발 문화를 구조로 개선하고 조직으로 확산.',
   items: [
-    { at: '팀 리딩', t: 'Zipida에서 팀 리드로 — 막히던 타 팀 프로젝트까지 들어가 함께 해결' },
-    { at: '협업 · 문화', t: 'PR 템플릿·CODEOWNERS·컨벤션·git 게이트(lint·type-check·test)로 "누가 와도 같은 규율", async·상태 끌어올리기·네이밍 등 팀 관행 정리·공유' },
-    { at: '조직 확산', t: '룰 없던 코드베이스를 표준화해 형제 서비스로 전파 / 공용 디자인 시스템 공동 메인테이너(릴리스·PR 리뷰 총괄)' },
-    { at: '기술 의사결정', t: '조직의 스택 방향 주도 — MUI → Radix + Tailwind v2 재설계 / 일부 화면에 오버킬로 얹혀 있던 XState를 걷어내고 feature별 작은 store(Zustand)로 통일 (형식 상태머신이 필요한 자리는 URL + reducer로 별도 설계)' },
+    { at: '기술 리딩', t: 'Zipida에서 기술 리드로 — 막히던 타 팀 프로젝트까지 들어가 함께 해결하고, 코드 리뷰로 동료의 막힘을 풀어줬다' },
+    { at: '스터디 · 컨벤션', t: '팀 컨벤션을 함께 정하고 코드 레벨을 맞추는 스터디를 주도 — 리팩토링이 필요한 시점엔 리팩토링 스터디로 팀이 같은 패턴으로 정리하도록 호흡을 맞췄다' },
+    { at: '협업 · 문화', t: 'PR 템플릿·CODEOWNERS·컨벤션·git 게이트(lint·type-check·test)로 "누가 와도 같은 규율", async·상태 끌어올리기·네이밍 등 팀 관행을 정리해 문서로 공유' },
+    { at: '조직 확산', t: '룰 없던 코드베이스를 표준화해 형제 서비스로 전파 / 공용 디자인 시스템 공동 메인테이너(릴리스·PR 리뷰 공동 운영)' },
+    { at: '기술 의사결정', t: '조직의 스택 방향을 이끌어 — MUI를 Radix + Tailwind v2로 다시 짜고, 일부 화면에 오버킬로 얹혀 있던 XState를 걷어내 feature별 작은 store(Zustand)로 통일 (형식 상태머신이 필요한 자리는 URL + reducer로 별도 설계)' },
   ],
 };
 
@@ -559,7 +559,7 @@ export const resumeSkills: { label: string; items: string[] }[] = [
       '측정-우선 PDF 조판',
       '대용량 가상화',
       '메모리 바운드 처리',
-      '헤드리스 접근성(Radix)',
+      '접근성 — 키보드·aria·포커스',
     ],
   },
   {
@@ -598,7 +598,8 @@ export const resumeSkills: { label: string; items: string[] }[] = [
       'NestJS',
       'Turborepo (모노레포)',
       'Vite / Rollup',
-      'semantic-release',
+      'Vitest · Storybook 시각회귀',
+      'semantic-release · git 품질 게이트',
     ],
   },
 ];
@@ -625,7 +626,7 @@ export const resumeExperience: ExpCompany[] = [
     period: '2024 — 현재',
     company: 'Bookips',
     product: 'Solvook · 교육 콘텐츠 플랫폼',
-    role: '프론트엔드 엔지니어',
+    role: '시니어 프론트엔드 엔지니어',
     current: true,
     stack: [
       'Next.js',
@@ -648,7 +649,7 @@ export const resumeExperience: ExpCompany[] = [
           '단독 개발',
           '결정적 테스트 49개',
           'semantic-release 자동 배포',
-          '2년 이어지던 인쇄 불량 환불 문의 해소',
+          '인쇄 불량 환불 문의 하루 평균 4건 → 주 2건',
         ],
       },
       {
@@ -704,7 +705,7 @@ export const resumeExperience: ExpCompany[] = [
           '자동 선택 시 메모리 폭증을 청크 처리 + page.cleanup()으로 peak 메모리를 청크 크기에 고정',
           '대용량 문서 첫 렌더 안정화 (메모리-정확도 트레이드오프 설계)',
         ],
-        results: ['첫 조작 488배', 'peak 메모리 고정'],
+        results: ['첫 조작 10분 30초 → 1.3초', 'peak 메모리 고정'],
       },
       {
         head: '프론트엔드에 과적용된 DDD 레이어를 걷어내자고 제안·주도',
@@ -728,8 +729,8 @@ export const resumeExperience: ExpCompany[] = [
   {
     period: '2020 — 2023',
     company: 'Zipida',
-    product: '정부·기업 보안관제 SI · 회사 주력 매출',
-    role: '프론트 주도 → 풀스택 팀 리드',
+    product: '정부·기업 보안관제 SI',
+    role: '프론트 주도 → 풀스택 기술 리드',
     stack: [
       'React',
       'Apollo GraphQL',
@@ -740,12 +741,12 @@ export const resumeExperience: ExpCompany[] = [
     ],
     highlights: [
       {
-        head: '회사 주력 매출 — 보안관제·포털 14개 프로젝트 전 과정',
+        head: '보안관제·포털 14개 프로젝트 전 과정 (회사 주 수입 라인)',
         points: [
           '2년 11개월간 약 14개 프로젝트를 기획 미팅부터 디자인·개발·배포·유지보수까지 전 과정으로',
           '회사 주 수입원인 보안관제·포털 시스템을 맡고, 유지보수로 고객사 관계·재계약까지 연결',
         ],
-        results: ['약 14개 프로젝트', '2년 11개월', '주력 매출'],
+        results: ['약 14개 프로젝트', '2년 11개월', '전 과정 오너십'],
       },
       {
         head: '컬럼 정의 1벌로 59개 화면을 양산 (법무부 보안관제 포털)',
@@ -761,7 +762,7 @@ export const resumeExperience: ExpCompany[] = [
         ],
       },
       {
-        head: '코드 없이 탐지 ML을 학습시키는 마법사 (KISTI AI 관제) · 풀스택 — 회사 최대 규모(계약 약 4억)',
+        head: '코드 없이 탐지 ML을 학습시키는 마법사 (KISTI AI 관제) · 풀스택 — 전사 최대 규모 프로젝트',
         points: [
           'crawl·feature·train 5단계 학습 파이프라인을 URL-as-state + immer 상태머신으로 구현',
           'react-awesome-query-builder로 Elasticsearch bool 쿼리를 GUI 조립',
@@ -784,7 +785,7 @@ export const resumeExperience: ExpCompany[] = [
         points: [
           '문체부 내·외부 관제 포털 (CommonPage CRUD 엔진 · 4층 RBAC · 30분 유휴 자동 로그아웃)',
           '사이버 훈련 CTF 동적 점수 ledger (Go gRPC·Redis)',
-          '통일부 6,000건 클라 → 서버사이드 페이징 전환',
+          '통일부 포털: 데이터 규모가 커지자 6,000건 클라이언트 페이징 → 서버사이드 페이징으로 처리 구조 전환',
           'COVID-19 추적 RN 앱 (커스텀 Redux 미들웨어·지도 시각화), Rittal B2B 커머스 (react-snap SSR·GA 대시보드)',
         ],
       },
