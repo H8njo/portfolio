@@ -21,7 +21,7 @@ export type ProjImage = { src: string; alt: string };
 export const profile = {
   name: 'Hoonjo',
   nameKo: '조영훈',
-  role: '7년차 프론트엔드 엔지니어',
+  role: '7년차 시니어 프론트엔드 엔지니어',
   since: '2019',
   email: 'jaiemf@gmail.com',
   github: 'https://github.com/H8njo',
@@ -30,7 +30,7 @@ export const profile = {
   portfolioLabel: '포트폴리오 · h8njo.vercel.app',
   blog: 'https://h8njo.vercel.app/work',
   blogLabel: '블로그 · h8njo.vercel.app/work',
-  tagline: ['안 되던 화면을', '측정해서 되게 만듭니다.'],
+  tagline: ['안 되던 화면을 측정해서', '되게', '만듭니다.'],
   lead: '성능, 복잡한 상태, 까다로운 렌더링 — 직접 측정하고, 끝까지 동작하게 만듭니다.',
   heroTags: ['성능 최적화', '대용량 렌더링', '복잡한 상태', 'Canvas / WebGL'],
 };
@@ -178,7 +178,7 @@ export const cases: WorkCase[] = [
       },
       {
         label: '프론트 개발',
-        after: '핵심 주도',
+        after: '단독 라인',
         gain: '약 2년 · 도메인 100여 개',
       },
     ],
@@ -295,7 +295,7 @@ export const blackHole = {
   company: '개인 프로젝트',
   title: ['빛이 휘는 블랙홀을', '셰이더로 직접 구현'],
   body: '중력이 빛을 휘게 하는 효과를 그래픽 라이브러리 없이 직접 구현. Canvas 별 수천 개 위에 WebGL 셰이더로 빛의 굴절을 표현.',
-  aside: '옆 화면은 지금 브라우저에서 실시간으로 도는 자립형 재현본입니다. 마우스 추적·질량 ease-in까지 넣은 완전판은 레포에 있습니다.',
+  aside: '옆 화면은 지금 브라우저에서 실시간으로 도는 결과입니다.',
   tags: ['WebGL', 'GLSL 셰이더', 'Canvas 2D', '좌표 수학'],
   stats: [
     ['별 개수', '8,000+'],
@@ -500,7 +500,7 @@ export const resumeSummary: {
   t: string;
   kind: 'lead' | 'hook' | 'body' | 'close';
 }[] = [
-  { t: '7년차 프론트엔드 엔지니어', kind: 'lead' },
+  { t: '7년차 시니어 프론트엔드 엔지니어', kind: 'lead' },
   { t: '안 되던 화면을 측정해서 되게 만듭니다.', kind: 'hook' },
   {
     t: 'PDF 첫 조작을 약 10분 30초 → 1.3초로 · 컬럼 정의 1벌로 59개 화면 · 사내 페이지네이션 엔진 npm(MIT) 오픈소스화.',
@@ -543,7 +543,7 @@ export const resumeLeadership: {
   claim: '관리보다, 동료가 더 잘 일하도록 지원하는 쪽 — 협업 방식과 개발 문화를 구조로 개선하고 조직으로 확산.',
   items: [
     { at: '기술 리딩', t: 'Zipida에서 기술 리드로 — 막히던 타 팀 프로젝트까지 들어가 함께 해결하고, 코드 리뷰로 동료의 막힘을 풀어줬다' },
-    { at: '스터디 · 컨벤션', t: '팀 컨벤션을 함께 정하고 코드 레벨을 맞추는 스터디를 주도 — 리팩토링이 필요한 시점엔 리팩토링 스터디로 팀이 같은 패턴으로 정리하도록 호흡을 맞췄다' },
+    { at: '스터디 · 컨벤션', t: '팀 컨벤션을 함께 정하고 코드 레벨을 맞추는 스터디를 주도 — 리팩토링이 필요한 시점엔 스터디로 팀 전체가 같은 패턴으로 정리하도록 이끌었다' },
     { at: '협업 · 문화', t: 'PR 템플릿·CODEOWNERS·컨벤션·git 게이트(lint·type-check·test)로 "누가 와도 같은 규율", async·상태 끌어올리기·네이밍 등 팀 관행을 정리해 문서로 공유' },
     { at: '조직 확산', t: '룰 없던 코드베이스를 표준화해 형제 서비스로 전파 / 공용 디자인 시스템 공동 메인테이너(릴리스·PR 리뷰 공동 운영)' },
     { at: '기술 의사결정', t: '조직의 스택 방향을 이끌어 — MUI를 Radix + Tailwind v2로 다시 짜고, 일부 화면에 오버킬로 얹혀 있던 XState를 걷어내 feature별 작은 store(Zustand)로 통일 (형식 상태머신이 필요한 자리는 URL + reducer로 별도 설계)' },
@@ -699,7 +699,7 @@ export const resumeExperience: ExpCompany[] = [
     stack: ['Next.js', 'TypeScript', 'SWR', 'Firebase', 'antd', 'Turborepo'],
     highlights: [
       {
-        head: '300p 교재 PDF 첫 조작 639,000ms → 1,310ms (약 488배) — 전 페이지 선렌더 구조 재설계 (ORZO Class)',
+        head: '300p 교재 PDF 첫 조작 약 10분 30초 → 1.3초 (약 488배) — 전 페이지 선렌더 구조 재설계 (ORZO Class)',
         points: [
           '전체 페이지를 미리 그리던 구조 → 온디맨드 + 백그라운드 청크 렌더로 전환, 첫 조작 대기를 페이지 수에 비례하지 않게',
           '자동 선택 시 메모리 폭증을 청크 처리 + page.cleanup()으로 peak 메모리를 청크 크기에 고정',

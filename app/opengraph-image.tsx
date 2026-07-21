@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 // 링크 공유 미리보기 카드. 한글 글리프 이슈 회피 위해 영문 카피 사용.
-export const alt = "hoonjo — Frontend Engineer";
+export const alt = "조영훈 — Frontend Engineer";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
