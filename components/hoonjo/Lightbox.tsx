@@ -65,11 +65,11 @@ export function Gallery({ images }: { images: { src: string; alt: string }[] }) 
   const [hero, ...rest] = images;
   return (
     <div className="flex flex-col gap-2.5">
-      <ZoomImage src={hero.src} alt={hero.alt} className="w-full block rounded-hj-md border border-hj-line shadow-hj-soft bg-hj-paper" />
+      <ZoomImage src={hero.src} alt={hero.alt} className="w-full block rounded-hj-md border border-hj-steel shadow-hj-soft bg-hj-paper" />
       {rest.length > 0 && (
         <div className="grid gap-2.5" style={{ gridTemplateColumns: `repeat(${rest.length}, 1fr)` }}>
           {rest.map((im) => (
-            <ZoomImage key={im.src} src={im.src} alt={im.alt} className="w-full h-[74px] object-cover object-top block rounded-hj-sm border border-hj-line bg-hj-paper" />
+            <ZoomImage key={im.src} src={im.src} alt={im.alt} className="w-full h-[88px] object-cover object-top block rounded-hj-sm border border-hj-steel bg-hj-paper" />
           ))}
         </div>
       )}
