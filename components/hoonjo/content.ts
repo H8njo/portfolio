@@ -55,8 +55,7 @@ export const flagship = {
   oneLiner:
     '인쇄물처럼 “고정 크기 페이지”로 자동 분할하는 엔진.\n사내 제작 도구 → npm 패키지.',
   // /work 게시물의 훅과 동일 — 포트폴리오 PDF 플래그십의 첫 줄로 쓴다(단일 출처).
-  hook:
-    '프리랜서도 사내 FE도 못 풀어 2년째 환불 문의가 이어지던 문제. 다섯 번 갈아엎고, 실패한 방식을 응용해 풀었다.',
+  hook: '프리랜서도 사내 FE도 못 풀어 2년째 환불 문의가 이어지던 문제. 다섯 번 갈아엎고, 실패한 방식을 응용해 풀었다.',
   problem:
     '교육 콘텐츠 편집기에서 문제들을 A4 두 칸(2단) 레이아웃으로 배치해야 했는데, 기존 구현은 한 칸 높이를 넘는 긴 카드(긴 본문)를 처리하지 못했다. 만든 문제지는 인쇄돼 학생에게 가는 거라, 문장이 중간에 잘리면 그대로 불량품 — 주력 서비스에서 2년 가까이 환불 문의가 이어졌다. 여러 명이 붙었지만 다들 같은 벽에서 멈췄다.',
   attempts: [
@@ -99,7 +98,11 @@ export const flagship = {
     ],
   ] as [string, string, string][],
   results: [
-    { label: '인쇄 불량 환불', after: '하루 4건 → 주 2건', gain: '2년 이어지던 반복 문의' },
+    {
+      label: '인쇄 불량 환불',
+      after: '하루 4건 → 주 2건',
+      gain: '2년 이어지던 반복 문의',
+    },
     {
       label: '100장 재배치',
       after: '55–66',
@@ -219,7 +222,11 @@ export const cases: WorkCase[] = [
         after: '폴더 드롭',
         gain: '손으로 쓰던 export 0',
       },
-      { label: '역할', after: '공동 메인테이너', gain: '릴리스·PR 리뷰 공동 운영' },
+      {
+        label: '역할',
+        after: '공동 메인테이너',
+        gain: '릴리스·PR 리뷰 공동 운영',
+      },
     ],
     code: {
       caption: 'API는 하나, 잘못 쓰면 컴파일에서 막힌다',
@@ -381,7 +388,13 @@ export const timeline: Timeline[] = [
       '공용 **디자인 시스템(@bookips/sds) 공동 메인테이너** — 릴리스·PR 리뷰 공동 운영',
       '룰도 없던 코드베이스를 **상태관리(XState→Zustand)·컨벤션·강제 게이트·오류 모니터링까지 표준화**하고, 그 표준을 형제 서비스로 확산',
     ],
-    tags: ['Zustand', 'TanStack Query', 'Radix · CVA', 'svgr 코드젠', 'semantic-release'],
+    tags: [
+      'Zustand',
+      'TanStack Query',
+      'Radix · CVA',
+      'svgr 코드젠',
+      'semantic-release',
+    ],
     current: true,
     cases: [
       { label: 'column-pager 오픈소스', href: '/work/column-count-layout' },
@@ -409,7 +422,8 @@ export const timeline: Timeline[] = [
     role: 'Frontend → Tech Lead',
     org: '@Zipida',
     scope: '프론트 주도 → 풀스택 기술 리드',
-    description: '정부·기업 보안관제 SI 2년 11개월. 5명이던 회사가 30명대로 크는 동안, 프론트로 시작해 기술 리드 역할을 맡았다.',
+    description:
+      '정부·기업 보안관제 SI 2년 11개월. 5명이던 회사가 30명대로 크는 동안, 프론트로 시작해 기술 리드 역할을 맡았다.',
     lines: [
       '**2년 11개월간 약 14개** 보안관제·포털 프로젝트를 기획 미팅부터 디자인·개발·배포·유지보수까지 전 과정으로 (프론트 주도)',
       '법무부 포털: Table 컴포넌트 하나가 컬럼 정의 메타에서 목록·검색·정렬·엑셀·폼 생성 — **정의 1벌로 59개 화면 양산**, 라우트 정의에서 메뉴·권한트리 동시 파생(RBAC)',
@@ -418,7 +432,13 @@ export const timeline: Timeline[] = [
       '그 외 문체부 관제 포털·사이버 훈련 CTF·통일부 서버사이드 페이징 등 보안관제 프로젝트 다수',
       '회사가 5명 → 30명대로 크는 동안 다른 팀의 막힌 프로젝트까지 들어가 함께 풀며 **기술 리드로 성장**, 유지보수로 고객사 재계약까지 연결',
     ],
-    tags: ['Apollo GraphQL', 'NestJS', 'Elasticsearch', 'immer 상태머신', 'RBAC'],
+    tags: [
+      'Apollo GraphQL',
+      'NestJS',
+      'Elasticsearch',
+      'immer 상태머신',
+      'RBAC',
+    ],
     cases: [
       { label: '59개 화면 포털', href: '/work/security-portal' },
       { label: 'ML 학습 마법사', href: '/work/security-ai' },
@@ -526,11 +546,21 @@ export const resumeOwnership: {
   claim: string;
   items: { at: string; t: string }[];
 } = {
-  claim: '주어진 개발에 그치지 않고 — PO·기획자 공백을 스스로 메우며 제품을 주도, 사용자 목소리로 문제를 발견해 재설계한 경험 다수.',
+  claim:
+    '주어진 개발에 그치지 않고 — PO·기획자 공백을 스스로 메우며 제품을 주도, 사용자 목소리로 문제를 발견해 재설계한 경험 다수.',
   items: [
-    { at: 'Solvook Creator', t: 'PO 공백 시 제품 결정을 대행 — 검수자(사용자) 피드백을 직접 듣고, JSON 구조를 외워야 하던 검수 화면을 마우스만으로 검수·수정·삭제·추가하는 GUI로 전면 재설계. 신규 검수자 온보딩 비용 제거' },
-    { at: '본문분석 에디터', t: '기획자 공백 시 인터랙션 설계부터 개발까지 주도 — 드래그 대신 클릭-클릭 범위 선택 같은 UX 결정을 직접' },
-    { at: 'Zipida', t: '프론트로 합류해 회사 5 → 30명 성장기에 기술 리드로, 막히던 타 팀 프로젝트까지 지원' },
+    {
+      at: 'Solvook Creator',
+      t: 'PO 공백 시 제품 결정을 대행 — 검수자(사용자) 피드백을 직접 듣고, JSON 구조를 외워야 하던 검수 화면을 마우스만으로 검수·수정·삭제·추가하는 GUI로 전면 재설계. 신규 검수자 온보딩 비용 제거',
+    },
+    {
+      at: '본문분석 에디터',
+      t: '기획자 공백 시 인터랙션 설계부터 개발까지 주도 — 드래그 대신 클릭-클릭 범위 선택 같은 UX 결정을 직접',
+    },
+    {
+      at: 'Zipida',
+      t: '프론트로 합류해 회사 5 → 30명 성장기에 기술 리드로, 막히던 타 팀 프로젝트까지 지원',
+    },
   ],
 };
 
@@ -540,14 +570,33 @@ export const resumeLeadership: {
   claim: string;
   items: { at: string; t: string }[];
 } = {
-  claim: '관리보다, 동료가 더 잘 일하도록 지원하는 쪽 — 협업 방식과 개발 문화를 구조로 개선하고 조직으로 확산.',
+  claim:
+    '관리보다, 동료가 더 잘 일하도록 지원하는 쪽 — 협업 방식과 개발 문화를 구조로 개선하고 조직으로 확산.',
   items: [
-    { at: '기술 리딩', t: 'Zipida에서 기술 리드로 — 막히던 타 팀 프로젝트까지 들어가 함께 해결하고, 코드 리뷰로 동료의 막힘을 풀어줬다' },
-    { at: '스터디 · 컨벤션', t: '팀 컨벤션을 함께 정하고, 코드 레벨을 맞추는 스터디를 주도 — 리팩토링 시점엔 스터디로 팀이 같은 패턴에 합의하게 이끌어, 리뷰가 스타일 지적보다 설계 논의에 쓰이도록 만들었다' },
-    { at: 'AI 개발 생산성', t: '단일 CLAUDE.md의 큰 컨텍스트로 에이전트 토큰 소비가 크던 문제를, 도메인별 CLAUDE.md 분할 + 도메인 문서로 재설계 — 사람과 AI 에이전트가 같은 문서·도메인 언어로 일하는 워크플로를 정착' },
-    { at: '협업 · 문화', t: 'PR 템플릿·CODEOWNERS·컨벤션·git 게이트(lint·type-check·test)로 "누가 와도 같은 규율", async·상태 끌어올리기·네이밍 등 팀 관행을 정리해 문서로 공유' },
-    { at: '조직 확산', t: '룰 없던 코드베이스를 표준화해 형제 서비스로 전파 / 공용 디자인 시스템 공동 메인테이너(릴리스·PR 리뷰 공동 운영)' },
-    { at: '기술 의사결정', t: '조직의 스택 방향을 이끌어 — MUI를 Radix + Tailwind v2로 다시 짜고, 일부 화면에 오버킬로 얹혀 있던 XState를 걷어내 feature별 작은 store(Zustand)로 통일 (형식 상태머신이 필요한 자리는 URL + reducer로 별도 설계)' },
+    {
+      at: '기술 리딩',
+      t: 'Zipida에서 기술 리드로 — 막히던 타 팀 프로젝트까지 들어가 함께 해결하고, 코드 리뷰로 동료의 막힘을 풀어줬다',
+    },
+    {
+      at: '스터디 · 컨벤션',
+      t: '팀 컨벤션을 함께 정하고, 코드 레벨을 맞추는 스터디를 주도 — 리팩토링 시점엔 스터디로 팀이 같은 패턴에 합의하게 이끌어, 리뷰가 스타일 지적보다 설계 논의에 쓰이도록 만들었다',
+    },
+    {
+      at: 'AI 개발 생산성',
+      t: '단일 CLAUDE.md의 큰 컨텍스트로 에이전트 토큰 소비가 크던 문제를, 도메인별 CLAUDE.md 분할 + 도메인 문서로 재설계 — 사람과 AI 에이전트가 같은 문서·도메인 언어로 일하는 워크플로를 정착',
+    },
+    {
+      at: '협업 · 문화',
+      t: 'PR 템플릿·CODEOWNERS·컨벤션·git 게이트(lint·type-check·test)로 "누가 와도 같은 규율", async·상태 끌어올리기·네이밍 등 팀 관행을 정리해 문서로 공유',
+    },
+    {
+      at: '조직 확산',
+      t: '룰 없던 코드베이스를 표준화해 형제 서비스로 전파 / 공용 디자인 시스템 공동 메인테이너(릴리스·PR 리뷰 공동 운영)',
+    },
+    {
+      at: '기술 의사결정',
+      t: '조직의 스택 방향을 이끌어 — MUI를 Radix + Tailwind v2로 다시 짜고, 일부 화면에 오버킬로 얹혀 있던 XState를 걷어내 feature별 작은 store(Zustand)로 통일 (형식 상태머신이 필요한 자리는 URL + reducer로 별도 설계)',
+    },
   ],
 };
 
@@ -570,7 +619,7 @@ export const resumeSkills: { label: string; items: string[] }[] = [
       '디자인 시스템 / 라이브러리',
       'RBAC 권한',
       '타입 안전 API 설계',
-      'AI 에이전트 문서 아키텍처(CLAUDE.md)',
+      'AI 에이전트 문서 아키텍처',
     ],
   },
   {
@@ -661,7 +710,10 @@ export const resumeExperience: ExpCompany[] = [
           'JSON 편집에 의존하던 검수 화면을 마우스만으로 검수·수정·삭제·추가하는 GUI 시스템으로 재설계',
           '가변 높이 아이템을 청크(30개) 단위로 측정해 다단 페이지 조판, 7종 데코레이터를 discriminated union으로 타입세이프 모델링',
         ],
-        results: ['저작도구 프론트 아키텍처 단독 설계·소유', 'JSON 암기 → 마우스 GUI 검수'],
+        results: [
+          '저작도구 프론트 아키텍처 단독 설계·소유',
+          'JSON 암기 → 마우스 GUI 검수',
+        ],
       },
       {
         head: '시험지 제작 스튜디오 페이징·PDF (Solvook Expert)',
@@ -679,7 +731,10 @@ export const resumeExperience: ExpCompany[] = [
           'single/multi Select를 하나의 판별 유니온 API로 통합 — 오용은 컴파일 타임 차단',
           'Figma SVG를 svgr 코드젠으로 자동 컴포넌트화(아이콘 160개), push 전 type-check·빌드 게이트로 릴리스 관리',
         ],
-        results: ['MUI → Radix + Tailwind 재설계', '공동 메인테이너 · 릴리스 관리'],
+        results: [
+          'MUI → Radix + Tailwind 재설계',
+          '공동 메인테이너 · 릴리스 관리',
+        ],
       },
       {
         head: '룰 없던 코드베이스 표준화 — 상태관리·컨벤션·오류 모니터링으로 안정적 서비스 기반 구축',
@@ -698,7 +753,10 @@ export const resumeExperience: ExpCompany[] = [
           '도메인마다 문서를 작성해, 도메인 언어(유비쿼터스 언어)로 지시해도 에이전트가 정확히 알아듣도록 정리',
           '사람·에이전트가 같은 도메인 문서를 공유해, 온보딩과 작업 지시의 컨텍스트 비용을 함께 낮춤',
         ],
-        results: ['에이전트 컨텍스트·토큰 소비 절감', '도메인 언어로 정확한 지시'],
+        results: [
+          '에이전트 컨텍스트·토큰 소비 절감',
+          '도메인 언어로 정확한 지시',
+        ],
       },
     ],
   },
@@ -766,11 +824,7 @@ export const resumeExperience: ExpCompany[] = [
           '라우트 정의 1벌 → 메뉴·권한트리·체크키 동시 파생 (RBAC)',
           '정형 CRUD는 GraphQL, 통계·레거시 보안 데이터는 raw SQL로 분리',
         ],
-        results: [
-          '프론트 개발',
-          '59개 화면 재사용',
-          '약 2년',
-        ],
+        results: ['프론트 개발', '59개 화면 재사용', '약 2년'],
       },
       {
         head: '코드 없이 탐지 ML을 학습시키는 마법사 (KISTI AI 관제) · 풀스택 — 전사 최대 규모 프로젝트',
@@ -779,10 +833,7 @@ export const resumeExperience: ExpCompany[] = [
           'react-awesome-query-builder로 Elasticsearch bool 쿼리를 GUI 조립',
           '패킷 payload(HEX)를 디코딩 → 엔트로피 → TCP flag 추출해 ML 특징으로 변환',
         ],
-        results: [
-          '비개발자용 5단계 GUI 학습',
-          '프론트 + 백 설계·구현',
-        ],
+        results: ['비개발자용 5단계 GUI 학습', '프론트 + 백 설계·구현'],
       },
       {
         head: '현대오토에버 EDR 포털 · 풀스택 (BFF 보안 경계)',
