@@ -99,7 +99,7 @@ function ProjectVisual({ p, cols = 3 }: { p: Project; cols?: number }) {
       <div className="grid gap-2.5 mt-4 break-inside-avoid" style={{ gridTemplateColumns: `repeat(${Math.min(p.images.length, cols)}, 1fr)` }}>
         {p.images.map((im, i) => (
           // eslint-disable-next-line @next/next/no-img-element
-          <img key={i} src={im.src} alt={im.alt} className="w-full aspect-[4/3] object-cover rounded-hj-md border border-hj-line" />
+          <img key={i} src={im.src} alt={im.alt} className="w-full aspect-[4/3] object-cover rounded-hj-md border border-hj-steel" />
         ))}
       </div>
     );
@@ -168,7 +168,7 @@ function FlagshipBlock() {
         <div className="grid grid-cols-2 gap-2.5 mt-4">
           {flagship.images.map((im, i) => (
             // eslint-disable-next-line @next/next/no-img-element
-            <img key={i} src={im.src} alt={im.alt} className="w-full aspect-[4/3] object-cover rounded-hj-md border border-hj-line" />
+            <img key={i} src={im.src} alt={im.alt} className="w-full aspect-[4/3] object-cover rounded-hj-md border border-hj-steel" />
           ))}
         </div>
       </div>
