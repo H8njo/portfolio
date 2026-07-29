@@ -207,6 +207,11 @@ export function MetricTable({ stats, columns, onInk = false, compact = false, st
 
 /* ---- MetricRow — horizontal, bold; the prominent "impact" strip --------- */
 export function MetricRow({ stats }: { stats: Metric[] }) {
+  // 행 전체를 가장 긴 `after` 기준 한 크기로 통일 — 긴 값(예: "639,000ms → 1,310ms")이
+  // 고정 26px + nowrap로 셀을 넘쳐 옆 칸과 균형이 깨지던 문제 방지. 짧은 행은 크게 유지.
+  const maxLen = Math.max(...stats.map((s) => s.after.length));
+  const afterSize = maxLen > 16 ? 'text-[16px]' : maxLen > 11 ? 'text-[20px]' : 'text-[26px]';
+  const afterWrap = maxLen > 16 ? 'break-keep' : 'whitespace-nowrap';
   return (
     <div className="grid gap-0 max-[560px]:grid-cols-1!" style={{ gridTemplateColumns: `repeat(${stats.length}, 1fr)` }}>
       {stats.map((s, i) => (
@@ -215,7 +220,7 @@ export function MetricRow({ stats }: { stats: Metric[] }) {
           <div className="font-hj-mono tabular-nums mt-2 flex items-baseline gap-2 flex-wrap">
             {s.before != null && <span className="text-[13px] text-hj-muted line-through decoration-hj-steel">{s.before}</span>}
             {s.before != null && <span aria-hidden className="text-[14px] text-hj-faint">→</span>}
-            <span className="text-[26px] font-bold text-hj-fg tracking-[-0.015em] whitespace-nowrap">
+            <span className={`${afterSize} font-bold text-hj-fg tracking-[-0.015em] leading-[1.15] ${afterWrap}`}>
               {s.after}{s.unit && <span className="text-[13px] font-normal text-hj-muted ml-0.5">{s.unit}</span>}
             </span>
           </div>

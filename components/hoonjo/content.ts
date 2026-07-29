@@ -195,6 +195,85 @@ export const cases: WorkCase[] = [
     postUrl: '/work/security-portal',
   },
   {
+    id: 'work-pdf-memory',
+    eyebrow: 'PERFORMANCE',
+    company: '@Sling · ORZO',
+    title: '수백 페이지 PDF가 기다림을 숨기게 만들기',
+    problem: [
+      '교재 PDF 뷰어 — 페이지를 canvas로 래스터해 문제 영역을 잘라내는 도구',
+      '전 페이지를 미리 렌더 → 첫 조작(TTI)이 페이지 수에 비례 (300p ≈ 639,000ms)',
+      '한 장 렌더 ≈ 2,132ms가 통째로 앞단에 쌓임',
+      'scale 3×dpr 거대 base64 수백 장 동시 보유 → 대용량서 탭 프리즈(OOM)',
+    ],
+    structure: [
+      '전 페이지 선렌더 폐기 → 온디맨드 + 백그라운드 청크 렌더',
+      '첫 조작 대기를 페이지 수와 분리 — 보이는 것부터, 나머지는 뒤에서',
+      'page.cleanup()으로 peak 메모리를 청크 크기에 고정',
+      '우선순위 렌더 + 즉석 렌더 폴백으로 체감 성능 확보',
+    ],
+    tags: ['성능', 'PDF 렌더', '백그라운드 렌더', '메모리 바운드'],
+    metrics: [
+      {
+        label: '첫 조작 · TTI(300p)',
+        before: '639,000ms',
+        after: '1,310ms',
+        gain: '약 488배 · 페이지 수 비례 제거',
+      },
+      {
+        label: '초기 로딩',
+        before: '2,132',
+        after: '1,527',
+        unit: 'ms',
+        gain: '페이지당 렌더 −28%',
+      },
+      {
+        label: 'peak 메모리',
+        after: '청크 크기에 고정',
+        gain: '수백 장 동시 보유 → OOM 제거',
+      },
+    ],
+    metricsNote:
+      '639,000ms는 페이지당 2,132ms × 300의 합성 상한 — 전 페이지 선렌더 구조 자체를 없앤 값이다.',
+    postUrl: '/work/pdf-memory',
+  },
+  {
+    id: 'work-edr-bff',
+    eyebrow: 'SECURITY · BFF',
+    company: '@Zipida · 현대오토에버',
+    title: '프론트가 평문 비밀번호도 못 만지게 한 BFF 경계',
+    problem: [
+      'EDR 보안 관제 포털 — 분석가가 위협 티켓으로 악성코드·IP·해시 분석·차단',
+      '화면이 사내 보안 API(TOS)를 직접 호출 → 평문 비밀번호·토큰·권한이 프론트에 노출',
+      '대시보드 한 화면에 필요한 호출이 열 개 가까이 흩어짐',
+      '한글 파일명·바이너리 다운로드가 깨지는 파일 처리',
+    ],
+    structure: [
+      'NestJS BFF를 화면과 TOS 사이 보안 경계로 (프론트는 평문 비밀번호 미접근)',
+      '해싱·신원(JWT에서 서버가 주입)·권한 필터를 전부 BFF에서',
+      '흩어진 호출을 Promise.all로 병렬 집계 → 한 응답',
+      '조회 전용 정형 = PostgreSQL / 가변 스키마 = MongoDB',
+    ],
+    tags: ['NestJS BFF', '보안 경계', 'GraphQL', '이중 DB', 'Fullstack'],
+    metrics: [
+      {
+        label: 'BFF 집계',
+        after: '1응답',
+        gain: '흩어진 여러 호출을 병렬 집계',
+      },
+      {
+        label: '동시 연결 DB',
+        after: 'PG + Mongo',
+        gain: '정형=PostgreSQL / 가변=MongoDB',
+      },
+      {
+        label: '내 기여',
+        after: '풀스택',
+        gain: '맡은 기능 프론트+백 양쪽',
+      },
+    ],
+    postUrl: '/work/edr-portal',
+  },
+  {
     id: 'work-design-system',
     eyebrow: 'LIBRARY · DX',
     company: '@Bookips',
@@ -241,6 +320,57 @@ export const cases: WorkCase[] = [
       ].join('\n'),
     },
     postUrl: '/work/design-system',
+  },
+  {
+    id: 'work-problem-editor',
+    eyebrow: 'RENDERING · EDITOR',
+    company: '@Bookips',
+    title: '줄바꿈마다 깨지던 본문 표시를 실측으로 되살리기',
+    problem: [
+      '영어 지문 위에 밑줄·도형·화살표·메모 등 표시 10종',
+      '범위가 줄 끝을 넘으면 다 깨짐 — 밑줄 끊김·박스 잘림·화살표 두 줄 꺾임',
+      '줄바꿈이 고정이 아님 — 패널 리사이즈·창 크기·폰트 로드로 재배치',
+      '표시 위치를 미리 계산해 박을 수 없음',
+    ],
+    structure: [
+      '렌더된 단어를 실측 → top으로 한 줄씩 묶어 "줄 지도" 생성(tolerance)',
+      '표시 종류별 줄바꿈 대응 분리 — 도형은 중심 이동 후 clip, 화살표는 줄별 토막',
+      'ResizeObserver + document.fonts.ready + resize로 재측정 · 2-pass · 좌표 정수화',
+      '범위를 인덱스 배열로 정의 → 다른 서비스 범위 규격으로 재사용',
+    ],
+    tags: ['렌더링', '측정 기반', 'React', 'ResizeObserver', '에디터'],
+    metrics: [
+      {
+        label: '표시 종류',
+        after: '10',
+        unit: '종',
+        gain: '종류별 줄바꿈 대응 분리',
+      },
+      {
+        label: '줄바꿈 대응',
+        after: '단어 실측',
+        gain: '줄 지도 위에서 표시 재구성',
+      },
+      {
+        label: '범위 규격',
+        after: '인덱스 배열',
+        gain: '다른 서비스에서 재사용',
+      },
+    ],
+    code: {
+      caption: '미리 계산 대신, 화면에 그려진 걸 재서 따라간다',
+      lines: [
+        '// 단어를 실측해 top이 비슷하면 같은 줄로 묶는다',
+        '// (밑줄·메모가 top을 흔들어 tolerance 필요)',
+        'if (Math.abs(word.top - lineTop) <= LINE_TOLERANCE)',
+        '',
+        '// 원/삼각형: 전체를 그리고 그 줄 영역만 clip',
+        "const cx = pos === 'first' ? width   // 왼쪽 반",
+        "         : pos === 'last'  ? 0       // 오른쪽 반",
+        '         : width / 2',
+      ].join('\n'),
+    },
+    postUrl: '/work/problem-editor',
   },
   {
     id: 'work-ml',
@@ -292,6 +422,54 @@ export const cases: WorkCase[] = [
       { src: kisti3, alt: 'KISTI AI 관제 — 페이로드 특징 추가' },
     ],
     postUrl: '/work/security-ai',
+  },
+  {
+    id: 'work-ctf-score',
+    eyebrow: 'DATA MODELING',
+    company: '@Zipida · 사이버 훈련',
+    title: '정답이 늘면 먼저 푼 사람 점수가 깎이는 채점 시스템',
+    problem: [
+      'CTF(해킹 경진) 채점 — 참가자가 출제, 격리 워커가 자동 채점',
+      '점수가 소급된다 — 많이 풀린 문제일수록 싸짐 (userCount / solveCount)',
+      '나중 사건이 과거를 바꾸는 값을 "합계 한 칸"으로 들고 있었음',
+      '점수 부수효과가 문제·제출·유저 테이블 훅에 흩어져 정합성 붕괴',
+    ],
+    structure: [
+      '합계 컬럼 폐기 → 이벤트 ledger(적립 행을 쌓고 합산)',
+      '부분 update 폐기 → 중앙 재계산 함수로 일원화',
+      'CRUD 부수효과를 재계산 한 곳으로 모아 소급 정합성 확보',
+      '개인전 테이블 미러링 + problemType·grade 차원만 더해 팀전 흡수',
+    ],
+    tags: ['데이터 모델링', '정합성', '스코어링', '실시간'],
+    metrics: [
+      {
+        label: '점수 모델',
+        after: 'ledger',
+        gain: '합계 컬럼 → 이벤트 원장(소급을 행으로)',
+      },
+      {
+        label: '갱신 방식',
+        after: '전체 재계산',
+        gain: '부분 update 폐기 · 분산 부수효과 제거',
+      },
+      {
+        label: '정합성 버그',
+        after: '5',
+        unit: '건',
+        gain: '한자리에서 일괄 수술',
+      },
+    ],
+    code: {
+      caption: '점수는 확정값이 아니라 소급되는 값이었다',
+      lines: [
+        '// 정답자가 늘수록 분모가 커져 점수 ↓',
+        'const solveScore = userCount / solveCount',
+        '',
+        '// 합계 한 칸이 아니라, 적립을 행으로 쌓고 그때그때 재계산',
+        'ledger.append({ problemId, userId, scoreType, score })',
+      ].join('\n'),
+    },
+    postUrl: '/work/ctf-platform',
   },
 ];
 
