@@ -5,7 +5,10 @@ import type { Metric } from './components';
 import { Tag, MetricRow } from './components';
 import { profile, timeline, capabilities, flagship, cases, blackHole, sideProjects, impact, oss, resumeSummary, resumeOwnership, resumeLeadership, resumeSkills, resumeExperience, education } from './content';
 import type { ProjImage, ExpCompany } from './content';
-import { BlackHole } from './BlackHole';
+import dynamic from 'next/dynamic';
+// 사이드 프로젝트 블랙홀 — 로컬 재현본 대신 실제 배포 라이브러리(black-hole-effect,
+// github:H8njo/webgl-black-hole)를 렌더한다(홈과 동일 패턴). 렌더 중 window 접근 → ssr:false.
+const BlackholeLive = dynamic(() => import('@/components/demos/blackhole-live'), { ssr: false, loading: () => null });
 const portrait = '/hoonjo/portrait.jpg';
 
 /* Print-to-PDF documents (/resume, /portfolio-pdf). Built with hj-* utilities;
@@ -63,8 +66,11 @@ function SectionLabel({ children }: { children: ReactNode }) {
    를 걸어 섹션 제목이 페이지 맨 아래에 홀로 남지 않게 한다.
    `breakBefore` = 이 섹션을 무조건 새 페이지에서 시작(페이지 하단에서 잘리는 걸 방지). */
 function DocSection({ label, flow, breakBefore, children }: { label: string; flow?: boolean; breakBefore?: boolean; children: ReactNode }) {
+  // 인쇄에서 섹션이 페이지 상단에 오면 margin-top이 사라져 라벨이 가장자리에 붙어(잘린 듯) 보인다.
+  // 상단 여백을 padding으로 준다 — 패딩은 페이지 상단에서도 유지되므로 항상 숨 쉴 틈이 남는다.
+  const topPad = breakBefore ? 'print:pt-[16mm]' : 'print:pt-[26px]';
   return (
-    <section className={`mt-[26px] ${flow ? '' : 'break-inside-avoid'} ${breakBefore ? 'print:break-before-page print:pt-[16mm]' : ''}`}>
+    <section className={`mt-[26px] print:mt-0 ${topPad} ${flow ? '' : 'break-inside-avoid'} ${breakBefore ? 'print:break-before-page' : ''}`}>
       <h2 className="font-hj-mono text-[12px] tracking-[0.12em] uppercase text-hj-muted mt-0 mb-3.5 pb-2 border-b border-hj-line break-after-avoid">{label}</h2>
       {children}
     </section>
@@ -567,14 +573,14 @@ export function PortfolioPdf() {
 
       <DocSection label="대표 임팩트">
         <div className="font-hj-serif text-[14.5px] text-hj-fg-secondary -mt-1 mb-3">{impact.lead}</div>
-        <div className="grid grid-cols-3 bg-hj-ink border border-hj-ink-soft rounded-hj-lg overflow-hidden max-[720px]:grid-cols-1">
+        <div className="grid grid-cols-3 bg-hj-paper border border-hj-line rounded-hj-lg shadow-hj-soft overflow-hidden max-[720px]:grid-cols-1">
           {impact.stats.map((s, i) => (
-            <div key={s.k} className={`px-[22px] py-[18px] ${i < impact.stats.length - 1 ? 'border-r border-[rgba(246,244,238,0.14)]' : ''}`}>
-              <div className="font-hj-mono text-[10.5px] tracking-[0.1em] uppercase text-hj-on-ink-muted">{s.k}</div>
-              <div className="font-hj-mono text-[13px] text-hj-on-ink-muted line-through decoration-[rgba(246,244,238,0.45)] mt-4">{s.before}</div>
-              <div className="flex items-baseline gap-[9px] mt-1.5">
-                <span className="font-hj-mono text-[15px] text-hj-blue-bright">→</span>
-                <span className="font-hj-serif text-[23px] font-bold tracking-[-0.01em] text-hj-on-ink">{s.after}</span>
+            <div key={s.k} className={`px-5 py-[15px] ${i < impact.stats.length - 1 ? 'border-r border-hj-line max-[720px]:border-r-0 max-[720px]:border-b' : ''}`}>
+              <div className="font-hj-mono text-[10.5px] tracking-[0.1em] uppercase text-hj-muted">{s.k}</div>
+              <div className="font-hj-mono text-[12.5px] text-hj-muted line-through decoration-hj-steel mt-2.5">{s.before}</div>
+              <div className="flex items-baseline gap-2 mt-1">
+                <span className="font-hj-mono text-[14px] text-hj-blue">→</span>
+                <span className="font-hj-serif text-[20px] font-bold tracking-[-0.01em] text-hj-fg">{s.after}</span>
               </div>
             </div>
           ))}
@@ -609,7 +615,7 @@ export function PortfolioPdf() {
             </div>
           </div>
           <div className="relative min-h-[216px] bg-hj-ink-deep border border-hj-ink-soft rounded-hj-md overflow-hidden">
-            <BlackHole />
+            <BlackholeLive />
             <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 font-hj-mono text-[9.5px] tracking-[0.06em] uppercase text-hj-on-ink bg-[rgba(12,11,8,0.5)] border border-[rgba(246,244,238,0.18)] rounded-hj-pill px-[9px] py-1">
               <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-hj-green-bright" />
               실시간 렌더
