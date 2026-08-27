@@ -565,6 +565,7 @@ export const timeline: Timeline[] = [
       '저작툴을 기반으로 파생된 **쏠북패스 출시 — 회사 메인 매출 제품의 프론트 담당**',
       '공용 **디자인 시스템(@bookips/sds) 공동 메인테이너** — 릴리스·PR 리뷰 공동 운영',
       '룰도 없던 코드베이스를 **상태관리(XState→Zustand)·컨벤션·강제 게이트·오류 모니터링까지 표준화**하고, 그 표준을 형제 서비스로 확산',
+      'AI 코딩 에이전트 협업을 위한 **도메인별 CLAUDE.md 분할 문서 아키텍처** 정립',
     ],
     tags: [
       'Zustand',
@@ -579,6 +580,7 @@ export const timeline: Timeline[] = [
       { label: '저작툴 본문 에디터', href: '/work/problem-editor' },
       { label: '디자인 시스템 자동화', href: '/work/design-system' },
       { label: '코드베이스 표준화', href: '/work/expert-conventions' },
+      { label: '홈 개편 & 도메인 무지 컴포넌트', href: '/work/domain-agnostic-card' },
     ],
   },
   {
@@ -590,10 +592,14 @@ export const timeline: Timeline[] = [
     lines: [
       '300페이지 교재 PDF의 첫 조작 대기를 **약 10분 30초 → 1.3초로 단축** — 전 페이지 선렌더를 온디맨드 + 청크 렌더로 재설계',
       '전체 페이지 자동선택 시 터지던 메모리를 청크 처리 + page.cleanup() + 온디맨드 렌더로 **OOM 없이 제어** (메모리·정확도 트레이드오프 설계)',
+      '프론트엔드에 과적용된 **DDD 5단 레이어를 걷어내고 SWR + 콜로케이션으로 단순화**하여 개발 속도 확보',
       '인증 모델을 인메모리 토큰 → **서버 발급 세션 쿠키 + SSR 가드로 전환**, 서버 로그아웃(refresh token revoke)까지',
     ],
     tags: ['PDF.js', 'SWR', 'Firebase Auth', 'Turborepo'],
-    cases: [{ label: 'PDF 메모리 최적화', href: '/work/pdf-memory' }],
+    cases: [
+      { label: 'PDF 메모리 최적화', href: '/work/pdf-memory' },
+      { label: 'DDD 레이어 제거', href: '/work/frontend-ddd-removal' },
+    ],
   },
   {
     period: '2020 — 2023',
@@ -621,6 +627,7 @@ export const timeline: Timeline[] = [
       { label: '59개 화면 포털', href: '/work/security-portal' },
       { label: 'ML 학습 마법사', href: '/work/security-ai' },
       { label: 'EDR 포털', href: '/work/edr-portal' },
+      { label: 'CTF 점수 원장', href: '/work/ctf-platform' },
     ],
   },
   {
@@ -629,8 +636,9 @@ export const timeline: Timeline[] = [
     org: '@옐로오투오',
     description: '클라이언트 사이트 주문을 받아 개발하는 웹 에이전시.',
     lines: [
-      '그누보드 등 기존 템플릿 위에 프로젝트별 요구사항을 구현',
-      '사이트 성격에 맞춘 **커스텀 플러그인 제작** (예: 펜션 홈페이지 → 예약 플러그인)',
+      '공간대여·축구장·펜션 등 **다수의 예약 시스템 단독 개발**',
+      '운영자 셀프 DB 스키마 확장(**그누보드 여분필드 어드민 UI 연동**) 및 **SFTP 쉘 스크립트 배포 자동화**',
+      '그누보드 등 기존 템플릿 위에 프로젝트별 요구사항을 구현 및 사이트 맞춤형 플러그인 제작',
       'PHP 예약 시스템에서 시작해 **React로 전환**, 컴포넌트 분리·반응형 설계 기반 습득',
     ],
     tags: ['그누보드5', 'PHP 플러그인', 'jQuery', 'React 전환'],
@@ -655,6 +663,7 @@ export const capabilities: {
     ],
     proof: [
       { label: 'column-pager', target: 'work-column-pager' },
+      { label: 'PDF 488배 가속', target: 'work-pdf-memory' },
       { label: '블랙홀', target: 'work-blackhole' },
     ],
   },
@@ -681,6 +690,7 @@ export const capabilities: {
     ],
     proof: [
       { label: 'ML 학습 마법사', target: 'work-ml' },
+      { label: 'CTF 점수 원장', target: 'work-ctf-score' },
       { label: '보안 포털', target: 'work-portal' },
     ],
   },
