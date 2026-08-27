@@ -593,12 +593,14 @@ export const timeline: Timeline[] = [
       '300페이지 교재 PDF의 첫 조작 대기를 **약 10분 30초 → 1.3초로 단축** — 전 페이지 선렌더를 온디맨드 + 청크 렌더로 재설계',
       '전체 페이지 자동선택 시 터지던 메모리를 청크 처리 + page.cleanup() + 온디맨드 렌더로 **OOM 없이 제어** (메모리·정확도 트레이드오프 설계)',
       '프론트엔드에 과적용된 **DDD 5단 레이어를 걷어내고 SWR + 콜로케이션으로 단순화**하여 개발 속도 확보',
+      'try 내 .then 등 비동기 안티패턴을 제거하고 **Global vs Local 2계층 에러 핸들링 모듈 설계 & 전사 표준화** (테크 세미나 발표 및 채택)',
       '인증 모델을 인메모리 토큰 → **서버 발급 세션 쿠키 + SSR 가드로 전환**, 서버 로그아웃(refresh token revoke)까지',
     ],
-    tags: ['PDF.js', 'SWR', 'Firebase Auth', 'Turborepo'],
+    tags: ['PDF.js', 'SWR', 'Firebase Auth', 'Turborepo', '에러 핸들링'],
     cases: [
       { label: 'PDF 메모리 최적화', href: '/work/pdf-memory' },
       { label: 'DDD 레이어 제거', href: '/work/frontend-ddd-removal' },
+      { label: '계층형 에러 아키텍처', href: '/work/frontend-error-handling' },
     ],
   },
   {
