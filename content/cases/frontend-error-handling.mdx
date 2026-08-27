@@ -19,53 +19,71 @@ date: 2026-06-08
 
 가장 무서운 에러는 빨간 글씨로 터지는 에러가 아니다. 아무 일도 일어나지 않는 에러다.
 
-수업 관리 웹 애플리케이션을 운영하던 중 기묘한 버그 제보가 들어왔다. 사용자가 "시험지 생성" 버튼을 눌렀는데 화면에 아무런 반응이 없고, 로딩 스피너만 무한히 돌거나 버튼이 잠겨버린다는 것이었다. 브라우저 개발자 도구를 열어봐도 빨간색 에러 로그 한 줄 찍히지 않았다. 서버에는 요청이 도달하지 않았거나 500 응답이 찍혔는데, 프론트엔드는 마치 아무 일도 없었다는 듯 침묵하고 있었다.
+수업 관리 웹 애플리케이션을 운영하던 중 기묘한 버그 제보가 들어왔다. 사용자가 "시험지 생성" 버튼을 눌렀는데 화면에 아무런 반응이 없고, 로딩 스피너만 무한히 돌거나 버튼이 잠겨버린다는 것이었다. 브라우저 개발자 도구를 열어봐도 빨간색 에러 로그 한 줄 찍히지 않았다. 서버에는 500 에러가 분명히 발생했는데, 프론트엔드는 마치 아무 일도 없었다는 듯 침묵하고 있었다.
 
-원인을 찾으려 코드를 파고들기 시작했을 때, 코드베이스 전반에 걸쳐 조용히 숨어 있던 비동기 안티패턴과 파편화된 에러 처리들이 민낯을 드러냈다.
+원인을 찾으려 코드를 파고들기 시작했을 때, 프론트엔드 비동기 런타임의 가장 끔찍한 함정을 마주했다.
 
 ## 문제
 
-에러가 허공으로 증발하고 있었다.
-
-코드를 열어보니 크게 세 가지 문제가 얽혀 있었다.
-
-### 1. `try` 블록 안의 `.then()` 안티패턴
-가장 결정적인 원인은 `async/await`와 `.then()` 체이닝의 기형적인 혼용이었다:
+호출부의 코드는 교과서처럼 완벽해 보였다:
 
 ```ts
-// AS-IS: try는 동기적으로 끝나고, .then 내부의 에러는 허공으로 날아간다
+// 호출부 컴포넌트: 정석대로 try-catch와 await를 썼다
 try {
-  fetchExamData(paperId).then((res) => {
-    const parsed = parseQuestions(res.data); // 여기서 런타임 에러 발생!
-    setQuestions(parsed);
+  setIsLoading(true);
+  await createExamPaper(data); // ⚠️ 서버는 500 에러를 뱉었는데?
+} catch (e) {
+  // ❌ 여기가 절대로 실행되지 않는다!
+  showErrorModal('시험지 생성에 실패했습니다.');
+} finally {
+  setIsLoading(false);
+}
+```
+
+호출하는 쪽에선 아무리 코드를 뜯어봐도 `try...catch`와 `await`를 정석대로 썼다. 서버는 500 에러를 뱉었으니 분명 `catch` 블록으로 들어가 에러 모달이 떠야 했다. 하지만 `catch`문은 완전히 무시되었고, 코드는 마치 정상 응답을 받은 양 통과해버렸다.
+
+원인은 **`createExamPaper` 안의 안의, 몇 단계 아래 하위 계층 함수**에 숨어 있었다.
+
+### 1. 하위 계층의 `.then().catch()` 에러 삼킴
+하위 API 요청 헬퍼 어딘가에서 `async/await`와 `.then().catch()`를 혼용하며 에러를 가로채고 있었다:
+
+```ts
+// 3단계 아래 깊숙한 곳의 레거시 유틸 함수
+function requestApi(url, options) {
+  return fetch(url, options)
+    .then((res) => {
+      if (!res.ok) throw new Error('API Fail');
+      return res.json();
+    })
+    .catch((err) => {
+      console.error('API Error:', err);
+      // ⚠️ 아무것도 re-throw하지 않고 종료!
+      // -> Promise가 에러가 아니라 '성공(fulfilled, undefined)'으로 종결된다.
+    });
+}
+```
+
+자바스크립트 Promise의 `.catch()`는 내부에서 다시 `throw`하지 않으면 **에러가 복구된 것으로 간주하여 `undefined`를 resolve하는 정상 Promise를 반환**한다.
+
+결국 상위 컴포넌트는 하위에서 에러가 터졌다는 사실조차 전달받지 못한 채 `await`를 성공적으로 지나갔고, `catch`문은 영원히 실행되지 않는 죽은 코드가 되어 있었다.
+
+### 2. `try` 블록 안에서 `await` 없는 `.then()` 호출
+어떤 곳은 `try` 블록 안에서 `await` 없이 `.then()`을 비동기로 돌리고 있었다:
+
+```ts
+// AS-IS: try는 동기 종료되고, .then 내부의 에러는 허공(Unhandled Rejection)으로 증발
+try {
+  fetchUserData().then((res) => {
+    const parsed = parseProfile(res.data); // 여기서 런타임 에러 발생!
+    setUser(parsed);
   });
 } catch (e) {
-  // .then은 마이크로태스크 큐에서 비동기로 실행되므로
-  // 이미 실행이 끝난 try-catch는 이 에러를 절대 잡지 못한다.
-  showToast('데이터를 불러오지 못했습니다.');
+  // .then은 마이크로태스크 큐에서 비동기로 실행되므로 이미 끝난 try-catch는 못 잡는다
 }
 ```
 
-`try` 블록은 `fetchExamData` 프로미스를 생성하자마자 동기적으로 실행을 끝내버린다. 나중에 네트워크 응답이 와서 `.then` 콜백 안에서 파싱 에러가 터졌을 때, 호출 스택에 `try...catch`는 이미 존재하지 않는다. 결국 이 에러는 잡히지 않은 채(Unhandled Promise Rejection) 콘솔에도 제대로 기록되지 않고 증발했다.
-
-### 2. 에러 삼킴(Error Swallowing)과 무한 로딩
-어떤 코드는 에러를 잡긴 했지만, 무책임하게 삼켜버리고 있었다:
-
-```ts
-// AS-IS: 에러를 삼키고 로딩을 해제하지 않음
-setIsLoading(true);
-try {
-  await submitForm(data);
-} catch (e) {
-  console.log(e); // 콘솔에만 대충 찍고 종료
-  // setIsLoading(false) 누락 → 버튼이 영원히 비활성화됨
-}
-```
-
-에러가 발생했을 때 로딩 상태를 풀어주지 않으니, 사용자는 버튼이 멈춘 줄 알고 새로고침을 누르며 데이터를 날려야 했다.
-
-### 3. 처리 방식의 극단적 파편화
-누구는 `alert()`를 띄우고, 누구는 전역 토스트를 띄우고, 누구는 빈 배열을 조용히 반환했다. 프로젝트 내에 "에러를 어떻게 다룰 것인가"에 대한 합의된 규칙이 전혀 없었다.
+### 3. 에러 삼킴과 무한 로딩
+어떤 코드는 `finally` 없이 `catch (e) { console.log(e); }`로 에러를 삼켜버려 `setIsLoading(false)`가 호출되지 않아 버튼이 영구적으로 잠겼고, 누구는 `alert()`, 누구는 빈 배열을 반환하는 등 처리 방식마저 극단적으로 파편화되어 있었다.
 
 ## 트레이드오프 결정: Global vs Local 2계층 분류 체계
 
