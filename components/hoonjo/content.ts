@@ -121,8 +121,8 @@ export const flagship = {
   honesty:
     '표처럼 중간에서 쪼개면 안 되는 요소, 페이지를 넘는 카드 이동의 미세한 끊김은 아직 못 푼 한계로 문서에 그대로 적어뒀다. 못 푼 걸 안 푼 척하지 않는 게 라이브러리 쓰는 사람한테 정직한 거라고 본다.',
   images: [
-    { src: colpager1, alt: 'column-pager 결과 — 본문분석 PDF 자동 조판' },
-    { src: colpager2, alt: 'column-pager 결과 — 변형문제 PDF 자동 조판' },
+    { src: colpager1, alt: 'column-pager 결과 — 본문분석 PDF 자동 페이지 분할' },
+    { src: colpager2, alt: 'column-pager 결과 — 변형문제 PDF 자동 페이지 분할' },
   ] as ProjImage[],
   postUrl: '/work/column-count-layout',
   link: {
@@ -559,7 +559,7 @@ export const timeline: Timeline[] = [
     scope: '디자인 시스템 · PDF 레이아웃 렌더러 핵심 개발자',
     description: '교육 콘텐츠 플랫폼 쏠북(Solvook)의 프론트엔드.',
     lines: [
-      '메인 서비스 엑스퍼트에서 문제·지문을 인쇄물처럼 **A4 다단 자동 조판하는 난제 해결**',
+      '메인 서비스 엑스퍼트에서 문제·지문을 인쇄물처럼 **A4 다단 페이지로 자동 분할하는 난제 해결**',
       '그 페이지네이션 엔진을 앱에서 분리해 **오픈소스로 공개** — column-pager (npm · MIT)',
       '이 엔진을 축으로 **콘텐츠 저작툴을 새 프로젝트로 단독 구축** (프론트 아키텍처 단독 소유)',
       '저작툴을 기반으로 파생된 **쏠북패스 출시 — 회사 메인 매출 제품의 프론트 담당**',
@@ -796,7 +796,7 @@ export const resumeSkills: { label: string; items: string[] }[] = [
     label: '렌더링 · 성능',
     items: [
       'Canvas 2D / WebGL',
-      '측정-우선 PDF 조판',
+      '측정-우선 PDF 페이지네이션',
       '대용량 가상화',
       '메모리 바운드 처리',
       '접근성 — 키보드·aria·포커스',
@@ -882,7 +882,7 @@ export const resumeExperience: ExpCompany[] = [
       {
         head: '사내 페이지네이션 엔진을 오픈소스로 공개 — column-pager (npm · MIT)',
         points: [
-          'A4 다단(2단) 자동 조판 로직을 순수 코어 / 측정 / 렌더 3계층으로 재설계',
+          'A4 다단(2단) 자동 페이지 분할 로직을 순수 코어 / 측정 / 렌더 3계층으로 재설계',
           '같은 문제를 세 번 푼 3세대 엔진 — 검증된 측정 로직은 이식, 아키텍처만 전면 재설계',
           '앱에서 분리해 독립 npm 패키지로 배포',
         ],
@@ -898,7 +898,7 @@ export const resumeExperience: ExpCompany[] = [
         points: [
           '지문 분석·워크북·변형문제를 편집해 출판물 수준 PDF로 출력하는 제작 도구',
           'JSON 편집에 의존하던 검수 화면을 마우스만으로 검수·수정·삭제·추가하는 GUI 시스템으로 재설계',
-          '가변 높이 아이템을 청크(30개) 단위로 측정해 다단 페이지 조판, 7종 데코레이터를 discriminated union으로 타입세이프 모델링',
+          '가변 높이 아이템을 청크(30개) 단위로 측정해 다단 페이지 분할, 7종 데코레이터를 discriminated union으로 타입세이프 모델링',
         ],
         results: [
           '저작도구 프론트 아키텍처 단독 설계·소유',
