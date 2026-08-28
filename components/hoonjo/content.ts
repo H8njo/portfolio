@@ -135,6 +135,20 @@ export const flagship = {
   },
 };
 
+export type FlowDiagram = {
+  caption: string;
+  before: {
+    badge: string;
+    flow: string[];
+    note: string;
+  };
+  after: {
+    badge: string;
+    flow: string[];
+    note: string;
+  };
+};
+
 export type WorkCase = {
   id: string;
   eyebrow: string;
@@ -147,6 +161,7 @@ export type WorkCase = {
   metrics: Metric[];
   metricsNote?: string;
   images?: ProjImage[];
+  diagram?: FlowDiagram;
   code?: { caption: string; lines: string };
   postUrl?: string;
   link?: { label: string; href: string };
@@ -285,18 +300,18 @@ export const cases: WorkCase[] = [
     ],
     metricsNote:
       '639,000ms는 페이지당 2,132ms × 300의 합성 상한 — 전 페이지 선렌더 구조 자체를 없앤 값이다.',
-    code: {
-      caption: '전체 선렌더 폐기 → 온디맨드 렌더링 & 청크 메모리 고정',
-      lines: [
-        '// 300p 전체 선렌더(639초) 폐기 → 현재 뷰포트 우선 렌더',
-        'const renderChunk = async (startPage: number, chunkSize = 5) => {',
-        '  const chunk = pages.slice(startPage, startPage + chunkSize);',
-        '  await Promise.all(chunk.map((p) => p.render({ scale: 2.0 })));',
-        '  ',
-        '  // 지나간 페이지는 즉시 메모리 해제 (OOM 원천 차단)',
-        '  prevPages.forEach((p) => p.cleanup());',
-        '};',
-      ].join('\n'),
+    diagram: {
+      caption: 'RENDER PIPELINE · 렌더링 파이프라인 전환',
+      before: {
+        badge: 'AS-IS · 300p 전체 선렌더',
+        flow: ['300p 전체 동시 호출', '3× dpr Canvas 래스터', '거대 Base64 메모리 적재'],
+        note: '첫 조작 639초 대기 & 탭 프리즈(OOM)',
+      },
+      after: {
+        badge: 'TO-BE · 온디맨드 + 백그라운드 청크',
+        flow: ['1p 뷰포트 우선 즉시 렌더', '5p 백그라운드 청크', 'page.cleanup() 메모리 해제'],
+        note: 'TTI 1.3초 (488배 단축) & OOM 원천 차단',
+      },
     },
     postUrl: '/work/pdf-memory',
   },
@@ -335,21 +350,18 @@ export const cases: WorkCase[] = [
         gain: '맡은 기능 프론트+백 양쪽',
       },
     ],
-    code: {
-      caption: '프론트와 사내 보안 코어(TOS) 사이의 엄격한 BFF 보안 격리',
-      lines: [
-        '// Frontend → BFF: 평문 비밀번호/토큰 절대 미노출',
-        '// BFF → TOS: 서버가 JWT에서 신원 주입 & 암호화 해싱',
-        '@Post("threat/block")',
-        '@UseGuards(BffAuthGuard)',
-        'async blockThreat(@CurrentUser() user: UserDto, @Body() dto: BlockDto) {',
-        '  const [audit, result] = await Promise.all([',
-        '    this.auditService.log({ user: user.id, action: "BLOCK" }),',
-        '    this.tosClient.executeBlock({ ...dto, actor: user.empNo }),',
-        '  ]);',
-        '  return { success: true, ticketId: result.ticketId };',
-        '}',
-      ].join('\n'),
+    diagram: {
+      caption: 'SECURITY BOUNDARY · BFF 보안 경계 격리',
+      before: {
+        badge: 'AS-IS · 프론트엔드 직접 호출',
+        flow: ['프론트엔드 UI', '평문 비밀번호 / 토큰 노출', '10여 개 API 개별 호출'],
+        note: '보안 규정 위반 & 네트워크 병목',
+      },
+      after: {
+        badge: 'TO-BE · NestJS BFF 보안 격리',
+        flow: ['프론트엔드 (JWT 신원만)', 'NestJS BFF (암호화 / 병렬 집계)', '사내 보안 코어(TOS)'],
+        note: '평문 비밀번호 0접근 & 단일 집계 응답',
+      },
     },
     postUrl: '/work/edr-portal',
   },

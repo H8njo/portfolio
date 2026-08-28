@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import {
   Button, Tag, Badge, Eyebrow, SectionHeader, BlueprintGrid, MetricRow, TimelineItem,
 } from './components';
-import type { WorkCase } from './content';
+import type { WorkCase, FlowDiagram } from './content';
 import { profile, impact, cases, blackHole, timeline, capabilities, oss } from './content';
 import { Flagship } from './Flagship';
 import { Gallery, LightboxProvider, ZoomImage } from './Lightbox';
@@ -213,9 +213,74 @@ function CodePanel({ code }: { code: { caption: string; lines: string } }) {
   );
 }
 
+function DiagramPanel({ diagram }: { diagram: FlowDiagram }) {
+  return (
+    <div className="flex flex-col gap-3.5 w-full">
+      <div className="font-hj-mono text-[11px] tracking-[0.08em] uppercase text-hj-muted font-medium">
+        {diagram.caption}
+      </div>
+
+      {/* AS-IS Box */}
+      <div className="rounded-hj-md border border-[rgba(224,86,36,0.22)] bg-[rgba(224,86,36,0.03)] p-3.5 flex flex-col gap-2">
+        <div className="flex items-center justify-between flex-wrap gap-1">
+          <span className="font-hj-mono text-[11px] font-semibold text-[rgb(190,55,15)] px-2 py-0.5 rounded bg-[rgba(224,86,36,0.12)]">
+            {diagram.before.badge}
+          </span>
+          <span className="font-hj-mono text-[11px] text-[rgb(190,55,15)] font-medium">
+            {diagram.before.note}
+          </span>
+        </div>
+        <div className="flex items-center gap-1.5 flex-wrap font-hj-mono text-[11.5px]">
+          {diagram.before.flow.map((step, idx) => (
+            <div key={idx} className="flex items-center gap-1.5">
+              <span className="px-2 py-0.5 rounded bg-hj-paper border border-hj-line shadow-hj-soft text-hj-fg-secondary">
+                {step}
+              </span>
+              {idx < diagram.before.flow.length - 1 && (
+                <span className="text-hj-muted text-[10px]">➔</span>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Flow transition divider */}
+      <div className="flex items-center justify-center -my-1">
+        <span className="bg-hj-paper px-2.5 py-0.5 rounded-full border border-hj-line text-[10.5px] font-hj-mono text-hj-muted shadow-hj-soft">
+          아키텍처 전환 ↓
+        </span>
+      </div>
+
+      {/* TO-BE Box */}
+      <div className="rounded-hj-md border border-[rgba(21,128,61,0.25)] bg-[rgba(21,128,61,0.04)] p-3.5 flex flex-col gap-2">
+        <div className="flex items-center justify-between flex-wrap gap-1">
+          <span className="font-hj-mono text-[11px] font-semibold text-[rgb(21,128,61)] px-2 py-0.5 rounded bg-[rgba(21,128,61,0.12)]">
+            {diagram.after.badge}
+          </span>
+          <span className="font-hj-mono text-[11px] text-[rgb(21,128,61)] font-medium">
+            {diagram.after.note}
+          </span>
+        </div>
+        <div className="flex items-center gap-1.5 flex-wrap font-hj-mono text-[11.5px]">
+          {diagram.after.flow.map((step, idx) => (
+            <div key={idx} className="flex items-center gap-1.5">
+              <span className="px-2 py-0.5 rounded bg-hj-paper border border-[rgba(21,128,61,0.3)] shadow-hj-soft text-hj-fg font-medium">
+                {step}
+              </span>
+              {idx < diagram.after.flow.length - 1 && (
+                <span className="text-[rgb(21,128,61)] text-[10px]">➔</span>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function CaseCard({ c }: { c: WorkCase }) {
   const hasImages = !!(c.images && c.images.length);
-  const hasVisual = hasImages || !!c.code;
+  const hasVisual = hasImages || !!c.diagram || !!c.code;
   return (
     <article id={c.id} className="mt-5 scroll-mt-[84px] bg-hj-paper border border-hj-line rounded-hj-xl shadow-hj-soft overflow-hidden">
       <div className={`grid ${hasVisual ? 'grid-cols-[1.04fr_1.06fr] max-[900px]:grid-cols-1' : 'grid-cols-1'}`}>
@@ -224,7 +289,13 @@ function CaseCard({ c }: { c: WorkCase }) {
         </div>
         {hasVisual && (
           <div className="p-[clamp(24px,3.4vw,36px)] bg-hj-cloud flex flex-col justify-center">
-            {hasImages ? <Gallery images={c.images!} /> : c.code ? <CodePanel code={c.code} /> : null}
+            {hasImages ? (
+              <Gallery images={c.images!} />
+            ) : c.diagram ? (
+              <DiagramPanel diagram={c.diagram} />
+            ) : c.code ? (
+              <CodePanel code={c.code} />
+            ) : null}
           </div>
         )}
       </div>
