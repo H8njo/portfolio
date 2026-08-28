@@ -1,6 +1,6 @@
 ---
-title: 컬럼 배열 하나로 CRUD 화면 59개를 찍어낸 테이블 컴포넌트
-summary: 리스트·디테일 화면마다 필요한 기능이 다 달랐다. 그 전부를 흡수하는 조립식 테이블 하나를 설계해, 컬럼 배열만으로 화면을 찍어냈다.
+title: "컬럼 배열 하나로 CRUD 화면 59개를 찍어낸 테이블 컴포넌트"
+summary: 100개가 넘는 도메인을 단 2명이 감당해야 했다. 모든 화면의 본질을 '컬럼 메타데이터'로 추상화하고 조립식 테이블을 설계해 59개 화면을 초고속으로 양산한 이야기.
 featured: false
 order: 3
 demo: false
@@ -8,7 +8,7 @@ tags: [아키텍처, 컴포넌트 설계, 추상화, RBAC]
 metrics:
   - label: 한 컴포넌트가 그린 화면
     value: 59개
-  - label: CRUD 도메인
+  - label: 관리 도메인
     value: 100여 개
   - label: 신규 화면 작성
     value: 컬럼 배열 1벌
@@ -17,9 +17,9 @@ date: 2026-06-08
 
 {/* 외부 공유용. NDA 안전(회사명/내부 캡처 없음). */}
 
-공공기관 보안 포털 구축 프로젝트에 합류했을 때, 기획 시안을 받아보고 입이 떡 벌어졌다. 만들어야 할 화면 페이지만 100장이 훌쩍 넘어가고 있었다.
+대규모 공공 통합 관리 시스템 구축 프로젝트에 합류했을 때, 기획 시안을 받아보고 입이 떡 벌어졌다. 만들어야 할 화면 페이지만 100장이 훌쩍 넘어가고 있었다.
 
-산하 기관의 자산, 취약점, 침해사고, 악성 IP, 모의훈련 등을 한곳에서 총괄하는 보안 관제센터 시스템이었는데, 도메인이 100개가 넘는 거대한 규모였다. 하지만 프론트엔드 개발자는 나를 포함해 **단 두 명**뿐이었다.
+회원 관리, 정책 설정, 감사 로그, 통계 지표, 시스템 설정 등 다뤄야 할 도메인이 100개가 넘는 거대한 포털이었다. 하지만 프론트엔드 개발자는 나를 포함해 **단 두 명**뿐이었다.
 
 주먹구구식으로 화면을 하나씩 찍어내선 마감 기한을 절대 맞출 수 없었다. 가장 효율적으로 프로젝트를 완수하기 위해, 코드를 작성하기 전에 **재사용할 수 있는 패턴과 UI 구조부터 샅샅이 분석**하기 시작했다.
 
@@ -29,7 +29,7 @@ date: 2026-06-08
 - 컬럼별로 정렬하고 (Sort)
 - 데이터를 엑셀로 내려받거나 일괄 업로드하고 (Excel I/O)
 - 추가/수정/삭제 모달 폼을 띄우며 (CRUD Modal)
-- 사용자의 직급과 기관에 따라 권한을 제어하는 것 (RBAC)
+- 사용자의 역할과 조직에 따라 권한을 제어하는 것 (RBAC)
 
 컴포넌트 구조를 설계하기 전에 선행한 이 철저한 UI 구조 분석을 통해, 100장이 넘는 화면의 차이점을 딱 하나로 압축할 수 있었다 — **어떤 컬럼을 보여주고 조작하느냐.**
 
@@ -52,7 +52,7 @@ date: 2026-06-08
 - "이 화면은 엑셀 업로드 템플릿이 달라" → `excelImport`, `excelExport` prop으로 오버라이드
 - "이 화면은 잠긴 행(Row)은 수정하면 안 돼" → `allowEdit(record)` 훅 함수를 prop으로 주입
 
-페이지가 늘어날 때마다 조금씩 달라지는 세부 요구사항들을 `props`와 확장 슬롯으로 유연하게 넘겨받을 수 있도록 컴포넌트를 점진적으로 진화시켰다. 
+페이지가 늘어날 때마다 조금씩 달라지는 세부 요구사항들을 `props`와 확장 슬롯으로 유연하게 넘겨받을 수 있도록 컴포넌트를 점진적으로 진화시켰다.
 
 이 방식 덕분에 모든 케이스를 수용할 수 있는 튼튼한 컴포넌트 하나로, 이후 50여 개가 넘는 신규 화면들은 **단순히 컬럼 배열과 쿼리만 prop으로 넘기며 번개 같은 속도로 찍어낼 수 있었고, 개발 시간을 극단적으로 단축**할 수 있었다.
 
@@ -68,7 +68,7 @@ date: 2026-06-08
 - **행 선택 / 일괄 작업** — 페이지 넘어가는 선택 유지, 일괄 삭제 + 커스텀 일괄 액션
 - **컬럼 조작** — 표시/숨김 토글, 순서 드래그 변경, 너비 리사이즈, 그 설정의 화면별 저장
 - **인라인 편집** — 목록 위에서 셀 값만 바로 수정·저장
-- **권한** — 기관마다 다른 조회/수정 범위에 따라 버튼 노출 제어
+- **권한** — 사용자 역할마다 다른 조회/수정 범위에 따라 버튼 노출 제어
 
 한 컴포넌트가 이걸 다 하되, 화면마다 **필요한 것만 골라 켜지게** 해야 했다. 안 그러면 "이 화면만 좀 달라요"가 나올 때마다 컴포넌트 밖에 특수 코드가 쌓이고, 결국 복사 붙여넣기 지옥으로 돌아간다.
 
@@ -108,13 +108,13 @@ if (isUpdate) {
 
 ## 화면 하나는 이만큼이면 끝난다
 
-악성 IP 블랙리스트 화면 하나를 통째로 옮기면 이렇다. 컬럼 배열이 표·검색·엑셀·폼을 다 만들고, `<Table>`은 데이터와 CRUD 함수만 받는다.
+정책 관리 화면 하나를 통째로 옮기면 이렇다. 컬럼 배열이 표·검색·엑셀·폼을 다 만들고, `<Table>`은 데이터와 CRUD 함수만 받는다.
 
 ```jsx
-// pages/policy/blacklist.jsx — 이 파일이 화면의 전부다
+// pages/policy/setting.jsx — 이 파일이 화면의 전부다
 
 const columns = [
-  { dataIndex: 'ip', title: 'IP 주소',
+  { dataIndex: 'title', title: '정책명',
     searchDefine: { type: 'text' } },              // 표 + 검색(텍스트)
 
   { dataIndex: 'status', title: '상태',
@@ -122,44 +122,44 @@ const columns = [
     searchDefine: { type: 'select', options },     // 검색: select
     excelValueEnum: STATUS_LABELS },               // 엑셀: 코드→한글
 
-  { dataIndex: 'reason', title: '차단 사유' },       // 표 + 폼(기본 입력칸)
+  { dataIndex: 'description', title: '상세 설명' }, // 표 + 폼(기본 입력칸)
 
-  { dataIndex: 'blockedAt', title: '차단일시',
+  { dataIndex: 'updatedAt', title: '최종수정일',
     valueType: 'dateTime',                         // 표: 날짜 포맷
     searchDefine: { type: 'dateRange' },           // 검색: 기간 선택
     editable: false },                             // 폼: 수정 시 잠금
 ];
 
-export default function BlacklistPage() {
-  const { data, loading, refetch } = useBlacklist();  // 쿼리만 연결
+export default function PolicySettingPage() {
+  const { data, loading, refetch } = usePolicyList(); // 쿼리만 연결
 
   return (
     <Table
-      tableItemName="블랙리스트"
+      tableItemName="정책"
       columns={columns}
       dataSource={data}
       loading={loading}
       refetch={refetch}
-      onAdd={(v) => createBlacklist(v)}            // CRUD 주입
-      onEdit={(id, v) => updateBlacklist(id, v)}
-      onDelete={(id) => deleteBlacklist(id)}
+      onAdd={(v) => createPolicy(v)}               // CRUD 주입
+      onEdit={(id, v) => updatePolicy(id, v)}
+      onDelete={(id) => deletePolicy(id)}
     />
   );
 }
 ```
 
-이게 화면 파일 전부다. 검색 폼, 정렬, 추가·수정·삭제 모달, 페이지네이션, 행 선택은 한 줄도 안 짰지만 다 나온다 — 컬럼 배열에 이미 다 적혀 있으니까. 추가·수정·삭제 버튼은 경로(`/policy/blacklist`)에서 권한을 물어 스스로 나타나고 사라진다.
+이게 화면 파일 전부다. 검색 폼, 정렬, 추가·수정·삭제 모달, 페이지네이션, 행 선택은 한 줄도 안 짰지만 다 나온다 — 컬럼 배열에 이미 다 적혀 있으니까. 추가·수정·삭제 버튼은 경로(`/policy/setting`)에서 권한을 물어 스스로 나타나고 사라진다.
 
-엑셀도 마찬가지다. **다운로드**는 컬럼과 `dataSource`가 있으니 자동으로 뜬다 — 컬럼의 `title`을 헤더로, `excelValueEnum`으로 코드값을 한글로 풀어서 `블랙리스트_목록.xlsx`를 내린다. **업로드**는 이미 연결한 `onAdd`에 그대로 물린다. 사용자가 올린 시트의 각 행이 `onAdd`로 흘러 들어가 그대로 등록된다. 화면은 파싱도 매핑도 신경 쓸 게 없다.
+엑셀도 마찬가지다. **다운로드**는 컬럼과 `dataSource`가 있으니 자동으로 뜬다 — 컬럼의 `title`을 헤더로, `excelValueEnum`으로 코드값을 한글로 풀어서 `정책_목록.xlsx`를 내린다. **업로드**는 이미 연결한 `onAdd`에 그대로 물린다. 사용자가 올린 시트의 각 행이 `onAdd`로 흘러 들어가 그대로 등록된다. 화면은 파싱도 매핑도 신경 쓸 게 없다.
 
 ```jsx
 // 엑셀 커스터마이징이 필요할 때만 한 줄 (기본은 자동)
 <Table
   columns={columns}
   dataSource={data}
-  onAdd={(v) => createBlacklist(v)}                    // 업로드가 이 함수로 흘러든다
-  excelExport={{ fileName: '악성IP_현황' }}              // 다운로드 파일명 override
-  excelImport={{ template: BLACKLIST_TEMPLATE }}        // 업로드 양식 지정
+  onAdd={(v) => createPolicy(v)}                       // 업로드가 이 함수로 흘러든다
+  excelExport={{ fileName: '정책설정_현황' }}             // 다운로드 파일명 override
+  excelImport={{ template: POLICY_TEMPLATE }}          // 업로드 양식 지정
 />
 ```
 
@@ -175,7 +175,7 @@ export default function BlacklistPage() {
 
 **3. 훅 — 흐름을 가로챈다.** 기본 동작으로 안 되는 화면을 위해 가로채기 지점을 뒀다. `beforeAdd`·`beforeEdit`로 모달을 열기 전에 끼어들고, `checkValidation`으로 제출을 막고, `allowEdit(record)`로 특정 행만 수정 불가로 만들고, `handleMultipleRows.addon`으로 일괄 작업 메뉴에 임의 액션을 더한다. CRUD 자체는 `onAdd`·`onEdit`·`onDelete`로 주입하니 GraphQL이든 REST든 상관없다.
 
-앞의 블랙리스트 화면에 이 화면만의 요구가 붙어도, 확장은 한 줄씩이다.
+앞의 화면에 특화된 요구사항이 붙어도, 확장은 한 줄씩이다.
 
 ```jsx
 <Table
@@ -184,18 +184,18 @@ export default function BlacklistPage() {
   // ...
   {...useColumnsState()}                               // 프리셋: 컬럼 설정 저장
   allowEdit={(row) => row.locked}                       // 훅: 잠긴 행은 수정 불가
-  customToolbar={() => <SyncFromThreatFeed />}          // 슬롯: 이 화면만의 버튼
-  handleMultipleRows={{ addon: [releaseAction] }}       // 훅: 일괄 "차단 해제" 추가
+  customToolbar={() => <SyncExternalData />}           // 슬롯: 이 화면만의 버튼
+  handleMultipleRows={{ addon: [bulkApproveAction] }}   // 훅: 일괄 "승인" 액션 추가
 />
 ```
 
-자주 쓰는 조합은 프리셋으로 굳혔다. 읽기 전용 게시판은 `CommonTable`이 추가·수정·삭제를 다 꺼둔 채 데이터만 물어오고, `useColumnsState`를 끼우면 표시/숨김·순서·너비 설정이 **화면 경로별로 localStorage에 남아** 새로고침해도 유지된다.
+자주 쓰는 조합은 프리셋으로 굳혔다. 읽기 전용 목록은 `CommonTable`이 추가·수정·삭제를 다 꺼둔 채 데이터만 물어오고, `useColumnsState`를 끼우면 표시/숨김·순서·너비 설정이 **화면 경로별로 localStorage에 남아** 새로고침해도 유지된다.
 
 ## 그래서 모든 케이스가 흡수됐다
 
 이 조립 구조 덕에, "이 화면만 달라요"가 컴포넌트 밖으로 새지 않았다.
 
-- 컬럼 30개짜리 관제 화면 → 컬럼 표시 토글 + 순서 드래그 + 너비 리사이즈로 사용자가 직접 화면을 맞추고, 그 설정은 경로별로 저장된다.
+- 컬럼 30개짜리 대규모 데이터 화면 → 컬럼 표시 토글 + 순서 드래그 + 너비 리사이즈로 사용자가 직접 화면을 맞추고, 그 설정은 경로별로 저장된다.
 - 검색이 복잡한 화면 → 텍스트·숫자·기간·select를 컬럼이 직접 고르고, 조건을 URL 쿼리에 실어 "특정 조건 3페이지"를 그대로 링크로 공유한다.
 - 모달이 과한 화면 → 인라인 편집 셀로 목록 위에서 값 하나만 바꿔 저장한다.
 - 권한이 화면마다 다른 상황 → 아래 방식으로 버튼이 스스로 나타나고 사라진다.
@@ -206,7 +206,7 @@ export default function BlacklistPage() {
 
 개발이 한창 진행되던 중, 예상치 못한 큰 난관을 마주했다. 바로 **다단계 관리자 권한**(RBAC) 설정이었다.
 
-기관마다, 직급마다 "어떤 관리자는 조회만, 어떤 관리자는 추가/수정까지, 어떤 관리자는 엑셀 다운로드만" 권한이 세밀하게 쪼개져 있었다. 100여 개 화면마다 수많은 관리자 역할에 맞춰 버튼 노출과 기능 접근을 일일이 제어해야 하는 상황을 마주했을 때, 순간 *"아, 50개가 넘는 화면에 권한 분기 코드를 일일이 다 쳐넣어야 하나? 어떡하지?"*라는 아찔한 위기감이 스쳤다.
+조직마다, 직급마다 "어떤 관리자는 조회만, 어떤 관리자는 추가/수정까지, 어떤 관리자는 엑셀 다운로드만" 권한이 세밀하게 쪼개져 있었다. 100여 개 화면마다 수많은 관리자 역할에 맞춰 버튼 노출과 기능 접근을 일일이 제어해야 하는 상황을 마주했을 때, 순간 *"아, 50개가 넘는 화면에 권한 분기 코드를 일일이 다 쳐넣어야 하나? 어떡하지?"*라는 아찔한 위기감이 스쳤다.
 
 하지만 위기의 순간, **모든 화면이 단 하나의 공통 컴포넌트를 공유하고 있다는 사실이 결정적인 구원투수**가 되어주었다.
 
