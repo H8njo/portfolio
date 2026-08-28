@@ -201,14 +201,14 @@ function ImpactStrip({ c }: { c: WorkCase }) {
 function CodePanel({ code }: { code: { caption: string; lines: string } }) {
   return (
     <div className="flex flex-col min-w-0 w-full">
-      <div className="font-hj-mono text-[13.5px] leading-[1.95] bg-hj-ink border border-hj-ink-soft rounded-hj-md p-[clamp(26px,3vw,34px)] overflow-x-auto">
+      <div className="font-hj-mono text-[12.5px] leading-[1.75] bg-hj-ink border border-hj-ink-soft rounded-hj-md p-[clamp(18px,2.2vw,24px)] overflow-x-auto">
         {code.lines.split('\n').map((ln, i) => {
           const t = ln.trim();
           const color = t.startsWith('//') ? 'text-hj-on-ink-muted' : t.startsWith('$') ? 'text-hj-blue-bright' : 'text-hj-on-ink';
-          return <div key={i} className={`${color} whitespace-pre min-h-[1.4em]`}>{ln || ' '}</div>;
+          return <div key={i} className={`${color} whitespace-pre min-h-[1.3em]`}>{ln || ' '}</div>;
         })}
       </div>
-      <div className="font-hj-mono text-[11px] text-hj-muted mt-3.5">{code.caption}</div>
+      <div className="font-hj-mono text-[11px] text-hj-muted mt-2">{code.caption}</div>
     </div>
   );
 }
@@ -304,14 +304,10 @@ function CaseCard({ c }: { c: WorkCase }) {
           <CaseHeader c={c} />
         </div>
         {hasVisual && (
-          <div className="p-[clamp(24px,3.4vw,36px)] bg-hj-cloud flex flex-col justify-center">
-            {hasImages ? (
-              <Gallery images={c.images!} />
-            ) : c.diagram ? (
-              <DiagramPanel diagram={c.diagram} />
-            ) : c.code ? (
-              <CodePanel code={c.code} />
-            ) : null}
+          <div className="p-[clamp(24px,3.4vw,36px)] bg-hj-cloud flex flex-col justify-center gap-3.5">
+            {hasImages && <Gallery images={c.images!} />}
+            {c.diagram && <DiagramPanel diagram={c.diagram} />}
+            {c.code && <CodePanel code={c.code} />}
           </div>
         )}
       </div>
