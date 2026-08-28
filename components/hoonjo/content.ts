@@ -285,6 +285,19 @@ export const cases: WorkCase[] = [
     ],
     metricsNote:
       '639,000ms는 페이지당 2,132ms × 300의 합성 상한 — 전 페이지 선렌더 구조 자체를 없앤 값이다.',
+    code: {
+      caption: '전체 선렌더 폐기 → 온디맨드 렌더링 & 청크 메모리 고정',
+      lines: [
+        '// 300p 전체 선렌더(639초) 폐기 → 현재 뷰포트 우선 렌더',
+        'const renderChunk = async (startPage: number, chunkSize = 5) => {',
+        '  const chunk = pages.slice(startPage, startPage + chunkSize);',
+        '  await Promise.all(chunk.map((p) => p.render({ scale: 2.0 })));',
+        '  ',
+        '  // 지나간 페이지는 즉시 메모리 해제 (OOM 원천 차단)',
+        '  prevPages.forEach((p) => p.cleanup());',
+        '};',
+      ].join('\n'),
+    },
     postUrl: '/work/pdf-memory',
   },
   {
@@ -322,6 +335,22 @@ export const cases: WorkCase[] = [
         gain: '맡은 기능 프론트+백 양쪽',
       },
     ],
+    code: {
+      caption: '프론트와 사내 보안 코어(TOS) 사이의 엄격한 BFF 보안 격리',
+      lines: [
+        '// Frontend → BFF: 평문 비밀번호/토큰 절대 미노출',
+        '// BFF → TOS: 서버가 JWT에서 신원 주입 & 암호화 해싱',
+        '@Post("threat/block")',
+        '@UseGuards(BffAuthGuard)',
+        'async blockThreat(@CurrentUser() user: UserDto, @Body() dto: BlockDto) {',
+        '  const [audit, result] = await Promise.all([',
+        '    this.auditService.log({ user: user.id, action: "BLOCK" }),',
+        '    this.tosClient.executeBlock({ ...dto, actor: user.empNo }),',
+        '  ]);',
+        '  return { success: true, ticketId: result.ticketId };',
+        '}',
+      ].join('\n'),
+    },
     postUrl: '/work/edr-portal',
   },
   {
