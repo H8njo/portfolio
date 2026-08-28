@@ -135,17 +135,24 @@ export const flagship = {
   },
 };
 
+export type DiagramStep = {
+  title: string;
+  desc: string;
+};
+
 export type FlowDiagram = {
   caption: string;
   before: {
     badge: string;
-    flow: string[];
     note: string;
+    steps: DiagramStep[];
+    impact: string;
   };
   after: {
     badge: string;
-    flow: string[];
     note: string;
+    steps: DiagramStep[];
+    impact: string;
   };
 };
 
@@ -304,13 +311,23 @@ export const cases: WorkCase[] = [
       caption: 'RENDER PIPELINE · 렌더링 파이프라인 전환',
       before: {
         badge: 'AS-IS · 300p 전체 선렌더',
-        flow: ['300p 전체 동시 호출', '3× dpr Canvas 래스터', '거대 Base64 메모리 적재'],
         note: '첫 조작 639초 대기 & 탭 프리즈(OOM)',
+        steps: [
+          { title: '전체 선렌더', desc: '300p를 시작과 동시에 일괄 생성 요청' },
+          { title: '3× DPR 래스터', desc: '고해상도 Canvas 300장이 스레드 독점' },
+          { title: '메모리 적재', desc: '수백 장 Base64 비트맵이 탭 한도 초과' },
+        ],
+        impact: '초기 렌더링 지연이 페이지 수에 비례하여 브라우저 프리징 발생',
       },
       after: {
         badge: 'TO-BE · 온디맨드 + 백그라운드 청크',
-        flow: ['1p 뷰포트 우선 즉시 렌더', '5p 백그라운드 청크', 'page.cleanup() 메모리 해제'],
         note: 'TTI 1.3초 (488배 단축) & OOM 원천 차단',
+        steps: [
+          { title: '1p 뷰포트 렌더', desc: '첫 장 즉시 렌더로 1.3초 TTI 달성' },
+          { title: '백그라운드 청크', desc: '스크롤 방향 5p 점진적 사전 로드' },
+          { title: 'page.cleanup()', desc: '뷰포트 이탈 시 Canvas 메모리 즉시 반환' },
+        ],
+        impact: '페이지 수와 무관하게 Peak 메모리를 청크 크기(5p)로 완전 고정',
       },
     },
     postUrl: '/work/pdf-memory',
@@ -354,13 +371,23 @@ export const cases: WorkCase[] = [
       caption: 'SECURITY BOUNDARY · BFF 보안 경계 격리',
       before: {
         badge: 'AS-IS · 프론트엔드 직접 호출',
-        flow: ['프론트엔드 UI', '평문 비밀번호 / 토큰 노출', '10여 개 API 개별 호출'],
         note: '보안 규정 위반 & 네트워크 병목',
+        steps: [
+          { title: '직접 접근', desc: '화면에서 사내 보안 코어(TOS) 직접 호출' },
+          { title: '평문 노출', desc: '네트워크 탭에 비밀번호·토큰 그대로 노출' },
+          { title: 'API 분산', desc: '대시보드 1화면에 10여 개 호출 분산' },
+        ],
+        impact: '클라이언트 측 자격증명 탈취 위험 및 다중 네트워크 지연 발생',
       },
       after: {
         badge: 'TO-BE · NestJS BFF 보안 격리',
-        flow: ['프론트엔드 (JWT 신원만)', 'NestJS BFF (암호화 / 병렬 집계)', '사내 보안 코어(TOS)'],
         note: '평문 비밀번호 0접근 & 단일 집계 응답',
+        steps: [
+          { title: '보안 경계선', desc: '프론트는 암호화 세션/신원만 전달' },
+          { title: '서버 인증/해싱', desc: 'BFF 가드에서 검증 및 암호화 수행' },
+          { title: '병렬 집계', desc: 'Promise.all로 10개 호출을 1응답 병합' },
+        ],
+        impact: '프론트엔드의 사내 비밀번호 접근 원천 차단 및 응답 속도 최적화',
       },
     },
     postUrl: '/work/edr-portal',

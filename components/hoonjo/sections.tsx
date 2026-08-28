@@ -216,62 +216,78 @@ function CodePanel({ code }: { code: { caption: string; lines: string } }) {
 function DiagramPanel({ diagram }: { diagram: FlowDiagram }) {
   return (
     <div className="flex flex-col gap-3.5 w-full">
-      <div className="font-hj-mono text-[11px] tracking-[0.08em] uppercase text-hj-muted font-medium">
+      <div className="font-hj-mono text-[11px] tracking-[0.1em] uppercase text-hj-muted font-medium">
         {diagram.caption}
       </div>
 
       {/* AS-IS Box */}
-      <div className="rounded-hj-md border border-[rgba(224,86,36,0.22)] bg-[rgba(224,86,36,0.03)] p-3.5 flex flex-col gap-2">
-        <div className="flex items-center justify-between flex-wrap gap-1">
+      <div className="rounded-hj-md border border-[rgba(224,86,36,0.22)] bg-[rgba(224,86,36,0.03)] p-[clamp(14px,1.8vw,18px)] flex flex-col gap-3">
+        <div className="flex items-center justify-between flex-wrap gap-1 border-b border-[rgba(224,86,36,0.15)] pb-2.5">
           <span className="font-hj-mono text-[11px] font-semibold text-[rgb(190,55,15)] px-2 py-0.5 rounded bg-[rgba(224,86,36,0.12)]">
             {diagram.before.badge}
           </span>
-          <span className="font-hj-mono text-[11px] text-[rgb(190,55,15)] font-medium">
+          <span className="font-hj-mono text-[11.5px] text-[rgb(190,55,15)] font-semibold">
             {diagram.before.note}
           </span>
         </div>
-        <div className="flex items-center gap-1.5 flex-wrap font-hj-mono text-[11.5px]">
-          {diagram.before.flow.map((step, idx) => (
-            <div key={idx} className="flex items-center gap-1.5">
-              <span className="px-2 py-0.5 rounded bg-hj-paper border border-hj-line shadow-hj-soft text-hj-fg-secondary">
-                {step}
-              </span>
-              {idx < diagram.before.flow.length - 1 && (
-                <span className="text-hj-muted text-[10px]">➔</span>
-              )}
+        <div className="grid grid-cols-3 gap-2.5 max-[640px]:grid-cols-1">
+          {diagram.before.steps.map((s, idx) => (
+            <div key={idx} className="p-2.5 rounded bg-hj-paper border border-hj-line shadow-hj-soft flex flex-col gap-1">
+              <div className="flex items-center justify-between">
+                <span className="font-hj-mono text-[11.5px] font-semibold text-hj-fg">
+                  {s.title}
+                </span>
+                <span className="font-hj-mono text-[10px] text-hj-muted">
+                  0{idx + 1}
+                </span>
+              </div>
+              <p className="font-hj-serif text-[11px] leading-[1.35] text-hj-muted m-0">
+                {s.desc}
+              </p>
             </div>
           ))}
+        </div>
+        <div className="font-hj-serif text-[11.5px] text-[rgb(190,55,15)] bg-[rgba(224,86,36,0.06)] px-3 py-1.5 rounded border border-[rgba(224,86,36,0.1)]">
+          ⚠️ {diagram.before.impact}
         </div>
       </div>
 
       {/* Flow transition divider */}
       <div className="flex items-center justify-center -my-1">
-        <span className="bg-hj-paper px-2.5 py-0.5 rounded-full border border-hj-line text-[10.5px] font-hj-mono text-hj-muted shadow-hj-soft">
+        <span className="bg-hj-paper px-3 py-1 rounded-full border border-hj-line text-[11px] font-hj-mono text-hj-muted shadow-hj-soft">
           아키텍처 전환 ↓
         </span>
       </div>
 
       {/* TO-BE Box */}
-      <div className="rounded-hj-md border border-[rgba(21,128,61,0.25)] bg-[rgba(21,128,61,0.04)] p-3.5 flex flex-col gap-2">
-        <div className="flex items-center justify-between flex-wrap gap-1">
+      <div className="rounded-hj-md border border-[rgba(21,128,61,0.25)] bg-[rgba(21,128,61,0.04)] p-[clamp(14px,1.8vw,18px)] flex flex-col gap-3">
+        <div className="flex items-center justify-between flex-wrap gap-1 border-b border-[rgba(21,128,61,0.15)] pb-2.5">
           <span className="font-hj-mono text-[11px] font-semibold text-[rgb(21,128,61)] px-2 py-0.5 rounded bg-[rgba(21,128,61,0.12)]">
             {diagram.after.badge}
           </span>
-          <span className="font-hj-mono text-[11px] text-[rgb(21,128,61)] font-medium">
+          <span className="font-hj-mono text-[11.5px] text-[rgb(21,128,61)] font-semibold">
             {diagram.after.note}
           </span>
         </div>
-        <div className="flex items-center gap-1.5 flex-wrap font-hj-mono text-[11.5px]">
-          {diagram.after.flow.map((step, idx) => (
-            <div key={idx} className="flex items-center gap-1.5">
-              <span className="px-2 py-0.5 rounded bg-hj-paper border border-[rgba(21,128,61,0.3)] shadow-hj-soft text-hj-fg font-medium">
-                {step}
-              </span>
-              {idx < diagram.after.flow.length - 1 && (
-                <span className="text-[rgb(21,128,61)] text-[10px]">➔</span>
-              )}
+        <div className="grid grid-cols-3 gap-2.5 max-[640px]:grid-cols-1">
+          {diagram.after.steps.map((s, idx) => (
+            <div key={idx} className="p-2.5 rounded bg-hj-paper border border-[rgba(21,128,61,0.28)] shadow-hj-soft flex flex-col gap-1">
+              <div className="flex items-center justify-between">
+                <span className="font-hj-mono text-[11.5px] font-semibold text-hj-fg">
+                  {s.title}
+                </span>
+                <span className="font-hj-mono text-[10px] text-[rgb(21,128,61)] font-semibold">
+                  0{idx + 1}
+                </span>
+              </div>
+              <p className="font-hj-serif text-[11px] leading-[1.35] text-hj-fg-secondary m-0">
+                {s.desc}
+              </p>
             </div>
           ))}
+        </div>
+        <div className="font-hj-serif text-[11.5px] text-[rgb(21,128,61)] bg-[rgba(21,128,61,0.06)] px-3 py-1.5 rounded border border-[rgba(21,128,61,0.15)]">
+          ✨ {diagram.after.impact}
         </div>
       </div>
     </div>
