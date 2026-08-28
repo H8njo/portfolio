@@ -14,6 +14,7 @@ const deltaMagicWand = '/cases/delta/magic-wand.png';
 const deltaStepQueue = '/cases/delta/step2-item-queue.png';
 const deltaBbox = '/cases/delta/bbox-canvas.png';
 const deltaDashboard = '/cases/delta/dashboard.png';
+const sentenceAnalysisImg = '/cases/sentence-analysis.png';
 
 export type ProjImage = { src: string; alt: string };
 
@@ -476,19 +477,12 @@ export const cases: WorkCase[] = [
         gain: '다른 서비스에서 재사용',
       },
     ],
-    code: {
-      caption: '미리 계산 대신, 화면에 그려진 걸 재서 따라간다',
-      lines: [
-        '// 단어를 실측해 top이 비슷하면 같은 줄로 묶는다',
-        '// (밑줄·메모가 top을 흔들어 tolerance 필요)',
-        'if (Math.abs(word.top - lineTop) <= LINE_TOLERANCE)',
-        '',
-        '// 원/삼각형: 전체를 그리고 그 줄 영역만 clip',
-        "const cx = pos === 'first' ? width   // 왼쪽 반",
-        "         : pos === 'last'  ? 0       // 오른쪽 반",
-        '         : width / 2',
-      ].join('\n'),
-    },
+    images: [
+      {
+        src: sentenceAnalysisImg,
+        alt: '영어 구문 분석 에디터 — 줄바꿈을 넘나드는 타원·박스·화살표·메모 실측 렌더링 결과',
+      },
+    ],
     postUrl: '/work/problem-editor',
   },
   {
