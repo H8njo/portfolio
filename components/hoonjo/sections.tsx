@@ -9,7 +9,7 @@ import {
 import type { WorkCase } from './content';
 import { profile, impact, cases, blackHole, timeline, capabilities, oss } from './content';
 import { Flagship } from './Flagship';
-import { Gallery } from './Lightbox';
+import { Gallery, LightboxProvider, ZoomImage } from './Lightbox';
 
 // 라이브 블랙홀 — 실제 black-hole-effect 패키지. window 접근이 렌더 중 일어나 ssr:false.
 const BlackholeLive = dynamic(() => import('@/components/demos/blackhole-live'), { ssr: false, loading: () => null });
@@ -90,9 +90,8 @@ export function Nav() {
 /* ---- Hero portrait ------------------------------------------------------ */
 function Portrait() {
   return (
-    <div className="relative w-full max-w-[360px] aspect-[4/5] justify-self-end rounded-hj-xl overflow-hidden bg-hj-cloud border border-hj-line shadow-hj-soft max-[900px]:hidden">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={portrait} alt={profile.nameKo} className="w-full h-full object-cover object-[center_32%]" />
+    <div className="relative w-full max-w-[360px] aspect-[4/5] justify-self-end rounded-hj-xl overflow-hidden bg-hj-cloud border border-hj-line shadow-hj-soft max-[900px]:hidden group">
+      <ZoomImage src={portrait} alt={`${profile.nameKo} — ${profile.role}`} className="w-full h-full object-cover object-[center_32%]" />
     </div>
   );
 }
@@ -435,7 +434,7 @@ export function Contact() {
 /* ---- Compose the main portfolio page ------------------------------------ */
 export function MainPortfolio() {
   return (
-    <>
+    <LightboxProvider>
       <Nav />
       <main>
         <Hero />
@@ -445,6 +444,6 @@ export function MainPortfolio() {
         <OpenSource />
       </main>
       <Contact />
-    </>
+    </LightboxProvider>
   );
 }
