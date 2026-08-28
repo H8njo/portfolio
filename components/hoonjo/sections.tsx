@@ -123,24 +123,55 @@ export function Hero() {
           </div>
         </div>
 
-        <div className={`${CONTAINER} mt-16 pb-16`}>
-          <div className="grid grid-cols-[minmax(0,1.4fr)_repeat(3,minmax(0,1fr))] bg-hj-paper border border-hj-line rounded-hj-lg shadow-hj-soft overflow-hidden max-[900px]:grid-cols-2 max-[560px]:grid-cols-1">
-            <div className="px-6 py-[22px] border-r border-hj-line flex flex-col justify-center max-[900px]:border-r-0 max-[900px]:border-b max-[900px]:border-hj-line">
-              <div className="font-hj-serif text-[21px] font-semibold tracking-[-0.01em] text-hj-fg leading-[1.4] whitespace-pre-line">{impact.lead}</div>
+        <div className={`${CONTAINER} mt-14 pb-16`}>
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <div className="flex items-center gap-2">
+              <span aria-hidden className="w-2 h-2 rounded-full bg-hj-blue animate-hj-pulse" />
+              <span className="font-hj-mono text-[11px] font-semibold tracking-[0.1em] uppercase text-hj-blue-deep">
+                {impact.eyebrow}
+              </span>
             </div>
-            {impact.stats.map((s, i) => (
-              <div key={s.k} className={`px-6 py-[22px] ${i < 2 ? 'border-r border-hj-line' : ''} max-[900px]:border-r-0 max-[900px]:border-b max-[900px]:border-hj-line max-[560px]:border-b max-[560px]:border-hj-line`}>
-                {/* scope label (context) */}
-                <div className="font-hj-mono text-[11px] tracking-[0.06em] uppercase text-hj-muted">{s.k}</div>
-                {/* old state — de-emphasized, small + faint + strikethrough */}
-                <div className="mt-3 font-hj-mono text-[12px] text-hj-faint line-through decoration-hj-steel">{s.before}</div>
-                {/* payoff — the point of the whole strip. big, bold, ink; a small muted
-                    connector arrow leads the eye from the struck-through old state. */}
-                <div className="mt-1.5 flex items-baseline gap-2">
-                  <span aria-hidden className="font-hj-mono text-[13px] text-hj-faint">→</span>
-                  <span className="font-hj-mono tabular-nums text-[24px] font-bold text-hj-fg tracking-[-0.02em] leading-[1.1]">{s.after}</span>
+            <div className="font-hj-serif text-[13.5px] text-hj-muted">
+              {impact.lead}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-4 gap-3.5 max-[1024px]:grid-cols-2 max-[560px]:grid-cols-1">
+            {impact.stats.map((s) => (
+              <a
+                key={s.k}
+                href={`#${s.target}`}
+                onClick={(e) => scrollTo(e, s.target)}
+                className="group p-5 bg-hj-paper border border-hj-line rounded-hj-lg shadow-hj-soft flex flex-col justify-between transition-[border-color,box-shadow,transform] duration-150 hover:border-hj-blue hover:shadow-hj-soft-lg hover:-translate-y-0.5 no-underline cursor-pointer"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-hj-mono text-[11px] text-hj-muted font-medium">
+                      {s.org}
+                    </span>
+                    <span className="font-hj-mono text-[11px] text-hj-faint group-hover:text-hj-blue transition-colors">
+                      증명 보기 ↓
+                    </span>
+                  </div>
+                  <div className="font-hj-serif text-[15px] font-semibold text-hj-fg leading-[1.3] group-hover:text-hj-blue-deep transition-colors">
+                    {s.k}
+                  </div>
+                  <div className="mt-3 font-hj-mono text-[11.5px] text-hj-faint line-through decoration-hj-steel">
+                    {s.before}
+                  </div>
+                  <div className="mt-1 flex items-baseline gap-1.5">
+                    <span aria-hidden className="font-hj-mono text-[12px] text-hj-faint">→</span>
+                    <span className="font-hj-mono tabular-nums text-[20px] font-bold text-hj-fg tracking-[-0.02em] leading-[1.1]">
+                      {s.after}
+                    </span>
+                  </div>
                 </div>
-              </div>
+                <div className="mt-4 pt-3 border-t border-hj-line flex items-center justify-between">
+                  <span className="font-hj-mono text-[11px] font-medium text-[rgb(21,128,61)] bg-[rgba(21,128,61,0.08)] px-2 py-0.5 rounded">
+                    {s.gain}
+                  </span>
+                </div>
+              </a>
             ))}
           </div>
         </div>

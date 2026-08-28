@@ -35,19 +35,58 @@ export const profile = {
   portfolioLabel: '포트폴리오 · h8njo.vercel.app',
   blog: 'https://h8njo.vercel.app/work',
   blogLabel: '블로그 · h8njo.vercel.app/work',
-  tagline: ['안 되던 화면을 측정해서', '되게', '만듭니다.'],
-  lead: '성능, 복잡한 상태, 까다로운 렌더링 — 직접 측정하고, 끝까지 동작하게 만듭니다.',
-  heroTags: ['성능 최적화', '대용량 렌더링', '복잡한 상태', 'Canvas / WebGL'],
+  tagline: ['남들이 타협하고 멈춘 난제를,', '구조와 실측으로', '끝까지 동작하게 만듭니다.'],
+  lead: '7년차 시니어 프론트엔드 엔지니어 조영훈입니다. 2년 묵은 다단 레이아웃 결함부터 일일 8배의 검수량 폭증, 488배의 렌더링 가속까지 — 타협 대신 근본 원인을 실측하고, 재사용 가능한 아키텍처와 오픈소스로 문제를 끝냅니다.',
+  heroTags: ['A4 다단 엔진 오픈소스화', '800% 검수 생산성 혁신', '대용량 렌더링 488배 가속', '보안관제 풀스택 BFF'],
+};
+
+export type ImpactStat = {
+  k: string;
+  org: string;
+  before: string;
+  after: string;
+  gain: string;
+  target: string;
 };
 
 /* Hero featured-impact strip — the strongest real before→after pairs. */
 export const impact = {
-  lead: '반복을 구조로, 결과를 숫자로.',
+  eyebrow: 'PROVEN IMPACT',
+  lead: '측정된 결과로 증명하는 4대 엔지니어링 성과',
   stats: [
-    { k: 'PDF 첫 조작 (300p)', before: '약 10분 30초', after: '1.3초' },
-    { k: '일일 교재 검수량', before: '1,000건', after: '8,000건' },
-    { k: '같은 모양 화면 59개', before: '화면마다 코딩', after: '정의 하나로' },
-  ] as { k: string; before: string; after: string }[],
+    {
+      k: 'A4 다단 레이아웃 분할',
+      org: '@Bookips',
+      before: '2년간 매일 환불 4건',
+      after: '환불 0건 종결',
+      gain: '2년 난제 해결 · npm 배포',
+      target: 'work-column-pager',
+    },
+    {
+      k: '초고속 교재 검수 콘솔',
+      org: '@Bookips',
+      before: '하루 1,000건 한계',
+      after: '하루 8,000건',
+      gain: '8배 폭증 · 800% 생산성',
+      target: 'work-delta2',
+    },
+    {
+      k: '300p 대용량 PDF 렌더',
+      org: '@Sling · ORZO',
+      before: '첫 조작 약 10분 30초',
+      after: '1.3초 TTI',
+      gain: '488배 가속 · OOM 차단',
+      target: 'work-pdf-memory',
+    },
+    {
+      k: '정부 보안관제 관리자 포털',
+      org: '@Zipida · 법무부',
+      before: '화면마다 수기 개발',
+      after: '정의 1벌 59개 화면',
+      gain: '2인이 100+ 도메인 양산',
+      target: 'work-portal',
+    },
+  ] as ImpactStat[],
 };
 
 /* ── Flagship: the column-pager story (own dedicated section) ───────────── */
