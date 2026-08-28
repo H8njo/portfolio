@@ -41,11 +41,13 @@ AI/ML 모델이 수백 페이지의 교재 PDF를 분석하여 추출한 텍스�
 ### ② HTTP 200 속에 숨겨진 실패 알림
 권한이 없거나 유효성 검증에 실패했을 때도 백엔드는 `400`이나 `403`을 뱉지 않고 **HTTP 200 OK와 함께 `{ notice: { type: 'error' } }` 알림**을 내려주었다. 에러가 성공의 탈을 쓰고 들어오는 구조였다.
 
-### ③ 해결: AdminJS 전용 래퍼 파이프라인 구축 (`adminAction`, `adminMutation`)
-이 기형적인 백엔드 동작을 컴포넌트가 일일이 신경 쓰지 않도록, 모든 API 호출을 단일 관문으로 캡슐화했다:
+### ③ 임시방편: 전용 API 신설 전까지의 임시 가교 래퍼 (`adminAction`, `adminMutation`)
+물론 이 래퍼는 영구적인 아키텍처가 아니라, **추후 백엔드에 정식 전용 REST API가 구축되면 즉시 교체될 예정인 임시 가교**(Stopgap Bridge)다.
+
+하지만 백엔드 개발이 끝날 때까지 마냥 손 놓고 기다릴 수는 없었기에, 비표준 동작을 단일 모듈 안에 완벽히 격리했다:
 
 ```ts
-// src/api/adminAction.ts — AdminJS의 비표준 동작을 정규화하는 래퍼
+// src/api/adminAction.ts — AdminJS의 비표준 동작을 정규화하는 임시 래퍼
 export async function adminAction<T>(url: string): Promise<T> {
   const res = await fetch(url, { credentials: 'include' });
 
@@ -66,7 +68,9 @@ export async function adminAction<T>(url: string): Promise<T> {
 }
 ```
 
-미인증 HTML 응답은 즉시 `SessionExpiredError`로 분기시켜 재시도 루프 없이 로그인 가드로 유도하고, `notice: error`는 `AdminActionError`로 자동 승격하여 TanStack Query의 표준 에러 바운더리가 자연스럽게 감지하도록 인터페이스를 완벽히 정규화했다.
+미인증 HTML 응답은 즉시 `SessionExpiredError`로 분기시켜 재시도 루프 없이 로그인 가드로 유도하고, `notice: error`는 `AdminActionError`로 자동 승격하여 TanStack Query의 표준 에러 바운더리가 자연스럽게 감지하도록 정규화했다.
+
+이렇게 호출부를 깔끔히 캡슐화해 둔 덕분에, **향후 백엔드에 정식 API가 나오더라도 UI 컴포넌트는 한 줄도 건드릴 필요 없이 이 래퍼 함수 하나만 표준 API 클라이언트로 갈아끼우면 되는 확장성**을 확보했다.
 
 ## 2. 편집 중 데이터 유실을 막는 캐시 무효화 전략 (`staleRecordCaches`)
 
