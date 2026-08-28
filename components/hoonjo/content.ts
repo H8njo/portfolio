@@ -40,8 +40,8 @@ export const impact = {
   lead: '반복을 구조로, 결과를 숫자로.',
   stats: [
     { k: 'PDF 첫 조작 (300p)', before: '약 10분 30초', after: '1.3초' },
+    { k: '일일 교재 검수량', before: '1,000건', after: '8,000건' },
     { k: '같은 모양 화면 59개', before: '화면마다 코딩', after: '정의 하나로' },
-    { k: '페이지네이션 엔진', before: '사내 전용', after: 'npm 공개' },
   ] as { k: string; before: string; after: string }[],
 };
 
@@ -149,6 +149,47 @@ export type WorkCase = {
 };
 
 export const cases: WorkCase[] = [
+  {
+    id: 'work-delta2',
+    eyebrow: 'PRO TOOL · UX REVOLUTION',
+    company: '@Bookips · 쏠북',
+    title: '불 켜진 마법봉으로 검수량 8배 폭증시킨 초고속 콘솔',
+    problem: [
+      '교재 ML 파싱 검수 — PDF와 폼을 눈으로 대조하며 손수 오류 탐색·수정',
+      '구두점·괄호·선지 오류를 일일이 찾아 고치느라 극심한 피로도',
+      '흐릿한 밑줄과 원기호 탓에 잦은 확대/축소 및 속도 저하',
+      '숙련된 작업자도 하루 1,000문항 검수가 물리적 한계치',
+    ],
+    structure: [
+      '정형 오류 패턴을 감지해 불이 들어오는 마법봉 뱃지 시스템',
+      '상단 툴바 원클릭으로 전체 블록 오류 일괄 변환(AST Transform)',
+      '룰 엔진 + 업로드 엑셀 퍼지 검색 기반 메타데이터 스마트 매칭',
+      'PDF 텍스트 레이어 위 인터랙티브 밑줄/원기호 시각 보조 도구',
+      '⌥→ 단축키 기반 저장 및 다음 문항 전환 연속 큐 시스템',
+    ],
+    tags: ['React 19', 'UX 혁신', 'AST Transform', '단축키 큐', 'Konva 캔버스'],
+    metrics: [
+      {
+        label: '일일 검수량',
+        before: '1,000건',
+        after: '8,000건',
+        gain: '8배 폭증 · 800% 생산성',
+      },
+      {
+        label: '오류 교정 방식',
+        after: '마법봉 원클릭',
+        gain: '수작업 탐색·수정 0',
+      },
+      {
+        label: '출처 메타데이터',
+        after: '엑셀 스마트 매칭',
+        gain: '수기 복사/붙여넣기 제거',
+      },
+    ],
+    metricsNote:
+      '내가 직접 검수 실무를 맡았을 때 겪은 극심한 불편함을 해결하기 위해 자발적으로 구축한 초고속 검수 SPA.',
+    postUrl: '/work/delta2',
+  },
   {
     id: 'work-portal',
     eyebrow: 'SYSTEM DESIGN',
@@ -515,6 +556,7 @@ export const timeline: Timeline[] = [
       '그 페이지네이션 엔진을 앱에서 분리해 **오픈소스로 공개** — column-pager (npm · MIT)',
       '이 엔진을 축으로 **콘텐츠 저작툴을 새 프로젝트로 단독 구축** (프론트 아키텍처 단독 소유)',
       '저작툴을 기반으로 파생된 **쏠북패스 출시 — 회사 메인 매출 제품의 프론트 담당**',
+      '기존 어드민의 극심한 검수 비효율을 해결하기 위해 **초고속 검수 SPA(Delta2) 자발적 구축 — 마법봉 원클릭 일괄 교정으로 일일 검수량 1,000건 → 8,000건(8배) 폭증**',
       '공용 **디자인 시스템(@bookips/sds) 공동 메인테이너** — 릴리스·PR 리뷰 공동 운영',
       '룰도 없던 코드베이스를 **상태관리(XState→Zustand)·컨벤션·강제 게이트·오류 모니터링까지 표준화**하고, 그 표준을 형제 서비스로 확산',
       'AI 코딩 에이전트 협업을 위한 **도메인별 CLAUDE.md 분할 문서 아키텍처** 정립',
@@ -529,6 +571,7 @@ export const timeline: Timeline[] = [
     current: true,
     cases: [
       { label: 'column-pager 오픈소스', href: '/work/column-count-layout' },
+      { label: 'Delta2 초고속 검수 콘솔', href: '/work/delta2' },
       { label: '저작툴 본문 에디터', href: '/work/problem-editor' },
       { label: '디자인 시스템 자동화', href: '/work/design-system' },
       { label: '코드베이스 표준화', href: '/work/expert-conventions' },
