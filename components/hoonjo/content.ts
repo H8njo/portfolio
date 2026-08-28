@@ -10,6 +10,10 @@ const kisti2 = '/hoonjo/kisti-2.jpg';
 const kisti3 = '/hoonjo/kisti-3.png';
 const colpager1 = '/hoonjo/colpager-1.jpg';
 const colpager2 = '/hoonjo/colpager-2.jpg';
+const deltaMagicWand = '/cases/delta/magic-wand.png';
+const deltaStepQueue = '/cases/delta/step2-item-queue.png';
+const deltaBbox = '/cases/delta/bbox-canvas.png';
+const deltaDashboard = '/cases/delta/dashboard.png';
 
 export type ProjImage = { src: string; alt: string };
 
@@ -188,6 +192,12 @@ export const cases: WorkCase[] = [
     ],
     metricsNote:
       '내가 직접 검수 실무를 맡았을 때 겪은 극심한 불편함을 해결하기 위해 자발적으로 구축한 초고속 검수 SPA.',
+    images: [
+      { src: deltaMagicWand, alt: 'Delta 검수 콘솔 — 불 켜진 마법봉 원클릭 일괄 교정 및 ITEM 검수' },
+      { src: deltaStepQueue, alt: 'Delta 검수 자동화 — 큐 기반 연속 논스톱 검수 화면' },
+      { src: deltaBbox, alt: 'Delta BBOX 검수 — 60fps Konva 지면 캔버스 및 카테고리 태깅' },
+      { src: deltaDashboard, alt: 'Delta 검수 대시보드 — 18,900건 대용량 목록 및 상태 뱃지' },
+    ],
     postUrl: '/work/delta2',
   },
   {
