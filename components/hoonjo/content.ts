@@ -756,7 +756,8 @@ export const capabilities: {
     proof: [
       { label: 'column-pager', target: 'work-column-pager' },
       { label: 'PDF 488배 가속', target: 'work-pdf-memory' },
-      { label: '블랙홀', target: 'work-blackhole' },
+      { label: '문장분석 실측 에디터', target: 'work-problem-editor' },
+      { label: '블랙홀 WebGL', target: 'work-blackhole' },
     ],
   },
   {
@@ -769,6 +770,7 @@ export const capabilities: {
     ],
     proof: [
       { label: '59개 화면 포털', target: 'work-portal' },
+      { label: 'Delta2 8배 검수 콘솔', target: 'work-delta2' },
       { label: '디자인 시스템 자동화', target: 'work-design-system' },
     ],
   },
@@ -782,7 +784,8 @@ export const capabilities: {
     ],
     proof: [
       { label: 'ML 학습 마법사', target: 'work-ml' },
-      { label: '보안 포털', target: 'work-portal' },
+      { label: 'EDR BFF 보안 경계', target: 'work-edr-bff' },
+      { label: 'Delta2 검수 자동화 큐', target: 'work-delta2' },
     ],
   },
 ];
