@@ -423,54 +423,6 @@ export const cases: WorkCase[] = [
     ],
     postUrl: '/work/security-ai',
   },
-  {
-    id: 'work-ctf-score',
-    eyebrow: 'DATA MODELING',
-    company: '@Zipida · 사이버 훈련',
-    title: '정답이 늘면 먼저 푼 사람 점수가 깎이는 채점 시스템',
-    problem: [
-      'CTF(해킹 경진) 채점 — 참가자가 출제, 격리 워커가 자동 채점',
-      '점수가 소급된다 — 많이 풀린 문제일수록 싸짐 (userCount / solveCount)',
-      '나중 사건이 과거를 바꾸는 값을 "합계 한 칸"으로 들고 있었음',
-      '점수 부수효과가 문제·제출·유저 테이블 훅에 흩어져 정합성 붕괴',
-    ],
-    structure: [
-      '합계 컬럼 폐기 → 이벤트 ledger(적립 행을 쌓고 합산)',
-      '부분 update 폐기 → 중앙 재계산 함수로 일원화',
-      'CRUD 부수효과를 재계산 한 곳으로 모아 소급 정합성 확보',
-      '개인전 테이블 미러링 + problemType·grade 차원만 더해 팀전 흡수',
-    ],
-    tags: ['데이터 모델링', '정합성', '스코어링', '실시간'],
-    metrics: [
-      {
-        label: '점수 모델',
-        after: 'ledger',
-        gain: '합계 컬럼 → 이벤트 원장(소급을 행으로)',
-      },
-      {
-        label: '갱신 방식',
-        after: '전체 재계산',
-        gain: '부분 update 폐기 · 분산 부수효과 제거',
-      },
-      {
-        label: '정합성 버그',
-        after: '5',
-        unit: '건',
-        gain: '한자리에서 일괄 수술',
-      },
-    ],
-    code: {
-      caption: '점수는 확정값이 아니라 소급되는 값이었다',
-      lines: [
-        '// 정답자가 늘수록 분모가 커져 점수 ↓',
-        'const solveScore = userCount / solveCount',
-        '',
-        '// 합계 한 칸이 아니라, 적립을 행으로 쌓고 그때그때 재계산',
-        'ledger.append({ problemId, userId, scoreType, score })',
-      ].join('\n'),
-    },
-    postUrl: '/work/ctf-platform',
-  },
 ];
 
 /* Black-hole side project — ink panel with a real live WebGL render. */
@@ -615,7 +567,7 @@ export const timeline: Timeline[] = [
       '법무부 포털: Table 컴포넌트 하나가 컬럼 정의 메타에서 목록·검색·정렬·엑셀·폼 생성 — **정의 1벌로 59개 화면 양산**, 라우트 정의에서 메뉴·권한트리 동시 파생(RBAC)',
       'KISTI AI 관제(전사 최대 규모 프로젝트): **코드 없이 탐지 ML을 학습·배포하는 5단계 마법사**를 URL-as-state·immer 상태머신으로 풀스택 구현',
       '현대오토에버 EDR: 비밀번호·권한 필터를 **NestJS BFF 프록시에서 통제**, 정형=PostgreSQL·가변=MongoDB **이중 DB 설계**',
-      '그 외 문체부 관제 포털·사이버 훈련 CTF·통일부 서버사이드 페이징 등 보안관제 프로젝트 다수',
+      '그 외 문체부 관제 포털·통일부 서버사이드 페이징 등 보안관제 프로젝트 다수',
       '회사가 5명 → 30명대로 크는 동안 다른 팀의 막힌 프로젝트까지 들어가 함께 풀며 **기술 리드로 성장**, 유지보수로 고객사 재계약까지 연결',
     ],
     tags: [
@@ -629,7 +581,6 @@ export const timeline: Timeline[] = [
       { label: '59개 화면 포털', href: '/work/security-portal' },
       { label: 'ML 학습 마법사', href: '/work/security-ai' },
       { label: 'EDR 포털', href: '/work/edr-portal' },
-      { label: 'CTF 점수 원장', href: '/work/ctf-platform' },
     ],
   },
   {
@@ -692,7 +643,6 @@ export const capabilities: {
     ],
     proof: [
       { label: 'ML 학습 마법사', target: 'work-ml' },
-      { label: 'CTF 점수 원장', target: 'work-ctf-score' },
       { label: '보안 포털', target: 'work-portal' },
     ],
   },
