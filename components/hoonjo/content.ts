@@ -100,8 +100,8 @@ export const flagship = {
   results: [
     {
       label: '인쇄 불량 환불',
-      after: '하루 4건 → 주 2건',
-      gain: '2년 이어지던 반복 문의',
+      after: '하루 4건 → 0건 (완전 해결)',
+      gain: '2년 이어지던 반복 문의 종결',
     },
     {
       label: '100장 재배치',
@@ -890,7 +890,7 @@ export const resumeExperience: ExpCompany[] = [
           '단독 개발',
           '결정적 테스트 49개',
           'semantic-release 자동 배포',
-          '인쇄 불량 환불 문의 하루 평균 4건 → 주 2건',
+          '인쇄 불량으로 인한 환불 0건 달성 (기존 하루 평균 4건)',
         ],
       },
       {
