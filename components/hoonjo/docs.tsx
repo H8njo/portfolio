@@ -91,38 +91,123 @@ function Bullets({ items }: { items: string[] }) {
 }
 
 /* ---- supporting projects (3 cases; flagship handled by FlagshipBlock) --- */
-type Project = { title: string; company?: string; problem: string[]; structure: string[]; metrics: Metric[]; tags: string[]; images?: ProjImage[]; code?: { caption: string; lines: string } };
+type Project = {
+  title: string;
+  company?: string;
+  problem: string[];
+  structure: string[];
+  metrics: Metric[];
+  tags: string[];
+  images?: ProjImage[];
+  diagram?: FlowDiagram;
+  code?: { caption: string; lines: string };
+};
 
 const PROJECTS: Project[] = cases.map((c): Project => ({
-  title: c.title, company: c.company, problem: c.problem, structure: c.structure,
-  metrics: c.metrics, tags: c.tags, images: c.images, code: c.code,
+  title: c.title,
+  company: c.company,
+  problem: c.problem,
+  structure: c.structure,
+  metrics: c.metrics,
+  tags: c.tags,
+  images: c.images,
+  diagram: c.diagram,
+  code: c.code,
 }));
 
-/* 프로젝트 시각 자료 — 실제 화면(최대 3장) 또는 코드 패널. 인쇄에서 쪼개지지 않게 묶는다. */
-function ProjectVisual({ p, cols = 3 }: { p: Project; cols?: number }) {
-  if (p.images && p.images.length > 0) {
-    return (
-      <div className="grid gap-2.5 mt-4 break-inside-avoid" style={{ gridTemplateColumns: `repeat(${Math.min(p.images.length, cols)}, 1fr)` }}>
-        {p.images.map((im, i) => (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img key={i} src={im.src} alt={im.alt} className="w-full aspect-[4/3] object-cover rounded-hj-md border border-hj-steel" />
-        ))}
-      </div>
-    );
-  }
-  if (p.code) {
-    return (
-      <div className="mt-4 bg-hj-ink border border-hj-ink-soft rounded-hj-md px-5 py-[18px] overflow-x-auto break-inside-avoid">
-        {p.code.lines.split('\n').map((ln, i) => {
-          const t = ln.trim();
-          const color = t.startsWith('//') ? 'text-hj-on-ink-muted' : t.startsWith('$') ? 'text-hj-blue-bright' : 'text-hj-on-ink';
-          return <div key={i} className={`font-hj-mono text-[12px] leading-[1.8] whitespace-pre min-h-[1.3em] ${color}`}>{ln || ' '}</div>;
-        })}
-        <div className="font-hj-mono text-[10.5px] text-hj-on-ink-muted mt-3 pt-2.5 border-t border-[rgba(246,244,238,0.14)]">{p.code.caption}</div>
-      </div>
-    );
-  }
-  return null;
+/* 프로젝트 시각 자료 — 실제 화면(최대 4장), 아키텍처 다이어그램, 또는 코드 패널. */
+function ProjectVisual({ p }: { p: Project }) {
+  const hasImages = !!(p.images && p.images.length > 0);
+  const hasDiagram = !!p.diagram;
+  const hasCode = !!p.code;
+
+  if (!hasImages && !hasDiagram && !hasCode) return null;
+
+  return (
+    <div className="flex flex-col gap-3 mt-4 break-inside-avoid">
+      {hasImages && (
+        <div
+          className="grid gap-2.5"
+          style={{ gridTemplateColumns: `repeat(${Math.min(p.images!.length, 4)}, 1fr)` }}
+        >
+          {p.images!.map((im, i) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              key={i}
+              src={im.src}
+              alt={im.alt}
+              className="w-full aspect-[4/3] object-cover rounded-hj-md border border-hj-steel"
+            />
+          ))}
+        </div>
+      )}
+      {hasDiagram && (
+        <div className="rounded-hj-md border border-hj-line bg-hj-cloud p-3.5 flex flex-col gap-2.5">
+          <div className="flex items-center justify-between border-b border-hj-line pb-2 flex-wrap gap-1">
+            <span className="font-hj-mono text-[10.5px] font-semibold text-hj-blue-deep uppercase">
+              {p.diagram!.caption}
+            </span>
+            <span className="font-hj-mono text-[10.5px] text-[rgb(21,128,61)] font-semibold">
+              {p.diagram!.after.impact}
+            </span>
+          </div>
+          <div className="grid grid-cols-2 gap-3 max-[640px]:grid-cols-1">
+            {/* AS-IS */}
+            <div className="p-2.5 rounded bg-hj-paper border border-[rgba(224,86,36,0.22)] flex flex-col gap-1.5">
+              <div className="font-hj-mono text-[10px] font-semibold text-[rgb(190,55,15)]">
+                {p.diagram!.before.badge}
+              </div>
+              <div className="flex flex-col gap-1">
+                {p.diagram!.before.steps.map((s, idx) => (
+                  <div key={idx} className="font-hj-serif text-[11px] leading-[1.3] text-hj-muted">
+                    <span className="font-hj-mono font-medium text-hj-fg mr-1">0{idx + 1}</span>
+                    <strong className="text-hj-fg">{s.title}</strong> — {s.desc}
+                  </div>
+                ))}
+              </div>
+            </div>
+            {/* TO-BE */}
+            <div className="p-2.5 rounded bg-hj-paper border border-[rgba(21,128,61,0.25)] flex flex-col gap-1.5">
+              <div className="font-hj-mono text-[10px] font-semibold text-[rgb(21,128,61)]">
+                {p.diagram!.after.badge}
+              </div>
+              <div className="flex flex-col gap-1">
+                {p.diagram!.after.steps.map((s, idx) => (
+                  <div key={idx} className="font-hj-serif text-[11px] leading-[1.3] text-hj-fg-secondary">
+                    <span className="font-hj-mono font-medium text-[rgb(21,128,61)] mr-1">0{idx + 1}</span>
+                    <strong className="text-hj-fg">{s.title}</strong> — {s.desc}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {hasCode && (
+        <div className="bg-hj-ink border border-hj-ink-soft rounded-hj-md px-4 py-3 overflow-x-auto">
+          {p.code!.lines.split('\n').map((ln, i) => {
+            const t = ln.trim();
+            const color = t.startsWith('//')
+              ? 'text-hj-on-ink-muted'
+              : t.startsWith('$')
+              ? 'text-hj-blue-bright'
+              : 'text-hj-on-ink';
+            return (
+              <div
+                key={i}
+                className={`font-hj-mono text-[11px] leading-[1.65] whitespace-pre min-h-[1.2em] ${color}`}
+              >
+                {ln || ' '}
+              </div>
+            );
+          })}
+          <div className="font-hj-mono text-[10px] text-hj-on-ink-muted mt-2 pt-1.5 border-t border-[rgba(246,244,238,0.14)]">
+            {p.code!.caption}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 /* 지원 케이스 — 제목·시각자료 / Problem·Structure / Impact·태그. 강제 페이지 분할 없이
@@ -561,23 +646,40 @@ function SideProjectCard({ p }: { p: (typeof sideProjects)[number] }) {
 
 /* ---- 포트폴리오 PDF: the whole portfolio as one document ----------------- */
 /* 정보 구조는 홈과 같은 순서: Hero → 대표 임팩트 → 대표 프로젝트(플래그십 먼저) →
-   사이드 → 경력 → 전문 영역. 강제 페이지 분할 없이 흐르게 조판해 빈 페이지를 없앤다
-   (— 측정-우선 조판이 문서 자체로 증명되게). 오픈소스는 플래그십에 흡수. */
+   사이드 → 경력 → 전문 영역. 강제 페이지 분할 없이 흐르게 구성해 빈 페이지를 없앤다
+   (— 측정-우선 레이아웃이 문서 자체로 증명되게). 오픈소스는 플래그십에 흡수. */
 export function PortfolioPdf() {
   return (
     <DocShell tab="포트폴리오 PDF">
-      <DocHeader tagline="안 되던 화면을 측정해서 되게 만듭니다." summary={profile.lead.replace(/\n/g, ' ')} />
+      <DocHeader
+        tagline="남들이 타협하고 멈춘 난제를, 구조와 실측으로 끝까지 동작하게 만듭니다."
+        summary={profile.lead.replace(/\n/g, ' ')}
+      />
 
       <DocSection label="대표 임팩트">
-        <div className="font-hj-serif text-[14.5px] text-hj-fg-secondary -mt-1 mb-3">{impact.lead}</div>
-        <div className="grid grid-cols-3 bg-hj-paper border border-hj-line rounded-hj-lg shadow-hj-soft overflow-hidden max-[720px]:grid-cols-1">
+        <div className="font-hj-serif text-[14px] text-hj-fg-secondary -mt-1 mb-3">
+          {impact.lead}
+        </div>
+        <div className="grid grid-cols-4 bg-hj-paper border border-hj-line rounded-hj-lg shadow-hj-soft overflow-hidden max-[860px]:grid-cols-2 max-[540px]:grid-cols-1">
           {impact.stats.map((s, i) => (
-            <div key={s.k} className={`px-5 py-[15px] ${i < impact.stats.length - 1 ? 'border-r border-hj-line max-[720px]:border-r-0 max-[720px]:border-b' : ''}`}>
-              <div className="font-hj-mono text-[10.5px] tracking-[0.1em] uppercase text-hj-muted">{s.k}</div>
-              <div className="font-hj-mono text-[12.5px] text-hj-muted line-through decoration-hj-steel mt-2.5">{s.before}</div>
-              <div className="flex items-baseline gap-2 mt-1">
-                <span className="font-hj-mono text-[14px] text-hj-blue">→</span>
-                <span className="font-hj-serif text-[20px] font-bold tracking-[-0.01em] text-hj-fg">{s.after}</span>
+            <div
+              key={s.k}
+              className={`px-4 py-[14px] ${i < impact.stats.length - 1 ? 'border-r border-hj-line max-[860px]:border-r-0 max-[860px]:border-b' : ''}`}
+            >
+              <div className="font-hj-mono text-[10px] tracking-[0.08em] uppercase text-hj-muted">
+                {s.org} · {s.k}
+              </div>
+              <div className="font-hj-mono text-[11.5px] text-hj-muted line-through decoration-hj-steel mt-2">
+                {s.before}
+              </div>
+              <div className="flex items-baseline gap-1.5 mt-1">
+                <span className="font-hj-mono text-[12px] text-hj-blue">→</span>
+                <span className="font-hj-mono tabular-nums text-[18px] font-bold text-hj-fg">
+                  {s.after}
+                </span>
+              </div>
+              <div className="mt-2 font-hj-mono text-[10.5px] text-[rgb(21,128,61)] font-semibold">
+                {s.gain}
               </div>
             </div>
           ))}
