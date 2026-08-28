@@ -436,35 +436,22 @@ function Education() {
 type ResumeSide = { name: string; meta: string; what: string; points: string[]; stack: string[]; repo?: string };
 const RESUME_SIDE: ResumeSide[] = [
   {
-    name: 'velto',
-    meta: '모바일 앱 · 단독 · 기획·설계',
-    what: "음악인 크루가 작업 클립을 나누는 모바일 앱 — 좋아요·팔로워·알고리즘 없이 '공유 압박'을 설계로 제거.",
-    points: [
-      '좋아요·팔로워·피드 대신 7일 자연 만료로 큐레이션 압박을 차단, 합주는 강제 아닌 옵션 레이어링(친구 클립 위에 덧붙이기)으로 설계',
-      '핵심 기술 리스크(iOS 동시 재생+녹화)를 PoC로 먼저 검증, 실패 대비 Async-only 폴백(부모 재생 후 녹화)까지 설계해 핵심 가치 보존',
-      'Supabase(Postgres·Storage·Edge Functions·Cron) + RLS로 크루 다중관계 보안, 자식 클립이 살아있으면 부모를 보존하는 Time-decay 만료 로직 설계',
-    ],
-    stack: ['Expo · React Native', 'TypeScript', 'Supabase', 'FFmpeg'],
-  },
-  {
     name: 'samra-mansang',
     meta: '풀스택 · 단독 개발',
-    what: '로스트아크 업적 추적·관리 + 공략 위키 웹 서비스 (Next.js·NestJS 모노레포).',
+    what: '로스트아크 업적 2,222개 추적·관리 및 공략 위키 웹 서비스 (Next.js·NestJS 모노레포).',
     points: [
-      'OCR로 업적 데이터를 일괄 등록하고, Leaflet 맵에 위치 마커·추가요청, TipTap 공략 위키까지 풀스택 단독 구현',
-      'PC 화면을 캡처해 WebRTC로 폰에 맵 데이터를 실시간 전송하는 게임 컴패니언 — 차별 기능',
-      '맵 타일은 직접 만든 OpenCV 도구 loa-map-generator로 지형만 추출 (flood-fill 세그멘테이션 — "안쪽 말고 바깥을 지운다")',
+      'OCR 기반 업적 데이터 일괄 등록, Leaflet 맵 마커, TipTap 위키, PC 화면 WebRTC 전송 게임 컴패니언 단독 구현',
+      '월드맵 208장 타일은 직접 개발한 OpenCV 도구(loa-map-generator)로 지형만 추출 (268MB → 10.7MB 최적화)',
     ],
-    stack: ['Next.js', 'NestJS · Prisma', 'Leaflet', 'WebRTC', 'OpenCV'],
+    stack: ['Next.js', 'NestJS · Prisma', 'Leaflet', 'OpenCV', 'WebRTC'],
   },
   {
     name: 'afk',
     meta: 'macOS 유틸 · 단독 · Homebrew 배포',
     what: 'Claude Code 작업 상태를 감지해 앱 포커스를 자동 전환하는 macOS 메뉴바 앱.',
     points: [
-      'AI가 작업하는 동안 break 앱(Safari·YouTube)으로 전환하고, 끝나면 알림·자동 복귀로 코딩 앱에 돌아온다',
-      'Xcode 없이 Command Line Tools + SPM만으로 SwiftUI(MenuBarExtra) 앱을 빌드, Homebrew Tap으로 배포',
-      '서명 없는 앱의 알림 제약을 borderless NSWindow + .screenSaver 레벨 플로팅 배너로 우회',
+      'AI 작업 중 브라우저 전환 및 완료 시 코딩 앱 자동 복귀 워크플로 구현',
+      'Xcode 없이 SPM만으로 SwiftUI(MenuBarExtra) 앱을 빌드하고 Homebrew Tap으로 배포',
     ],
     stack: ['Swift', 'SwiftUI', 'SPM', 'Homebrew'],
     repo: 'https://github.com/H8njo/afk',
@@ -474,11 +461,21 @@ const RESUME_SIDE: ResumeSide[] = [
     meta: '그래픽스 · 단독',
     what: 'WebGL 프래그먼트 셰이더로 블랙홀 중력렌즈 왜곡을 실시간 렌더링하는 그래픽스 프로젝트.',
     points: [
-      'Canvas 2D로 별 8,000~10,000개를 절차 생성해 매 프레임 텍스처로 업로드하는 2-레이어 합성',
-      '종횡비 보정 → 거리 → radius falloff → UV 회전 왜곡까지 셰이더 한 장에 직접 작성 (그래픽 라이브러리 없이)',
+      'Canvas 2D 별 8,000~10,000개 절차 생성 후 WebGL 텍스처로 업로드하는 2-레이어 파이프라인 구축',
+      '외부 그래픽 라이브러리 없이 종횡비 보정·거리 왜곡·UV 회전을 GLSL 프래그먼트 셰이더로 단독 구현',
     ],
-    stack: ['WebGL 1.0', 'GLSL', 'Canvas 2D', 'React'],
+    stack: ['WebGL', 'GLSL', 'Canvas 2D', 'React'],
     repo: 'https://github.com/H8njo/webgl-black-hole',
+  },
+  {
+    name: 'velto',
+    meta: '모바일 앱 · 단독 · 기획·설계',
+    what: "음악인 크루가 작업 클립을 나누는 모바일 앱 — '공유 압박'을 7일 자연 만료로 설계 제거.",
+    points: [
+      '좋아요·피드 대신 7일 자연 만료 및 음원 레이어링 합주 인터랙션 설계',
+      'iOS 동시 재생·녹화 PoC 검증 및 Supabase RLS 기반 크루 다중관계 데이터베이스 설계',
+    ],
+    stack: ['Expo · React Native', 'TypeScript', 'Supabase', 'FFmpeg'],
   },
 ];
 
