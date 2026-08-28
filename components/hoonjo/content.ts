@@ -427,17 +427,28 @@ export const cases: WorkCase[] = [
         gain: '릴리스·PR 리뷰 공동 운영',
       },
     ],
-    code: {
-      caption: 'API는 하나, 잘못 쓰면 컴파일에서 막힌다',
-      lines: [
-        '// Select — 하나의 API, 내부는 두 엔진',
-        'type Single = { multiple?: false; value?: string }',
-        'type Multi  = { multiple: true;  value: string[] }',
-        'type SelectV2Props = Single | Multi',
-        '',
-        '// 아이콘: 폴더에 SVG 드롭 → 타입까지 자동 생성',
-        '$ pnpm generate   // 160개 export, 손작업 0',
-      ].join('\n'),
+    diagram: {
+      caption: 'DX & ARCHITECTURE · 디자인 시스템 파이프라인 전환',
+      before: {
+        badge: 'AS-IS · 수기 등록 & 편법 Multi',
+        note: '손작업 160건 & 컴포넌트 오용 위험',
+        steps: [
+          { title: 'SVG 수작업', desc: '피그마 SVG 받아 컴포넌트 JSX 손수 타이핑' },
+          { title: 'export 수기 등록', desc: '160개 아이콘마다 index.ts 및 타입 수동 등록' },
+          { title: 'Multi 편법 우회', desc: 'Radix 단일 위에 체크박스 억지 렌더 (접근성 결여)' },
+        ],
+        impact: '신규 아이콘 등록 10분 소요 및 컴포넌트 오용 런타임 버그 위험',
+      },
+      after: {
+        badge: 'TO-BE · 폴더 드롭 코드젠 & 듀얼 엔진',
+        note: '손작업 0건 & 컴파일 타임 오용 차단',
+        steps: [
+          { title: 'SVG 폴더 드롭', desc: '파일 추가 시 SVGR + AST 파싱 자동 실행' },
+          { title: '엄격한 타입 코드젠', desc: 'IconName 유니온 타입과 export 0초 자동 생성' },
+          { title: 'SelectV2 듀얼 엔진', desc: '단일 API 뒤에서 Radix와 Popover 분기 처리' },
+        ],
+        impact: '아이콘 추가 시간 10분 ➔ 0초(손작업 0) 및 잘못된 props 전달 원천 차단',
+      },
     },
     postUrl: '/work/design-system',
   },
