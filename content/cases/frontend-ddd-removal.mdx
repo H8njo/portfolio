@@ -1,0 +1,120 @@
+---
+title: "프론트엔드에 과적용된 DDD 5단 레이어를 걷어내다"
+summary: "백엔드 아키텍처를 무비판적으로 복제해 온 5개 계층과 빈 DTO 매퍼들. 프론트엔드의 본질(Fetch·Cache·Render)로 회귀하여 SWR과 기능별 콜로케이션으로 개발 생산성을 극대화한 이야기."
+featured: false
+order: 6
+demo: false
+tags: [아키텍처, 리팩토링, SWR, 프론트엔드, 생산성]
+metrics:
+  - label: 보일러플레이트
+    value: "5개 파일 → 1개 파일"
+  - label: DTO 매퍼
+    value: "1:1 기계적 복사 전면 제거"
+  - label: 데이터 계층
+    value: "SWR + 기능별 콜로케이션"
+date: 2026-06-08
+---
+
+{/* NDA 안전: 수업 관리 웹 애플리케이션. */}
+
+"멋있어 보이는 아키텍처"가 때로는 팀 전체를 고통에 빠뜨리곤 한다.
+
+수업 관리 웹 애플리케이션의 프론트엔드 코드베이스에 합류했을 때 마주한 구조가 정확히 그랬다. 백엔드에서 널리 쓰이는 DDD(도메인 주도 설계)의 계층형 아키텍처가 프론트엔드에 토씨 하나 틀리지 않고 그대로 복사되어 있었다.
+
+폴더 구조를 열면 `domain/model`, `domain/service`, `repositories`, `data-transfers`, `application/service`가 질서정연하게 늘어서 있었다. 언뜻 보기에는 대규모 엔터프라이즈의 견고하고 우아한 아키텍처처럼 보였다.
+
+하지만 파일 내부를 열어보자마자 깊은 한숨이 나왔다.
+
+## 1. 문제: 필드 하나 추가하는데 5개 파일을 열어야 했다
+
+예를 들어 시험지(`ExamPaper`)에 `title`이라는 단순한 문자열 필드 하나가 새로 추가되었다고 가정해 보자. 이 사소한 값을 화면에 띄우기 위해 개발자는 무려 5~6개의 파일을 차례대로 수정해야 했다:
+
+1. `data-transfers/exam-paper.dto.ts`에 필드 선언
+2. `repositories/exam-paper.repository.ts`에서 API 호출 함수 정의
+3. `mappers/exam-paper.mapper.ts`에서 DTO를 도메인 모델로 1:1 기계적 복사
+4. `domain/model/exam-paper.model.ts` 빈 클래스(Anemic Model)에 getter/setter 추가
+5. `domain/service/exam-paper.service.ts`를 거쳐
+6. `hooks/useExamPaper.ts` 커스텀 훅 작성
+7. 마침내 `components/ExamPaperView.tsx`에서 렌더링
+
+```text
+[서버 API 응답 JSON]
+   ↓
+ExamPaperDTO (data-transfers)
+   ↓ (1:1 필드 복사 매퍼)
+ExamPaperModel (domain/model — 비즈니스 로직 없는 빈 껍데기 클래스)
+   ↓
+ExamPaperRepository (repositories)
+   ↓
+ExamPaperService (domain/service)
+   ↓
+useExamPaper (hooks)
+   ↓
+[React UI Component]
+```
+
+복잡한 비즈니스 룰이 도메인 모델 스스로 불변식을 깐깐하게 검증하고 있다면 모를까, 대부분의 도메인 모델은 서버에서 내려준 JSON 필드를 그대로 담고 있는 빈 껍데기(Anemic Domain Model)에 불과했다. DTO와 도메인 모델 사이의 매퍼는 `title: dto.title`, `id: dto.id`처럼 이름만 복사해 넣는 무의미한 타이핑의 연속이었다.
+
+정작 현대 프론트엔드에서 진짜 중요한 문제들 — **캐시 무효화 시점, 로딩 및 에러 상태 제어, 화면 깜빡임 없는 낙관적 업데이트(Optimistic Update)** — 은 이 5겹의 레이어 어디에도 자연스럽게 안착하지 못하고 허공에 떠돌고 있었다.
+
+신규 입사자는 간단한 티켓 하나를 해결하는 데도 길을 잃었고, "이 코드는 Repository에 둬야 하나요, Service에 둬야 하나요?"라는 비생산적인 질문으로 코드리뷰 시간이 소모되고 있었다.
+
+## 2. 본질의 차이: 백엔드의 정답이 프론트엔드의 정답은 아니다
+
+백엔드 DDD는 데이터베이스 영속성 계층과 순수한 비즈니스 규칙을 격리하고 데이터 무결성을 보장하는 데 탁월하다.
+
+하지만 프론트엔드의 본질은 완전히 다르다:
+**"프론트엔드는 서버 상태(Server State)의 원격 복제본을 가져와(Fetch), 적절히 캐싱하고(Cache), 사용자에게 보여주며(Render), 유저 인터랙션을 서버로 전달하는 것."**
+
+도메인 비즈니스 규칙의 90% 이상은 이미 서버 API 뒤편에 캡슐화되어 있다. 프론트엔드가 자체적으로 무거운 도메인 모델을 복제해 유지하려 들면, 서버와의 동기화 비용과 보일러플레이트만 기하급수적으로 폭증한다.
+
+팀에 과감하게 제안했다:
+**"프론트엔드에 불필요하게 과적용된 5단 DDD 레이어를 걷어내고, SWR과 기능별 콜로케이션(Colocation)으로 단순화합시다."**
+
+## 3. 리팩토링: 관련 코드를 한곳으로 모으는 콜로케이션
+
+### ① DTO 매퍼와 빈 도메인 클래스 전면 삭제
+서버 응답 인터페이스와 화면 요구사항이 일치하면, 중간 매퍼 없이 TypeScript 타입으로 직접 사용했다. 화면 전용 가공이 필요한 경우에만 순수 뷰 헬퍼 함수를 컴포넌트 근처에 두었다.
+
+### ② SWR 중심의 얇고 강력한 데이터 계층 구축
+복잡한 `Repository`와 `Service` 클래스를 모두 삭제하고, SWR 훅 하나로 캐싱, 재검증, 에러/로딩 상태를 통합 관리했다.
+
+```ts
+// AS-IS: 5개 파일로 쪼개져 있던 수십 줄의 보일러플레이트
+// TO-BE: SWR 훅 하나로 Fetch + 캐싱 + 상태 관리 완성
+export function useExamPaper(paperId: string) {
+  return useSWR<ExamPaper>(
+    paperId ? `/api/exam-papers/${paperId}` : null,
+    fetcher,
+    { revalidateOnFocus: false, dedupingInterval: 5000 }
+  );
+}
+```
+
+### ③ 기능(Feature) 기반의 디렉토리 재배치
+계층별로 가로로 쪼개져 있던 파일들을 기능(Feature) 단위로 세로로 응집시켰다:
+
+```text
+features/exam-paper/
+├── api/          # SWR 훅과 API fetcher
+├── components/   # 시험지 전용 UI 컴포넌트
+└── types/        # TypeScript 타입 정의
+```
+
+이제 시험지 기능을 수정할 때는 `features/exam-paper/` 폴더 하나만 열면 모든 맥락을 한눈에 파악할 수 있게 되었다.
+
+## 결과
+
+* **개발 생산성 폭증**: 새로운 기능을 추가할 때 작성해야 하는 파일 수가 **5~6개에서 단 1~2개**로 획기적으로 줄었다.
+* **캐시 무효화 정합성 확보**: Repository 계층에 어설프게 구현하려다 버그를 일으키던 인메모리 캐시 대신, SWR의 선언적 키 기반 캐시 무효화(`mutate`)를 활용하여 상태 불일치 버그를 0으로 만들었다.
+* **수백 줄의 불필요한 코드 삭제**: 의미 없는 기계적 1:1 매퍼와 빈 getter/setter 수백 줄이 코드베이스에서 깔끔히 사라졌다.
+
+## 회고: 맹목적인 패턴보다 중요한 것은 '도메인의 본질'이다
+
+이 프로젝트를 겪으며 아키텍처를 바라보는 시각이 완전히 성숙해졌다.
+
+아무리 교과서에 나오는 유명한 아키텍처 패턴이라 할지라도, **해당 기술 생태계의 본질과 문제 도메인에 맞지 않는다면 그것은 축복이 아니라 거대한 기술 부채**에 불과하다.
+
+진짜 훌륭한 엔지니어링은 '얼마나 많은 레이어를 정교하게 쌓았는가'가 아니라, **팀원들이 비즈니스 문제를 해결할 때 겪는 불필요한 마찰을 얼마나 덜어주었는가**로 증명된다.
+
+멋있어 보이는 허상을 걷어내고 실용적인 본질로 돌아갈 수 있는 용기가 더 나은 소프트웨어를 만든다는 것을 증명한 프로젝트였다.

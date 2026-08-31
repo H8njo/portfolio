@@ -10,6 +10,11 @@ const kisti2 = '/hoonjo/kisti-2.jpg';
 const kisti3 = '/hoonjo/kisti-3.png';
 const colpager1 = '/hoonjo/colpager-1.jpg';
 const colpager2 = '/hoonjo/colpager-2.jpg';
+const deltaMagicWand = '/cases/delta/magic-wand.png';
+const deltaStepQueue = '/cases/delta/step2-item-queue.png';
+const deltaBbox = '/cases/delta/bbox-canvas.png';
+const deltaDashboard = '/cases/delta/dashboard.png';
+const sentenceAnalysisImg = '/cases/sentence-analysis.png';
 
 export type ProjImage = { src: string; alt: string };
 
@@ -30,19 +35,58 @@ export const profile = {
   portfolioLabel: '포트폴리오 · h8njo.vercel.app',
   blog: 'https://h8njo.vercel.app/work',
   blogLabel: '블로그 · h8njo.vercel.app/work',
-  tagline: ['안 되던 화면을 측정해서', '되게', '만듭니다.'],
-  lead: '성능, 복잡한 상태, 까다로운 렌더링 — 직접 측정하고, 끝까지 동작하게 만듭니다.',
-  heroTags: ['성능 최적화', '대용량 렌더링', '복잡한 상태', 'Canvas / WebGL'],
+  tagline: ['남들이 타협하고 멈춘 난제를,', '구조와 실측으로', '끝까지 동작하게 만듭니다.'],
+  lead: '7년차 시니어 프론트엔드 엔지니어 조영훈입니다. 2년 묵은 다단 레이아웃 결함부터 일일 8배의 검수량 폭증, 488배의 렌더링 가속까지 — 타협 대신 근본 원인을 실측하고, 재사용 가능한 아키텍처와 오픈소스로 문제를 끝냅니다.',
+  heroTags: ['A4 다단 엔진 오픈소스화', '800% 검수 생산성 혁신', '대용량 렌더링 488배 가속', '보안관제 풀스택 BFF'],
+};
+
+export type ImpactStat = {
+  k: string;
+  org: string;
+  before: string;
+  after: string;
+  gain: string;
+  target: string;
 };
 
 /* Hero featured-impact strip — the strongest real before→after pairs. */
 export const impact = {
-  lead: '반복을 구조로, 결과를 숫자로.',
+  eyebrow: 'PROVEN IMPACT',
+  lead: '측정된 결과로 증명하는 4대 엔지니어링 성과',
   stats: [
-    { k: 'PDF 첫 조작 (300p)', before: '약 10분 30초', after: '1.3초' },
-    { k: '같은 모양 화면 59개', before: '화면마다 코딩', after: '정의 하나로' },
-    { k: '페이지네이션 엔진', before: '사내 전용', after: 'npm 공개' },
-  ] as { k: string; before: string; after: string }[],
+    {
+      k: 'A4 다단 레이아웃 분할',
+      org: '@Bookips',
+      before: '2년간 매일 환불 4건',
+      after: '환불 0건 종결',
+      gain: '2년 난제 해결 · npm 배포',
+      target: 'work-column-pager',
+    },
+    {
+      k: '초고속 교재 검수 콘솔',
+      org: '@Bookips',
+      before: '하루 1,000건 한계',
+      after: '하루 8,000건',
+      gain: '8배 폭증 · 800% 생산성',
+      target: 'work-delta2',
+    },
+    {
+      k: '300p 대용량 PDF 렌더',
+      org: '@Sling · ORZO',
+      before: '첫 조작 약 10분 30초',
+      after: '1.3초 TTI',
+      gain: '488배 가속 · OOM 차단',
+      target: 'work-pdf-memory',
+    },
+    {
+      k: '정부 보안관제 관리자 포털',
+      org: '@Zipida · 법무부',
+      before: '화면마다 수기 개발',
+      after: '정의 1벌 59개 화면',
+      gain: '2인이 100+ 도메인 양산',
+      target: 'work-portal',
+    },
+  ] as ImpactStat[],
 };
 
 /* ── Flagship: the column-pager story (own dedicated section) ───────────── */
@@ -100,8 +144,8 @@ export const flagship = {
   results: [
     {
       label: '인쇄 불량 환불',
-      after: '하루 4건 → 주 2건',
-      gain: '2년 이어지던 반복 문의',
+      after: '하루 4건 → 0건 (완전 해결)',
+      gain: '2년 이어지던 반복 문의 종결',
     },
     {
       label: '100장 재배치',
@@ -121,14 +165,35 @@ export const flagship = {
   honesty:
     '표처럼 중간에서 쪼개면 안 되는 요소, 페이지를 넘는 카드 이동의 미세한 끊김은 아직 못 푼 한계로 문서에 그대로 적어뒀다. 못 푼 걸 안 푼 척하지 않는 게 라이브러리 쓰는 사람한테 정직한 거라고 본다.',
   images: [
-    { src: colpager1, alt: 'column-pager 결과 — 본문분석 PDF 자동 조판' },
-    { src: colpager2, alt: 'column-pager 결과 — 변형문제 PDF 자동 조판' },
+    { src: colpager1, alt: 'column-pager 결과 — 본문분석 PDF 자동 페이지 분할' },
+    { src: colpager2, alt: 'column-pager 결과 — 변형문제 PDF 자동 페이지 분할' },
   ] as ProjImage[],
   postUrl: '/work/column-count-layout',
   link: {
     label: 'GitHub · H8njo/column-pager',
     href: 'https://github.com/H8njo/column-pager',
   },
+};
+
+export type DiagramStep = {
+  title: string;
+  desc: string;
+};
+
+export type FlowDiagram = {
+  caption: string;
+  before: {
+    badge: string;
+    note: string;
+    steps: DiagramStep[];
+    impact: string;
+  };
+  after: {
+    badge: string;
+    note: string;
+    steps: DiagramStep[];
+    impact: string;
+  };
 };
 
 export type WorkCase = {
@@ -143,12 +208,60 @@ export type WorkCase = {
   metrics: Metric[];
   metricsNote?: string;
   images?: ProjImage[];
+  diagram?: FlowDiagram;
   code?: { caption: string; lines: string };
   postUrl?: string;
   link?: { label: string; href: string };
 };
 
 export const cases: WorkCase[] = [
+  {
+    id: 'work-delta2',
+    eyebrow: 'PRO TOOL · UX REVOLUTION',
+    company: '@Bookips · 쏠북',
+    title: '불 켜진 마법봉으로 검수량 8배 폭증시킨 초고속 콘솔',
+    problem: [
+      '교재 ML 파싱 검수 — PDF와 폼을 눈으로 대조하며 손수 오류 탐색·수정',
+      '구두점·괄호·선지 오류를 일일이 찾아 고치느라 극심한 피로도',
+      '흐릿한 밑줄과 원기호 탓에 잦은 확대/축소 및 속도 저하',
+      '숙련된 작업자도 하루 1,000문항 검수가 물리적 한계치',
+    ],
+    structure: [
+      '정형 오류 패턴을 감지해 불이 들어오는 마법봉 뱃지 시스템',
+      '상단 툴바 원클릭으로 전체 블록 오류 일괄 변환(AST Transform)',
+      '룰 엔진 + 업로드 엑셀 퍼지 검색 기반 메타데이터 스마트 매칭',
+      'PDF 텍스트 레이어 위 인터랙티브 밑줄/원기호 시각 보조 도구',
+      '⌥→ 단축키 기반 저장 및 다음 문항 전환 연속 큐 시스템',
+    ],
+    tags: ['React 19', 'UX 혁신', 'AST Transform', '단축키 큐', 'Konva 캔버스'],
+    metrics: [
+      {
+        label: '일일 검수량',
+        before: '1,000건',
+        after: '8,000건',
+        gain: '8배 폭증 · 800% 생산성',
+      },
+      {
+        label: '오류 교정 방식',
+        after: '마법봉 원클릭',
+        gain: '수작업 탐색·수정 0',
+      },
+      {
+        label: '출처 메타데이터',
+        after: '엑셀 스마트 매칭',
+        gain: '수기 복사/붙여넣기 제거',
+      },
+    ],
+    metricsNote:
+      '내가 직접 검수 실무를 맡았을 때 겪은 극심한 불편함을 해결하기 위해 자발적으로 구축한 초고속 검수 SPA.',
+    images: [
+      { src: deltaMagicWand, alt: 'Delta 검수 콘솔 — 불 켜진 마법봉 원클릭 일괄 교정 및 ITEM 검수' },
+      { src: deltaStepQueue, alt: 'Delta 검수 자동화 — 큐 기반 연속 논스톱 검수 화면' },
+      { src: deltaBbox, alt: 'Delta BBOX 검수 — 60fps Konva 지면 캔버스 및 카테고리 태깅' },
+      { src: deltaDashboard, alt: 'Delta 검수 대시보드 — 18,900건 대용량 목록 및 상태 뱃지' },
+    ],
+    postUrl: '/work/delta2',
+  },
   {
     id: 'work-portal',
     eyebrow: 'SYSTEM DESIGN',
@@ -234,6 +347,29 @@ export const cases: WorkCase[] = [
     ],
     metricsNote:
       '639,000ms는 페이지당 2,132ms × 300의 합성 상한 — 전 페이지 선렌더 구조 자체를 없앤 값이다.',
+    diagram: {
+      caption: 'RENDER PIPELINE · 렌더링 파이프라인 전환',
+      before: {
+        badge: 'AS-IS · 300p 전체 선렌더',
+        note: '첫 조작 639초 대기 & 탭 프리즈(OOM)',
+        steps: [
+          { title: '전체 선렌더', desc: '300p를 시작과 동시에 일괄 생성 요청' },
+          { title: '3× DPR 래스터', desc: '고해상도 Canvas 300장이 스레드 독점' },
+          { title: '메모리 적재', desc: '수백 장 Base64 비트맵이 탭 한도 초과' },
+        ],
+        impact: '초기 렌더링 지연이 페이지 수에 비례하여 브라우저 프리징 발생',
+      },
+      after: {
+        badge: 'TO-BE · 온디맨드 + 백그라운드 청크',
+        note: 'TTI 1.3초 (488배 단축) & OOM 원천 차단',
+        steps: [
+          { title: '1p 뷰포트 렌더', desc: '첫 장 즉시 렌더로 1.3초 TTI 달성' },
+          { title: '백그라운드 청크', desc: '스크롤 방향 5p 점진적 사전 로드' },
+          { title: 'page.cleanup()', desc: '뷰포트 이탈 시 Canvas 메모리 즉시 반환' },
+        ],
+        impact: '페이지 수와 무관하게 Peak 메모리를 청크 크기(5p)로 완전 고정',
+      },
+    },
     postUrl: '/work/pdf-memory',
   },
   {
@@ -271,6 +407,29 @@ export const cases: WorkCase[] = [
         gain: '맡은 기능 프론트+백 양쪽',
       },
     ],
+    diagram: {
+      caption: 'SECURITY BOUNDARY · BFF 보안 경계 격리',
+      before: {
+        badge: 'AS-IS · 프론트엔드 직접 호출',
+        note: '보안 규정 위반 & 네트워크 병목',
+        steps: [
+          { title: '직접 접근', desc: '화면에서 사내 보안 코어(TOS) 직접 호출' },
+          { title: '평문 노출', desc: '네트워크 탭에 비밀번호·토큰 그대로 노출' },
+          { title: 'API 분산', desc: '대시보드 1화면에 10여 개 호출 분산' },
+        ],
+        impact: '클라이언트 측 자격증명 탈취 위험 및 다중 네트워크 지연 발생',
+      },
+      after: {
+        badge: 'TO-BE · NestJS BFF 보안 격리',
+        note: '평문 비밀번호 0접근 & 단일 집계 응답',
+        steps: [
+          { title: '보안 경계선', desc: '프론트는 암호화 세션/신원만 전달' },
+          { title: '서버 인증/해싱', desc: 'BFF 가드에서 검증 및 암호화 수행' },
+          { title: '병렬 집계', desc: 'Promise.all로 10개 호출을 1응답 병합' },
+        ],
+        impact: '프론트엔드의 사내 비밀번호 접근 원천 차단 및 응답 속도 최적화',
+      },
+    },
     postUrl: '/work/edr-portal',
   },
   {
@@ -307,17 +466,28 @@ export const cases: WorkCase[] = [
         gain: '릴리스·PR 리뷰 공동 운영',
       },
     ],
-    code: {
-      caption: 'API는 하나, 잘못 쓰면 컴파일에서 막힌다',
-      lines: [
-        '// Select — 하나의 API, 내부는 두 엔진',
-        'type Single = { multiple?: false; value?: string }',
-        'type Multi  = { multiple: true;  value: string[] }',
-        'type SelectV2Props = Single | Multi',
-        '',
-        '// 아이콘: 폴더에 SVG 드롭 → 타입까지 자동 생성',
-        '$ pnpm generate   // 160개 export, 손작업 0',
-      ].join('\n'),
+    diagram: {
+      caption: 'DX & ARCHITECTURE · 디자인 시스템 파이프라인 전환',
+      before: {
+        badge: 'AS-IS · 수기 등록 & 편법 Multi',
+        note: '손작업 160건 & 컴포넌트 오용 위험',
+        steps: [
+          { title: 'SVG 수작업', desc: '피그마 SVG 받아 컴포넌트 JSX 손수 타이핑' },
+          { title: 'export 수기 등록', desc: '160개 아이콘마다 index.ts 및 타입 수동 등록' },
+          { title: 'Multi 편법 우회', desc: 'Radix 단일 위에 체크박스 억지 렌더 (접근성 결여)' },
+        ],
+        impact: '신규 아이콘 등록 10분 소요 및 컴포넌트 오용 런타임 버그 위험',
+      },
+      after: {
+        badge: 'TO-BE · 폴더 드롭 코드젠 & 듀얼 엔진',
+        note: '손작업 0건 & 컴파일 타임 오용 차단',
+        steps: [
+          { title: 'SVG 폴더 드롭', desc: '파일 추가 시 SVGR + AST 파싱 자동 실행' },
+          { title: '엄격한 타입 코드젠', desc: 'IconName 유니온 타입과 export 0초 자동 생성' },
+          { title: 'SelectV2 듀얼 엔진', desc: '단일 API 뒤에서 Radix와 Popover 분기 처리' },
+        ],
+        impact: '아이콘 추가 시간 10분 ➔ 0초(손작업 0) 및 잘못된 props 전달 원천 차단',
+      },
     },
     postUrl: '/work/design-system',
   },
@@ -355,6 +525,12 @@ export const cases: WorkCase[] = [
         label: '범위 규격',
         after: '인덱스 배열',
         gain: '다른 서비스에서 재사용',
+      },
+    ],
+    images: [
+      {
+        src: sentenceAnalysisImg,
+        alt: '영어 구문 분석 에디터 — 줄바꿈을 넘나드는 타원·박스·화살표·메모 실측 렌더링 결과',
       },
     ],
     code: {
@@ -422,54 +598,6 @@ export const cases: WorkCase[] = [
       { src: kisti3, alt: 'KISTI AI 관제 — 페이로드 특징 추가' },
     ],
     postUrl: '/work/security-ai',
-  },
-  {
-    id: 'work-ctf-score',
-    eyebrow: 'DATA MODELING',
-    company: '@Zipida · 사이버 훈련',
-    title: '정답이 늘면 먼저 푼 사람 점수가 깎이는 채점 시스템',
-    problem: [
-      'CTF(해킹 경진) 채점 — 참가자가 출제, 격리 워커가 자동 채점',
-      '점수가 소급된다 — 많이 풀린 문제일수록 싸짐 (userCount / solveCount)',
-      '나중 사건이 과거를 바꾸는 값을 "합계 한 칸"으로 들고 있었음',
-      '점수 부수효과가 문제·제출·유저 테이블 훅에 흩어져 정합성 붕괴',
-    ],
-    structure: [
-      '합계 컬럼 폐기 → 이벤트 ledger(적립 행을 쌓고 합산)',
-      '부분 update 폐기 → 중앙 재계산 함수로 일원화',
-      'CRUD 부수효과를 재계산 한 곳으로 모아 소급 정합성 확보',
-      '개인전 테이블 미러링 + problemType·grade 차원만 더해 팀전 흡수',
-    ],
-    tags: ['데이터 모델링', '정합성', '스코어링', '실시간'],
-    metrics: [
-      {
-        label: '점수 모델',
-        after: 'ledger',
-        gain: '합계 컬럼 → 이벤트 원장(소급을 행으로)',
-      },
-      {
-        label: '갱신 방식',
-        after: '전체 재계산',
-        gain: '부분 update 폐기 · 분산 부수효과 제거',
-      },
-      {
-        label: '정합성 버그',
-        after: '5',
-        unit: '건',
-        gain: '한자리에서 일괄 수술',
-      },
-    ],
-    code: {
-      caption: '점수는 확정값이 아니라 소급되는 값이었다',
-      lines: [
-        '// 정답자가 늘수록 분모가 커져 점수 ↓',
-        'const solveScore = userCount / solveCount',
-        '',
-        '// 합계 한 칸이 아니라, 적립을 행으로 쌓고 그때그때 재계산',
-        'ledger.append({ problemId, userId, scoreType, score })',
-      ].join('\n'),
-    },
-    postUrl: '/work/ctf-platform',
   },
 ];
 
@@ -559,12 +687,14 @@ export const timeline: Timeline[] = [
     scope: '디자인 시스템 · PDF 레이아웃 렌더러 핵심 개발자',
     description: '교육 콘텐츠 플랫폼 쏠북(Solvook)의 프론트엔드.',
     lines: [
-      '메인 서비스 엑스퍼트에서 문제·지문을 인쇄물처럼 **A4 다단 자동 조판하는 난제 해결**',
+      '메인 서비스 엑스퍼트에서 문제·지문을 인쇄물처럼 **A4 다단 페이지로 자동 분할하는 난제 해결**',
       '그 페이지네이션 엔진을 앱에서 분리해 **오픈소스로 공개** — column-pager (npm · MIT)',
       '이 엔진을 축으로 **콘텐츠 저작툴을 새 프로젝트로 단독 구축** (프론트 아키텍처 단독 소유)',
       '저작툴을 기반으로 파생된 **쏠북패스 출시 — 회사 메인 매출 제품의 프론트 담당**',
+      '기존 어드민의 극심한 검수 비효율을 해결하기 위해 **초고속 검수 SPA(Delta2) 자발적 구축 — 마법봉 원클릭 일괄 교정으로 일일 검수량 1,000건 → 8,000건(8배) 폭증**',
       '공용 **디자인 시스템(@bookips/sds) 공동 메인테이너** — 릴리스·PR 리뷰 공동 운영',
       '룰도 없던 코드베이스를 **상태관리(XState→Zustand)·컨벤션·강제 게이트·오류 모니터링까지 표준화**하고, 그 표준을 형제 서비스로 확산',
+      'AI 코딩 에이전트 협업을 위한 **도메인별 CLAUDE.md 분할 문서 아키텍처** 정립',
     ],
     tags: [
       'Zustand',
@@ -576,9 +706,11 @@ export const timeline: Timeline[] = [
     current: true,
     cases: [
       { label: 'column-pager 오픈소스', href: '/work/column-count-layout' },
+      { label: 'Delta2 초고속 검수 콘솔', href: '/work/delta2' },
       { label: '저작툴 본문 에디터', href: '/work/problem-editor' },
       { label: '디자인 시스템 자동화', href: '/work/design-system' },
       { label: '코드베이스 표준화', href: '/work/expert-conventions' },
+      { label: '홈 개편 & 도메인 무지 컴포넌트', href: '/work/domain-agnostic-card' },
     ],
   },
   {
@@ -590,10 +722,16 @@ export const timeline: Timeline[] = [
     lines: [
       '300페이지 교재 PDF의 첫 조작 대기를 **약 10분 30초 → 1.3초로 단축** — 전 페이지 선렌더를 온디맨드 + 청크 렌더로 재설계',
       '전체 페이지 자동선택 시 터지던 메모리를 청크 처리 + page.cleanup() + 온디맨드 렌더로 **OOM 없이 제어** (메모리·정확도 트레이드오프 설계)',
+      '프론트엔드에 과적용된 **DDD 5단 레이어를 걷어내고 SWR + 콜로케이션으로 단순화**하여 개발 속도 확보',
+      'try 내 .then 등 비동기 안티패턴을 제거하고 **Global vs Local 2계층 에러 핸들링 모듈 설계 & 전사 표준화** (테크 세미나 발표 및 채택)',
       '인증 모델을 인메모리 토큰 → **서버 발급 세션 쿠키 + SSR 가드로 전환**, 서버 로그아웃(refresh token revoke)까지',
     ],
-    tags: ['PDF.js', 'SWR', 'Firebase Auth', 'Turborepo'],
-    cases: [{ label: 'PDF 메모리 최적화', href: '/work/pdf-memory' }],
+    tags: ['PDF.js', 'SWR', 'Firebase Auth', 'Turborepo', '에러 핸들링'],
+    cases: [
+      { label: 'PDF 메모리 최적화', href: '/work/pdf-memory' },
+      { label: 'DDD 레이어 제거', href: '/work/frontend-ddd-removal' },
+      { label: '계층형 에러 아키텍처', href: '/work/frontend-error-handling' },
+    ],
   },
   {
     period: '2020 — 2023',
@@ -607,7 +745,7 @@ export const timeline: Timeline[] = [
       '법무부 포털: Table 컴포넌트 하나가 컬럼 정의 메타에서 목록·검색·정렬·엑셀·폼 생성 — **정의 1벌로 59개 화면 양산**, 라우트 정의에서 메뉴·권한트리 동시 파생(RBAC)',
       'KISTI AI 관제(전사 최대 규모 프로젝트): **코드 없이 탐지 ML을 학습·배포하는 5단계 마법사**를 URL-as-state·immer 상태머신으로 풀스택 구현',
       '현대오토에버 EDR: 비밀번호·권한 필터를 **NestJS BFF 프록시에서 통제**, 정형=PostgreSQL·가변=MongoDB **이중 DB 설계**',
-      '그 외 문체부 관제 포털·사이버 훈련 CTF·통일부 서버사이드 페이징 등 보안관제 프로젝트 다수',
+      '그 외 문체부 관제 포털·통일부 서버사이드 페이징 등 보안관제 프로젝트 다수',
       '회사가 5명 → 30명대로 크는 동안 다른 팀의 막힌 프로젝트까지 들어가 함께 풀며 **기술 리드로 성장**, 유지보수로 고객사 재계약까지 연결',
     ],
     tags: [
@@ -629,8 +767,9 @@ export const timeline: Timeline[] = [
     org: '@옐로오투오',
     description: '클라이언트 사이트 주문을 받아 개발하는 웹 에이전시.',
     lines: [
-      '그누보드 등 기존 템플릿 위에 프로젝트별 요구사항을 구현',
-      '사이트 성격에 맞춘 **커스텀 플러그인 제작** (예: 펜션 홈페이지 → 예약 플러그인)',
+      '공간대여·축구장·펜션 등 **다수의 예약 시스템 단독 개발**',
+      '운영자 셀프 DB 스키마 확장(**그누보드 여분필드 어드민 UI 연동**) 및 **SFTP 쉘 스크립트 배포 자동화**',
+      '그누보드 등 기존 템플릿 위에 프로젝트별 요구사항을 구현 및 사이트 맞춤형 플러그인 제작',
       'PHP 예약 시스템에서 시작해 **React로 전환**, 컴포넌트 분리·반응형 설계 기반 습득',
     ],
     tags: ['그누보드5', 'PHP 플러그인', 'jQuery', 'React 전환'],
@@ -655,7 +794,9 @@ export const capabilities: {
     ],
     proof: [
       { label: 'column-pager', target: 'work-column-pager' },
-      { label: '블랙홀', target: 'work-blackhole' },
+      { label: 'PDF 488배 가속', target: 'work-pdf-memory' },
+      { label: '문장분석 실측 에디터', target: 'work-problem-editor' },
+      { label: '블랙홀 WebGL', target: 'work-blackhole' },
     ],
   },
   {
@@ -668,6 +809,7 @@ export const capabilities: {
     ],
     proof: [
       { label: '59개 화면 포털', target: 'work-portal' },
+      { label: 'Delta2 8배 검수 콘솔', target: 'work-delta2' },
       { label: '디자인 시스템 자동화', target: 'work-design-system' },
     ],
   },
@@ -681,7 +823,8 @@ export const capabilities: {
     ],
     proof: [
       { label: 'ML 학습 마법사', target: 'work-ml' },
-      { label: '보안 포털', target: 'work-portal' },
+      { label: 'EDR BFF 보안 경계', target: 'work-edr-bff' },
+      { label: 'Delta2 검수 자동화 큐', target: 'work-delta2' },
     ],
   },
 ];
@@ -699,9 +842,9 @@ export const resumeSummary: {
   kind: 'lead' | 'hook' | 'body' | 'close';
 }[] = [
   { t: '7년차 시니어 프론트엔드 엔지니어', kind: 'lead' },
-  { t: '안 되던 화면을 측정해서 되게 만듭니다.', kind: 'hook' },
+  { t: '남들이 타협하고 멈춘 난제를, 구조와 실측으로 끝까지 동작하게 만듭니다.', kind: 'hook' },
   {
-    t: 'PDF 첫 조작을 약 10분 30초 → 1.3초로 · 컬럼 정의 1벌로 59개 화면 · 사내 페이지네이션 엔진 npm(MIT) 오픈소스화.',
+    t: '2년 묵은 다단 레이아웃 난제 종결(npm 배포) · 일일 검수량 1,000건 → 8,000건(8배 폭증) · 300p PDF 첫 조작 10분 30초 → 1.3초 · 컬럼 정의 1벌로 59개 화면 양산.',
     kind: 'body',
   },
   {
@@ -725,19 +868,23 @@ export const resumeOwnership: {
   items: { at: string; t: string }[];
 } = {
   claim:
-    '주어진 개발에 그치지 않고 — PO·기획자 공백을 스스로 메우며 제품을 주도, 사용자 목소리로 문제를 발견해 재설계한 경험 다수.',
+    '주어진 요구사항에 머무르지 않고, 기획·PO 공백을 메우며 사용자 목소리 기반으로 제품을 주도·재설계한 경험.',
   items: [
     {
-      at: 'Solvook Creator',
-      t: 'PO 공백 시 제품 결정을 대행 — 검수자(사용자) 피드백을 직접 듣고, JSON 구조를 외워야 하던 검수 화면을 마우스만으로 검수·수정·삭제·추가하는 GUI로 전면 재설계. 신규 검수자 온보딩 비용 제거',
+      at: 'Delta2 검수 콘솔',
+      t: '검수 비효율을 직접 겪고 초고속 SPA 자발적 구축 — 불 켜진 마법봉 원클릭 교정과 5단계 파이프라인으로 일일 검수량 1,000건 → 8,000건(8배) 폭증',
     },
     {
-      at: '본문분석 에디터',
-      t: '기획자 공백 시 인터랙션 설계부터 개발까지 주도 — 드래그 대신 클릭-클릭 범위 선택 같은 UX 결정을 직접',
+      at: 'Solvook 저작도구 & 쏠북패스',
+      t: '기획·PO 공백 시 인터랙션 설계부터 단독 구축 — 지문 에디터 줄 지도 렌더링 및 회사 주력 매출 제품(쏠북패스) 프론트엔드 성공적 런칭',
     },
     {
-      at: 'Zipida',
-      t: '프론트로 합류해 회사 5 → 30명 성장기에 기술 리드로, 막히던 타 팀 프로젝트까지 지원',
+      at: '사내 PDF Playground',
+      t: '로드맵에 없던 브라우저 실시간 PDF 미리보기 툴을 자발적으로 개발해 프론트·백엔드·QA 3개 팀의 피드백 루프를 10분 → 1초로 단축',
+    },
+    {
+      at: 'Zipida 기술 리드',
+      t: '프론트 개발자로 합류해 5인 → 30인 성장기 기술 리드로, 타 팀의 막힌 프로젝트까지 주도적으로 해결',
     },
   ],
 };
@@ -749,31 +896,23 @@ export const resumeLeadership: {
   items: { at: string; t: string }[];
 } = {
   claim:
-    '관리보다, 동료가 더 잘 일하도록 지원하는 쪽 — 협업 방식과 개발 문화를 구조로 개선하고 조직으로 확산.',
+    '동료가 더 잘 일할 수 있도록 돕는 리더십 — 스터디, 표준화, AI 워크플로 정립으로 엔지니어링 문화를 조직에 확산.',
   items: [
     {
-      at: '기술 리딩',
-      t: 'Zipida에서 기술 리드로 — 막히던 타 팀 프로젝트까지 들어가 함께 해결하고, 코드 리뷰로 동료의 막힘을 풀어줬다',
+      at: '기술 리딩 & 코드 리뷰',
+      t: 'Zipida 기술 리드로 타 팀 병목 지원 및 설계 중심의 코드 리뷰 문화 정착',
     },
     {
-      at: '스터디 · 컨벤션',
-      t: '팀 컨벤션을 함께 정하고, 코드 레벨을 맞추는 스터디를 주도 — 리팩토링 시점엔 스터디로 팀이 같은 패턴에 합의하게 이끌어, 리뷰가 스타일 지적보다 설계 논의에 쓰이도록 만들었다',
+      at: '사내 테크 세미나 & 에러 표준화',
+      t: 'ORZO 재직 시 계층형 에러 핸들링 모듈을 설계하고 전사 세미나 발표를 통해 전사 표준으로 채택',
     },
     {
-      at: 'AI 개발 생산성',
-      t: '단일 CLAUDE.md의 큰 컨텍스트로 에이전트 토큰 소비가 크던 문제를, 도메인별 CLAUDE.md 분할 + 도메인 문서로 재설계 — 사람과 AI 에이전트가 같은 문서·도메인 언어로 일하는 워크플로를 정착',
+      at: '코드베이스 표준화 & 확산',
+      t: 'MUI→Radix 디자인 시스템 재설계(@bookips/sds 메인테이너), XState→Zustand 통일, Git 품질 게이트 수립 후 형제 서비스 확산',
     },
     {
-      at: '협업 · 문화',
-      t: 'PR 템플릿·CODEOWNERS·컨벤션·git 게이트(lint·type-check·test)로 "누가 와도 같은 규율", async·상태 끌어올리기·네이밍 등 팀 관행을 정리해 문서로 공유',
-    },
-    {
-      at: '조직 확산',
-      t: '룰 없던 코드베이스를 표준화해 형제 서비스로 전파 / 공용 디자인 시스템 공동 메인테이너(릴리스·PR 리뷰 공동 운영)',
-    },
-    {
-      at: '기술 의사결정',
-      t: '조직의 스택 방향을 이끌어 — MUI를 Radix + Tailwind v2로 다시 짜고, 일부 화면에 오버킬로 얹혀 있던 XState를 걷어내 feature별 작은 store(Zustand)로 통일 (형식 상태머신이 필요한 자리는 URL + reducer로 별도 설계)',
+      at: 'AI 코딩 에이전트 워크플로',
+      t: '도메인별 CLAUDE.md 분할 아키텍처를 정립하여 토큰 소비를 절감하고 팀과 AI가 같은 도메인 언어로 협업하는 기반 마련',
     },
   ],
 };
@@ -784,7 +923,7 @@ export const resumeSkills: { label: string; items: string[] }[] = [
     label: '렌더링 · 성능',
     items: [
       'Canvas 2D / WebGL',
-      '측정-우선 PDF 조판',
+      '측정-우선 PDF 페이지네이션',
       '대용량 가상화',
       '메모리 바운드 처리',
       '접근성 — 키보드·aria·포커스',
@@ -870,7 +1009,7 @@ export const resumeExperience: ExpCompany[] = [
       {
         head: '사내 페이지네이션 엔진을 오픈소스로 공개 — column-pager (npm · MIT)',
         points: [
-          'A4 다단(2단) 자동 조판 로직을 순수 코어 / 측정 / 렌더 3계층으로 재설계',
+          'A4 다단(2단) 자동 페이지 분할 로직을 순수 코어 / 측정 / 렌더 3계층으로 재설계',
           '같은 문제를 세 번 푼 3세대 엔진 — 검증된 측정 로직은 이식, 아키텍처만 전면 재설계',
           '앱에서 분리해 독립 npm 패키지로 배포',
         ],
@@ -878,27 +1017,45 @@ export const resumeExperience: ExpCompany[] = [
           '단독 개발',
           '결정적 테스트 49개',
           'semantic-release 자동 배포',
-          '인쇄 불량 환불 문의 하루 평균 4건 → 주 2건',
+          '인쇄 불량으로 인한 환불 0건 달성 (기존 하루 평균 4건)',
         ],
       },
       {
-        head: '콘텐츠 제작 도구 프론트엔드 단독 개발 (Solvook Creator)',
+        head: '불 켜진 마법봉과 5단계 파이프라인으로 일일 검수량 8배 폭증 (Delta2)',
         points: [
-          '지문 분석·워크북·변형문제를 편집해 출판물 수준 PDF로 출력하는 제작 도구',
-          'JSON 편집에 의존하던 검수 화면을 마우스만으로 검수·수정·삭제·추가하는 GUI 시스템으로 재설계',
-          '가변 높이 아이템을 청크(30개) 단위로 측정해 다단 페이지 조판, 7종 데코레이터를 discriminated union으로 타입세이프 모델링',
+          'ML 파싱 교재 검수 실무 중 기존 어드민의 극심한 UX 비효율을 해결하기 위해 초고속 검수 콘솔 자발적 설계·구현',
+          '정형 오류 패턴을 감지해 불이 켜지는 마법봉 뱃지 & 상단 툴바 원클릭 일괄 교정(AST/HTML Transform)',
+          '룰 엔진 + 업로드 엑셀 퍼지 검색 결합 메타데이터 출처 스마트 일괄 매칭',
+          '화면 간 이동 없이 단 하나의 레일 위에서 완료하는 5단계 검수 자동화 큐(Zustand/persist) 구축',
         ],
         results: [
-          '저작도구 프론트 아키텍처 단독 설계·소유',
-          'JSON 암기 → 마우스 GUI 검수',
+          '일일 검수량 1,000건 → 8,000건 (8배 폭증)',
+          '마법봉 원클릭 일괄 교정',
+          '5단계 검수 자동화 파이프라인',
         ],
       },
       {
-        head: '시험지 제작 스튜디오 페이징·PDF (Solvook Expert)',
+        head: '문장 분석 실측 줄 지도(Line Map) 엔진 개발 & 회사 메인 매출 제품(쏠북패스) 단독 런칭',
         points: [
-          'A4 2단 자동 페이징에서 “측정 DOM == 표시 DOM” 불변식 확립',
-          '888×1256 고정 픽셀 + transform:scale로 화면 미리보기 = 서버 PDF 픽셀 일치',
-          'column-pager 엔진의 최초 발원지',
+          '영어 지문 위 10종 주석(밑줄/형광펜/원기호 등)의 줄바꿈 깨짐 난제를 단어 좌표 실측 기반 LINE_TOLERANCE 줄 지도 알고리즘 및 2-Pass 렌더링으로 복원',
+          'JSON 편집에 의존하던 검수 화면을 마우스만으로 검수·수정·삭제·추가하는 GUI 시스템으로 전면 재설계',
+          '이 저작도구 엔진을 기반으로 파생된 쏠북패스(회사 주력 매출 제품) 프론트엔드 단독 구축 및 성공적 출시',
+        ],
+        results: [
+          '실측 줄 지도 엔진 개발',
+          '저작도구 프론트 단독 아키텍처',
+          '메인 매출 제품(쏠북패스) 런칭',
+        ],
+      },
+      {
+        head: '사내 PDF Playground 도구 개발 — 3개 팀 피드백 루프 10분 → 1초 단축',
+        points: [
+          '서버 렌더링 후 파일 다운로드로 확인하던 10분 피드백 루프를 브라우저 실시간 PDF 뷰어로 전환',
+          '프론트·백엔드·QA 3개 팀이 동일한 브라우저 환경에서 즉시 렌더링 결과를 검증하도록 지원',
+        ],
+        results: [
+          '피드백 루프 10분 → 1초',
+          '프론트·백·QA 3개 팀 생산성 혁신',
         ],
       },
       {
@@ -915,26 +1072,13 @@ export const resumeExperience: ExpCompany[] = [
         ],
       },
       {
-        head: '룰 없던 코드베이스 표준화 — 상태관리·컨벤션·오류 모니터링으로 안정적 서비스 기반 구축',
+        head: '룰 없던 코드베이스 표준화 & AI 코딩 에이전트 문서 아키텍처 (CLAUDE.md)',
         points: [
-          '섞여 있던 XState를 걷어내고 Zustand로 통일 — 복잡한 상태를 feature별 작은 store로 분리',
-          'ESLint·Prettier 룰 + git 훅(pre-commit lint·type-check / pre-push test)으로 규칙을 기계가 강제',
-          '컴포넌트 UpperPascalCase·Radix 헤드리스+Tailwind 컨벤션 정립, PR 템플릿·CODEOWNERS 도입',
-          'Sentry 오류 모니터링 도입 — 안 보이던 프로덕션 버그 추적, 미사용 라이브러리·데드코드 정리',
+          '섞여 있던 XState를 걷어내고 Zustand로 통일, ESLint/Prettier 및 Git 게이트(lint/type/test)로 품질 자동화',
+          '단일 CLAUDE.md의 토큰 낭비를 도메인별 분할 문서 아키텍처로 재설계하여 사람과 AI 협업 생산성 향상',
+          '동일 표준을 형제 서비스로 확산 및 Sentry 도입으로 프로덕션 오류 추적 체계 구축',
         ],
-        results: ['첫 커밋이 ESLint 설정', '동일 표준을 형제 서비스로 확산'],
-      },
-      {
-        head: 'AI 코딩 에이전트 생산성을 위한 문서 아키텍처 설계 (CLAUDE.md)',
-        points: [
-          '단일 CLAUDE.md에 전체 컨텍스트가 쌓여 에이전트 호출마다 토큰 소비가 크던 문제를, CLAUDE.md를 도메인별로 분할 — 작업할 도메인의 컨텍스트만 읽도록',
-          '도메인마다 문서를 작성해, 도메인 언어(유비쿼터스 언어)로 지시해도 에이전트가 정확히 알아듣도록 정리',
-          '사람·에이전트가 같은 도메인 문서를 공유해, 온보딩과 작업 지시의 컨텍스트 비용을 함께 낮춤',
-        ],
-        results: [
-          '에이전트 컨텍스트·토큰 소비 절감',
-          '도메인 언어로 정확한 지시',
-        ],
+        results: ['코드베이스 표준화 확산', 'AI 에이전트 토큰 절감 & 워크플로 정착'],
       },
     ],
   },
@@ -964,12 +1108,13 @@ export const resumeExperience: ExpCompany[] = [
         results: ['DDD 레이어 제거 주도', '변경·온보딩 비용 감소'],
       },
       {
-        head: '인증 모델 전환 · 팀 개발 관행 개선 (ORZO Admin)',
+        head: '계층형 에러 아키텍처 설계 및 인증 모델 전환 (ORZO Admin)',
         points: [
-          '클라 인메모리 ID 토큰 → 서버 발급 Firebase 세션 쿠키 + SSR 인증 가드',
-          '서버 로그아웃(refresh token revoke)으로 보안·SSR 정합성 확보',
-          'async/await·상태 끌어올리기·네이밍 등 팀 개발 관행 정리·공유',
+          'try-then 안티패턴을 제거하고 Global(Toast/Modal) vs Local(인라인 재시도) 2계층 에러 핸들링 모듈 설계 — 사내 테크 세미나 발표 및 전사 표준 채택',
+          '클라 인메모리 ID 토큰 → 서버 발급 Firebase 세션 쿠키 + SSR 인증 가드로 보안·정합성 확보',
+          '서버 로그아웃(refresh token revoke) 및 async/await·상태 끌어올리기 등 팀 개발 관행 정립',
         ],
+        results: ['2계층 에러 모듈 설계', '테크 세미나 발표 및 표준화'],
       },
     ],
   },
@@ -1047,27 +1192,12 @@ export const resumeExperience: ExpCompany[] = [
         results: ['예약 도메인 단독', '공간·축구장·펜션 등 다수'],
       },
       {
-        head: '홈페이지 특성에 맞춘 커스텀 플러그인 개발',
+        head: '운영자 셀프 DB 스키마 확장(그누보드 여분필드 연동) & SFTP 쉘 스크립트 배포 자동화',
         points: [
-          '그누보드 등 기존 템플릿 위에, 사이트 성격에 맞는 기능을 플러그인으로 제작 (예: 펜션 홈페이지용 예약 플러그인)',
-          '프로젝트마다 다른 요구를 재사용 가능한 플러그인 단위로 분리',
+          '그누보드 여분필드 확장을 개발자 개입 없이 어드민 UI에서 처리하도록 연동하여 스키마 변경 반복 제거',
+          '파일을 SFTP로 일일이 올리던 배포를 빌드·업로드 통합 쉘 스크립트로 자동화하여 휴먼에러 차단',
         ],
-      },
-      {
-        head: '어드민에서 DB 필드를 직접 확장 (그누보드 여분필드 연동)',
-        points: [
-          '그누보드 여분필드(추가 DB 컬럼) 확장을 개발자 개입 없이 어드민 화면에서 처리하도록, DB 테이블 조작을 UI에 연동',
-          '필드 추가·수정을 운영자가 직접 — 요구가 바뀔 때마다 스키마를 코드로 손대던 반복 제거',
-        ],
-        results: ['운영자 셀프 필드 확장', 'DB 스키마 조작 UI 연동'],
-      },
-      {
-        head: 'SFTP 수동 배포를 쉘 스크립트로 자동화',
-        points: [
-          '파일을 SFTP로 일일이 올리던 배포를, 빌드·업로드를 한 번에 처리하는 쉘 스크립트로 자동화',
-          '반복 작업과 사람 실수(누락 파일·잘못된 경로) 제거, 배포 시간 단축',
-        ],
-        results: ['수동 업로드 → 스크립트 1회 실행'],
+        results: ['운영자 셀프 필드 확장', '배포 자동화 쉘 스크립트'],
       },
     ],
   },

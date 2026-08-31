@@ -6,10 +6,10 @@ import { usePathname } from 'next/navigation';
 import {
   Button, Tag, Badge, Eyebrow, SectionHeader, BlueprintGrid, MetricRow, TimelineItem,
 } from './components';
-import type { WorkCase } from './content';
+import type { WorkCase, FlowDiagram } from './content';
 import { profile, impact, cases, blackHole, timeline, capabilities, oss } from './content';
 import { Flagship } from './Flagship';
-import { Gallery } from './Lightbox';
+import { Gallery, LightboxProvider, ZoomImage } from './Lightbox';
 
 // 라이브 블랙홀 — 실제 black-hole-effect 패키지. window 접근이 렌더 중 일어나 ssr:false.
 const BlackholeLive = dynamic(() => import('@/components/demos/blackhole-live'), { ssr: false, loading: () => null });
@@ -90,9 +90,8 @@ export function Nav() {
 /* ---- Hero portrait ------------------------------------------------------ */
 function Portrait() {
   return (
-    <div className="relative w-full max-w-[360px] aspect-[4/5] justify-self-end rounded-hj-xl overflow-hidden bg-hj-cloud border border-hj-line shadow-hj-soft max-[900px]:hidden">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={portrait} alt={profile.nameKo} className="w-full h-full object-cover object-[center_32%]" />
+    <div className="relative w-full max-w-[360px] aspect-[4/5] justify-self-end rounded-hj-xl overflow-hidden bg-hj-cloud border border-hj-line shadow-hj-soft max-[900px]:hidden group">
+      <ZoomImage src={portrait} alt={`${profile.nameKo} — ${profile.role}`} className="w-full h-full object-cover object-[center_32%]" />
     </div>
   );
 }
@@ -124,24 +123,55 @@ export function Hero() {
           </div>
         </div>
 
-        <div className={`${CONTAINER} mt-16 pb-16`}>
-          <div className="grid grid-cols-[minmax(0,1.4fr)_repeat(3,minmax(0,1fr))] bg-hj-paper border border-hj-line rounded-hj-lg shadow-hj-soft overflow-hidden max-[900px]:grid-cols-2 max-[560px]:grid-cols-1">
-            <div className="px-6 py-[22px] border-r border-hj-line flex flex-col justify-center max-[900px]:border-r-0 max-[900px]:border-b max-[900px]:border-hj-line">
-              <div className="font-hj-serif text-[21px] font-semibold tracking-[-0.01em] text-hj-fg leading-[1.4] whitespace-pre-line">{impact.lead}</div>
+        <div className={`${CONTAINER} mt-14 pb-16`}>
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <div className="flex items-center gap-2">
+              <span aria-hidden className="w-2 h-2 rounded-full bg-hj-blue animate-hj-pulse" />
+              <span className="font-hj-mono text-[11px] font-semibold tracking-[0.1em] uppercase text-hj-blue-deep">
+                {impact.eyebrow}
+              </span>
             </div>
-            {impact.stats.map((s, i) => (
-              <div key={s.k} className={`px-6 py-[22px] ${i < 2 ? 'border-r border-hj-line' : ''} max-[900px]:border-r-0 max-[900px]:border-b max-[900px]:border-hj-line max-[560px]:border-b max-[560px]:border-hj-line`}>
-                {/* scope label (context) */}
-                <div className="font-hj-mono text-[11px] tracking-[0.06em] uppercase text-hj-muted">{s.k}</div>
-                {/* old state — de-emphasized, small + faint + strikethrough */}
-                <div className="mt-3 font-hj-mono text-[12px] text-hj-faint line-through decoration-hj-steel">{s.before}</div>
-                {/* payoff — the point of the whole strip. big, bold, ink; a small muted
-                    connector arrow leads the eye from the struck-through old state. */}
-                <div className="mt-1.5 flex items-baseline gap-2">
-                  <span aria-hidden className="font-hj-mono text-[13px] text-hj-faint">→</span>
-                  <span className="font-hj-mono tabular-nums text-[24px] font-bold text-hj-fg tracking-[-0.02em] leading-[1.1]">{s.after}</span>
+            <div className="font-hj-serif text-[13.5px] text-hj-muted">
+              {impact.lead}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-4 gap-3.5 max-[1024px]:grid-cols-2 max-[560px]:grid-cols-1">
+            {impact.stats.map((s) => (
+              <a
+                key={s.k}
+                href={`#${s.target}`}
+                onClick={(e) => scrollTo(e, s.target)}
+                className="group p-5 bg-hj-paper border border-hj-line rounded-hj-lg shadow-hj-soft flex flex-col justify-between transition-[border-color,box-shadow,transform] duration-150 hover:border-hj-blue hover:shadow-hj-soft-lg hover:-translate-y-0.5 no-underline cursor-pointer"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-hj-mono text-[11px] text-hj-muted font-medium">
+                      {s.org}
+                    </span>
+                    <span className="font-hj-mono text-[11px] text-hj-faint group-hover:text-hj-blue transition-colors">
+                      증명 보기 ↓
+                    </span>
+                  </div>
+                  <div className="font-hj-serif text-[15px] font-semibold text-hj-fg leading-[1.3] group-hover:text-hj-blue-deep transition-colors">
+                    {s.k}
+                  </div>
+                  <div className="mt-3 font-hj-mono text-[11.5px] text-hj-faint line-through decoration-hj-steel">
+                    {s.before}
+                  </div>
+                  <div className="mt-1 flex items-baseline gap-1.5">
+                    <span aria-hidden className="font-hj-mono text-[12px] text-hj-faint">→</span>
+                    <span className="font-hj-mono tabular-nums text-[20px] font-bold text-hj-fg tracking-[-0.02em] leading-[1.1]">
+                      {s.after}
+                    </span>
+                  </div>
                 </div>
-              </div>
+                <div className="mt-4 pt-3 border-t border-hj-line flex items-center justify-between">
+                  <span className="font-hj-mono text-[11px] font-medium text-[rgb(21,128,61)] bg-[rgba(21,128,61,0.08)] px-2 py-0.5 rounded">
+                    {s.gain}
+                  </span>
+                </div>
+              </a>
             ))}
           </div>
         </div>
@@ -202,21 +232,102 @@ function ImpactStrip({ c }: { c: WorkCase }) {
 function CodePanel({ code }: { code: { caption: string; lines: string } }) {
   return (
     <div className="flex flex-col min-w-0 w-full">
-      <div className="font-hj-mono text-[13.5px] leading-[1.95] bg-hj-ink border border-hj-ink-soft rounded-hj-md p-[clamp(26px,3vw,34px)] overflow-x-auto">
+      <div className="font-hj-mono text-[12.5px] leading-[1.75] bg-hj-ink border border-hj-ink-soft rounded-hj-md p-[clamp(18px,2.2vw,24px)] overflow-x-auto">
         {code.lines.split('\n').map((ln, i) => {
           const t = ln.trim();
           const color = t.startsWith('//') ? 'text-hj-on-ink-muted' : t.startsWith('$') ? 'text-hj-blue-bright' : 'text-hj-on-ink';
-          return <div key={i} className={`${color} whitespace-pre min-h-[1.4em]`}>{ln || ' '}</div>;
+          return <div key={i} className={`${color} whitespace-pre min-h-[1.3em]`}>{ln || ' '}</div>;
         })}
       </div>
-      <div className="font-hj-mono text-[11px] text-hj-muted mt-3.5">{code.caption}</div>
+      <div className="font-hj-mono text-[11px] text-hj-muted mt-2">{code.caption}</div>
+    </div>
+  );
+}
+
+function DiagramPanel({ diagram }: { diagram: FlowDiagram }) {
+  return (
+    <div className="flex flex-col gap-3.5 w-full">
+      <div className="font-hj-mono text-[11px] tracking-[0.1em] uppercase text-hj-muted font-medium">
+        {diagram.caption}
+      </div>
+
+      {/* AS-IS Box */}
+      <div className="rounded-hj-md border border-[rgba(224,86,36,0.22)] bg-[rgba(224,86,36,0.03)] p-[clamp(14px,1.8vw,18px)] flex flex-col gap-3">
+        <div className="flex items-center justify-between flex-wrap gap-1 border-b border-[rgba(224,86,36,0.15)] pb-2.5">
+          <span className="font-hj-mono text-[11px] font-semibold text-[rgb(190,55,15)] px-2 py-0.5 rounded bg-[rgba(224,86,36,0.12)]">
+            {diagram.before.badge}
+          </span>
+          <span className="font-hj-mono text-[11.5px] text-[rgb(190,55,15)] font-semibold">
+            {diagram.before.note}
+          </span>
+        </div>
+        <div className="grid grid-cols-3 gap-2.5 max-[640px]:grid-cols-1">
+          {diagram.before.steps.map((s, idx) => (
+            <div key={idx} className="p-2.5 rounded bg-hj-paper border border-hj-line shadow-hj-soft flex flex-col gap-1">
+              <div className="flex items-center justify-between">
+                <span className="font-hj-mono text-[11.5px] font-semibold text-hj-fg">
+                  {s.title}
+                </span>
+                <span className="font-hj-mono text-[10px] text-hj-muted">
+                  0{idx + 1}
+                </span>
+              </div>
+              <p className="font-hj-serif text-[11px] leading-[1.35] text-hj-muted m-0">
+                {s.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+        <div className="font-hj-serif text-[11.5px] text-[rgb(190,55,15)] bg-[rgba(224,86,36,0.06)] px-3 py-1.5 rounded border border-[rgba(224,86,36,0.1)]">
+          ⚠️ {diagram.before.impact}
+        </div>
+      </div>
+
+      {/* Flow transition divider */}
+      <div className="flex items-center justify-center -my-1">
+        <span className="bg-hj-paper px-3 py-1 rounded-full border border-hj-line text-[11px] font-hj-mono text-hj-muted shadow-hj-soft">
+          아키텍처 전환 ↓
+        </span>
+      </div>
+
+      {/* TO-BE Box */}
+      <div className="rounded-hj-md border border-[rgba(21,128,61,0.25)] bg-[rgba(21,128,61,0.04)] p-[clamp(14px,1.8vw,18px)] flex flex-col gap-3">
+        <div className="flex items-center justify-between flex-wrap gap-1 border-b border-[rgba(21,128,61,0.15)] pb-2.5">
+          <span className="font-hj-mono text-[11px] font-semibold text-[rgb(21,128,61)] px-2 py-0.5 rounded bg-[rgba(21,128,61,0.12)]">
+            {diagram.after.badge}
+          </span>
+          <span className="font-hj-mono text-[11.5px] text-[rgb(21,128,61)] font-semibold">
+            {diagram.after.note}
+          </span>
+        </div>
+        <div className="grid grid-cols-3 gap-2.5 max-[640px]:grid-cols-1">
+          {diagram.after.steps.map((s, idx) => (
+            <div key={idx} className="p-2.5 rounded bg-hj-paper border border-[rgba(21,128,61,0.28)] shadow-hj-soft flex flex-col gap-1">
+              <div className="flex items-center justify-between">
+                <span className="font-hj-mono text-[11.5px] font-semibold text-hj-fg">
+                  {s.title}
+                </span>
+                <span className="font-hj-mono text-[10px] text-[rgb(21,128,61)] font-semibold">
+                  0{idx + 1}
+                </span>
+              </div>
+              <p className="font-hj-serif text-[11px] leading-[1.35] text-hj-fg-secondary m-0">
+                {s.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+        <div className="font-hj-serif text-[11.5px] text-[rgb(21,128,61)] bg-[rgba(21,128,61,0.06)] px-3 py-1.5 rounded border border-[rgba(21,128,61,0.15)]">
+          ✨ {diagram.after.impact}
+        </div>
+      </div>
     </div>
   );
 }
 
 function CaseCard({ c }: { c: WorkCase }) {
   const hasImages = !!(c.images && c.images.length);
-  const hasVisual = hasImages || !!c.code;
+  const hasVisual = hasImages || !!c.diagram || !!c.code;
   return (
     <article id={c.id} className="mt-5 scroll-mt-[84px] bg-hj-paper border border-hj-line rounded-hj-xl shadow-hj-soft overflow-hidden">
       <div className={`grid ${hasVisual ? 'grid-cols-[1.04fr_1.06fr] max-[900px]:grid-cols-1' : 'grid-cols-1'}`}>
@@ -224,8 +335,10 @@ function CaseCard({ c }: { c: WorkCase }) {
           <CaseHeader c={c} />
         </div>
         {hasVisual && (
-          <div className="p-[clamp(24px,3.4vw,36px)] bg-hj-cloud flex flex-col justify-center">
-            {hasImages ? <Gallery images={c.images!} /> : c.code ? <CodePanel code={c.code} /> : null}
+          <div className="p-[clamp(24px,3.4vw,36px)] bg-hj-cloud flex flex-col justify-center gap-3.5">
+            {hasImages && <Gallery images={c.images!} />}
+            {c.diagram && <DiagramPanel diagram={c.diagram} />}
+            {c.code && <CodePanel code={c.code} />}
           </div>
         )}
       </div>
@@ -435,7 +548,7 @@ export function Contact() {
 /* ---- Compose the main portfolio page ------------------------------------ */
 export function MainPortfolio() {
   return (
-    <>
+    <LightboxProvider>
       <Nav />
       <main>
         <Hero />
@@ -445,6 +558,6 @@ export function MainPortfolio() {
         <OpenSource />
       </main>
       <Contact />
-    </>
+    </LightboxProvider>
   );
 }

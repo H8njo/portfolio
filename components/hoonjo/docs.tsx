@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 import type { Metric } from './components';
 import { Tag, MetricRow } from './components';
 import { profile, timeline, capabilities, flagship, cases, blackHole, sideProjects, impact, oss, resumeSummary, resumeOwnership, resumeLeadership, resumeSkills, resumeExperience, education } from './content';
-import type { ProjImage, ExpCompany } from './content';
+import type { ProjImage, ExpCompany, FlowDiagram } from './content';
 import dynamic from 'next/dynamic';
 // 사이드 프로젝트 블랙홀 — 로컬 재현본 대신 실제 배포 라이브러리(black-hole-effect,
 // github:H8njo/webgl-black-hole)를 렌더한다(홈과 동일 패턴). 렌더 중 window 접근 → ssr:false.
@@ -91,38 +91,131 @@ function Bullets({ items }: { items: string[] }) {
 }
 
 /* ---- supporting projects (3 cases; flagship handled by FlagshipBlock) --- */
-type Project = { title: string; company?: string; problem: string[]; structure: string[]; metrics: Metric[]; tags: string[]; images?: ProjImage[]; code?: { caption: string; lines: string } };
+type Project = {
+  title: string;
+  company?: string;
+  problem: string[];
+  structure: string[];
+  metrics: Metric[];
+  tags: string[];
+  images?: ProjImage[];
+  diagram?: FlowDiagram;
+  code?: { caption: string; lines: string };
+};
 
 const PROJECTS: Project[] = cases.map((c): Project => ({
-  title: c.title, company: c.company, problem: c.problem, structure: c.structure,
-  metrics: c.metrics, tags: c.tags, images: c.images, code: c.code,
+  title: c.title,
+  company: c.company,
+  problem: c.problem,
+  structure: c.structure,
+  metrics: c.metrics,
+  tags: c.tags,
+  images: c.images,
+  diagram: c.diagram,
+  code: c.code,
 }));
 
-/* 프로젝트 시각 자료 — 실제 화면(최대 3장) 또는 코드 패널. 인쇄에서 쪼개지지 않게 묶는다. */
-function ProjectVisual({ p, cols = 3 }: { p: Project; cols?: number }) {
-  if (p.images && p.images.length > 0) {
-    return (
-      <div className="grid gap-2.5 mt-4 break-inside-avoid" style={{ gridTemplateColumns: `repeat(${Math.min(p.images.length, cols)}, 1fr)` }}>
-        {p.images.map((im, i) => (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img key={i} src={im.src} alt={im.alt} className="w-full aspect-[4/3] object-cover rounded-hj-md border border-hj-steel" />
-        ))}
-      </div>
-    );
-  }
-  if (p.code) {
-    return (
-      <div className="mt-4 bg-hj-ink border border-hj-ink-soft rounded-hj-md px-5 py-[18px] overflow-x-auto break-inside-avoid">
-        {p.code.lines.split('\n').map((ln, i) => {
-          const t = ln.trim();
-          const color = t.startsWith('//') ? 'text-hj-on-ink-muted' : t.startsWith('$') ? 'text-hj-blue-bright' : 'text-hj-on-ink';
-          return <div key={i} className={`font-hj-mono text-[12px] leading-[1.8] whitespace-pre min-h-[1.3em] ${color}`}>{ln || ' '}</div>;
-        })}
-        <div className="font-hj-mono text-[10.5px] text-hj-on-ink-muted mt-3 pt-2.5 border-t border-[rgba(246,244,238,0.14)]">{p.code.caption}</div>
-      </div>
-    );
-  }
-  return null;
+/* 프로젝트 시각 자료 — 실제 화면(최대 4장), 아키텍처 다이어그램, 또는 코드 패널. */
+function ProjectVisual({ p }: { p: Project }) {
+  const hasImages = !!(p.images && p.images.length > 0);
+  const hasDiagram = !!p.diagram;
+  const hasCode = !!p.code;
+
+  if (!hasImages && !hasDiagram && !hasCode) return null;
+
+  return (
+    <div className="flex flex-col gap-3 mt-4 break-inside-avoid">
+      {hasImages && (
+        <div
+          className={p.images!.length === 1 ? 'w-full' : 'grid gap-2.5'}
+          style={
+            p.images!.length > 1
+              ? { gridTemplateColumns: `repeat(${Math.min(p.images!.length, 4)}, 1fr)` }
+              : undefined
+          }
+        >
+          {p.images!.map((im, i) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              key={i}
+              src={im.src}
+              alt={im.alt}
+              className={`w-full rounded-hj-md border border-hj-steel bg-hj-paper ${
+                p.images!.length === 1
+                  ? 'h-auto block'
+                  : 'aspect-[16/10] object-cover object-top'
+              }`}
+            />
+          ))}
+        </div>
+      )}
+      {hasDiagram && (
+        <div className="rounded-hj-md border border-hj-line bg-hj-cloud p-3.5 flex flex-col gap-2.5">
+          <div className="flex items-center justify-between border-b border-hj-line pb-2 flex-wrap gap-1">
+            <span className="font-hj-mono text-[10.5px] font-semibold text-hj-blue-deep uppercase">
+              {p.diagram!.caption}
+            </span>
+            <span className="font-hj-mono text-[10.5px] text-[rgb(21,128,61)] font-semibold">
+              {p.diagram!.after.impact}
+            </span>
+          </div>
+          <div className="grid grid-cols-2 gap-3 max-[640px]:grid-cols-1">
+            {/* AS-IS */}
+            <div className="p-2.5 rounded bg-hj-paper border border-[rgba(224,86,36,0.22)] flex flex-col gap-1.5">
+              <div className="font-hj-mono text-[10px] font-semibold text-[rgb(190,55,15)]">
+                {p.diagram!.before.badge}
+              </div>
+              <div className="flex flex-col gap-1">
+                {p.diagram!.before.steps.map((s, idx) => (
+                  <div key={idx} className="font-hj-serif text-[11px] leading-[1.3] text-hj-muted">
+                    <span className="font-hj-mono font-medium text-hj-fg mr-1">0{idx + 1}</span>
+                    <strong className="text-hj-fg">{s.title}</strong> — {s.desc}
+                  </div>
+                ))}
+              </div>
+            </div>
+            {/* TO-BE */}
+            <div className="p-2.5 rounded bg-hj-paper border border-[rgba(21,128,61,0.25)] flex flex-col gap-1.5">
+              <div className="font-hj-mono text-[10px] font-semibold text-[rgb(21,128,61)]">
+                {p.diagram!.after.badge}
+              </div>
+              <div className="flex flex-col gap-1">
+                {p.diagram!.after.steps.map((s, idx) => (
+                  <div key={idx} className="font-hj-serif text-[11px] leading-[1.3] text-hj-fg-secondary">
+                    <span className="font-hj-mono font-medium text-[rgb(21,128,61)] mr-1">0{idx + 1}</span>
+                    <strong className="text-hj-fg">{s.title}</strong> — {s.desc}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {hasCode && (
+        <div className="bg-hj-ink border border-hj-ink-soft rounded-hj-md px-4 py-3 overflow-x-auto">
+          {p.code!.lines.split('\n').map((ln, i) => {
+            const t = ln.trim();
+            const color = t.startsWith('//')
+              ? 'text-hj-on-ink-muted'
+              : t.startsWith('$')
+              ? 'text-hj-blue-bright'
+              : 'text-hj-on-ink';
+            return (
+              <div
+                key={i}
+                className={`font-hj-mono text-[11px] leading-[1.65] whitespace-pre min-h-[1.2em] ${color}`}
+              >
+                {ln || ' '}
+              </div>
+            );
+          })}
+          <div className="font-hj-mono text-[10px] text-hj-on-ink-muted mt-2 pt-1.5 border-t border-[rgba(246,244,238,0.14)]">
+            {p.code!.caption}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 /* 지원 케이스 — 제목·시각자료 / Problem·Structure / Impact·태그. 강제 페이지 분할 없이
@@ -174,7 +267,7 @@ function FlagshipBlock() {
         <div className="grid grid-cols-2 gap-2.5 mt-4">
           {flagship.images.map((im, i) => (
             // eslint-disable-next-line @next/next/no-img-element
-            <img key={i} src={im.src} alt={im.alt} className="w-full aspect-[4/3] object-cover rounded-hj-md border border-hj-steel" />
+            <img key={i} src={im.src} alt={im.alt} className="w-full aspect-[16/10] object-cover object-top rounded-hj-md border border-hj-steel" />
           ))}
         </div>
       </div>
@@ -436,35 +529,22 @@ function Education() {
 type ResumeSide = { name: string; meta: string; what: string; points: string[]; stack: string[]; repo?: string };
 const RESUME_SIDE: ResumeSide[] = [
   {
-    name: 'velto',
-    meta: '모바일 앱 · 단독 · 기획·설계',
-    what: "음악인 크루가 작업 클립을 나누는 모바일 앱 — 좋아요·팔로워·알고리즘 없이 '공유 압박'을 설계로 제거.",
-    points: [
-      '좋아요·팔로워·피드 대신 7일 자연 만료로 큐레이션 압박을 차단, 합주는 강제 아닌 옵션 레이어링(친구 클립 위에 덧붙이기)으로 설계',
-      '핵심 기술 리스크(iOS 동시 재생+녹화)를 PoC로 먼저 검증, 실패 대비 Async-only 폴백(부모 재생 후 녹화)까지 설계해 핵심 가치 보존',
-      'Supabase(Postgres·Storage·Edge Functions·Cron) + RLS로 크루 다중관계 보안, 자식 클립이 살아있으면 부모를 보존하는 Time-decay 만료 로직 설계',
-    ],
-    stack: ['Expo · React Native', 'TypeScript', 'Supabase', 'FFmpeg'],
-  },
-  {
     name: 'samra-mansang',
     meta: '풀스택 · 단독 개발',
-    what: '로스트아크 업적 추적·관리 + 공략 위키 웹 서비스 (Next.js·NestJS 모노레포).',
+    what: '로스트아크 업적 2,222개 추적·관리 및 공략 위키 웹 서비스 (Next.js·NestJS 모노레포).',
     points: [
-      'OCR로 업적 데이터를 일괄 등록하고, Leaflet 맵에 위치 마커·추가요청, TipTap 공략 위키까지 풀스택 단독 구현',
-      'PC 화면을 캡처해 WebRTC로 폰에 맵 데이터를 실시간 전송하는 게임 컴패니언 — 차별 기능',
-      '맵 타일은 직접 만든 OpenCV 도구 loa-map-generator로 지형만 추출 (flood-fill 세그멘테이션 — "안쪽 말고 바깥을 지운다")',
+      'OCR 기반 업적 데이터 일괄 등록, Leaflet 맵 마커, TipTap 위키, PC 화면 WebRTC 전송 게임 컴패니언 단독 구현',
+      '월드맵 208장 타일은 직접 개발한 OpenCV 도구(loa-map-generator)로 지형만 추출 (268MB → 10.7MB 최적화)',
     ],
-    stack: ['Next.js', 'NestJS · Prisma', 'Leaflet', 'WebRTC', 'OpenCV'],
+    stack: ['Next.js', 'NestJS · Prisma', 'Leaflet', 'OpenCV', 'WebRTC'],
   },
   {
     name: 'afk',
     meta: 'macOS 유틸 · 단독 · Homebrew 배포',
     what: 'Claude Code 작업 상태를 감지해 앱 포커스를 자동 전환하는 macOS 메뉴바 앱.',
     points: [
-      'AI가 작업하는 동안 break 앱(Safari·YouTube)으로 전환하고, 끝나면 알림·자동 복귀로 코딩 앱에 돌아온다',
-      'Xcode 없이 Command Line Tools + SPM만으로 SwiftUI(MenuBarExtra) 앱을 빌드, Homebrew Tap으로 배포',
-      '서명 없는 앱의 알림 제약을 borderless NSWindow + .screenSaver 레벨 플로팅 배너로 우회',
+      'AI 작업 중 브라우저 전환 및 완료 시 코딩 앱 자동 복귀 워크플로 구현',
+      'Xcode 없이 SPM만으로 SwiftUI(MenuBarExtra) 앱을 빌드하고 Homebrew Tap으로 배포',
     ],
     stack: ['Swift', 'SwiftUI', 'SPM', 'Homebrew'],
     repo: 'https://github.com/H8njo/afk',
@@ -474,11 +554,21 @@ const RESUME_SIDE: ResumeSide[] = [
     meta: '그래픽스 · 단독',
     what: 'WebGL 프래그먼트 셰이더로 블랙홀 중력렌즈 왜곡을 실시간 렌더링하는 그래픽스 프로젝트.',
     points: [
-      'Canvas 2D로 별 8,000~10,000개를 절차 생성해 매 프레임 텍스처로 업로드하는 2-레이어 합성',
-      '종횡비 보정 → 거리 → radius falloff → UV 회전 왜곡까지 셰이더 한 장에 직접 작성 (그래픽 라이브러리 없이)',
+      'Canvas 2D 별 8,000~10,000개 절차 생성 후 WebGL 텍스처로 업로드하는 2-레이어 파이프라인 구축',
+      '외부 그래픽 라이브러리 없이 종횡비 보정·거리 왜곡·UV 회전을 GLSL 프래그먼트 셰이더로 단독 구현',
     ],
-    stack: ['WebGL 1.0', 'GLSL', 'Canvas 2D', 'React'],
+    stack: ['WebGL', 'GLSL', 'Canvas 2D', 'React'],
     repo: 'https://github.com/H8njo/webgl-black-hole',
+  },
+  {
+    name: 'velto',
+    meta: '모바일 앱 · 단독 · 기획·설계',
+    what: "음악인 크루가 작업 클립을 나누는 모바일 앱 — '공유 압박'을 7일 자연 만료로 설계 제거.",
+    points: [
+      '좋아요·피드 대신 7일 자연 만료 및 음원 레이어링 합주 인터랙션 설계',
+      'iOS 동시 재생·녹화 PoC 검증 및 Supabase RLS 기반 크루 다중관계 데이터베이스 설계',
+    ],
+    stack: ['Expo · React Native', 'TypeScript', 'Supabase', 'FFmpeg'],
   },
 ];
 
@@ -564,23 +654,40 @@ function SideProjectCard({ p }: { p: (typeof sideProjects)[number] }) {
 
 /* ---- 포트폴리오 PDF: the whole portfolio as one document ----------------- */
 /* 정보 구조는 홈과 같은 순서: Hero → 대표 임팩트 → 대표 프로젝트(플래그십 먼저) →
-   사이드 → 경력 → 전문 영역. 강제 페이지 분할 없이 흐르게 조판해 빈 페이지를 없앤다
-   (— 측정-우선 조판이 문서 자체로 증명되게). 오픈소스는 플래그십에 흡수. */
+   사이드 → 경력 → 전문 영역. 강제 페이지 분할 없이 흐르게 구성해 빈 페이지를 없앤다
+   (— 측정-우선 레이아웃이 문서 자체로 증명되게). 오픈소스는 플래그십에 흡수. */
 export function PortfolioPdf() {
   return (
     <DocShell tab="포트폴리오 PDF">
-      <DocHeader tagline="안 되던 화면을 측정해서 되게 만듭니다." summary={profile.lead.replace(/\n/g, ' ')} />
+      <DocHeader
+        tagline="남들이 타협하고 멈춘 난제를, 구조와 실측으로 끝까지 동작하게 만듭니다."
+        summary={profile.lead.replace(/\n/g, ' ')}
+      />
 
       <DocSection label="대표 임팩트">
-        <div className="font-hj-serif text-[14.5px] text-hj-fg-secondary -mt-1 mb-3">{impact.lead}</div>
-        <div className="grid grid-cols-3 bg-hj-paper border border-hj-line rounded-hj-lg shadow-hj-soft overflow-hidden max-[720px]:grid-cols-1">
+        <div className="font-hj-serif text-[14px] text-hj-fg-secondary -mt-1 mb-3">
+          {impact.lead}
+        </div>
+        <div className="grid grid-cols-4 bg-hj-paper border border-hj-line rounded-hj-lg shadow-hj-soft overflow-hidden max-[860px]:grid-cols-2 max-[540px]:grid-cols-1">
           {impact.stats.map((s, i) => (
-            <div key={s.k} className={`px-5 py-[15px] ${i < impact.stats.length - 1 ? 'border-r border-hj-line max-[720px]:border-r-0 max-[720px]:border-b' : ''}`}>
-              <div className="font-hj-mono text-[10.5px] tracking-[0.1em] uppercase text-hj-muted">{s.k}</div>
-              <div className="font-hj-mono text-[12.5px] text-hj-muted line-through decoration-hj-steel mt-2.5">{s.before}</div>
-              <div className="flex items-baseline gap-2 mt-1">
-                <span className="font-hj-mono text-[14px] text-hj-blue">→</span>
-                <span className="font-hj-serif text-[20px] font-bold tracking-[-0.01em] text-hj-fg">{s.after}</span>
+            <div
+              key={s.k}
+              className={`px-4 py-[14px] ${i < impact.stats.length - 1 ? 'border-r border-hj-line max-[860px]:border-r-0 max-[860px]:border-b' : ''}`}
+            >
+              <div className="font-hj-mono text-[10px] tracking-[0.08em] uppercase text-hj-muted">
+                {s.org} · {s.k}
+              </div>
+              <div className="font-hj-mono text-[11.5px] text-hj-muted line-through decoration-hj-steel mt-2">
+                {s.before}
+              </div>
+              <div className="flex items-baseline gap-1.5 mt-1">
+                <span className="font-hj-mono text-[12px] text-hj-blue">→</span>
+                <span className="font-hj-mono tabular-nums text-[18px] font-bold text-hj-fg">
+                  {s.after}
+                </span>
+              </div>
+              <div className="mt-2 font-hj-mono text-[10.5px] text-[rgb(21,128,61)] font-semibold">
+                {s.gain}
               </div>
             </div>
           ))}
