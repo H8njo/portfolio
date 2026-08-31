@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 import type { Metric } from './components';
 import { Tag, MetricRow } from './components';
 import { profile, timeline, capabilities, flagship, cases, blackHole, sideProjects, impact, oss, resumeSummary, resumeOwnership, resumeLeadership, resumeSkills, resumeExperience, education } from './content';
-import type { ProjImage, ExpCompany } from './content';
+import type { ProjImage, ExpCompany, FlowDiagram } from './content';
 import dynamic from 'next/dynamic';
 // 사이드 프로젝트 블랙홀 — 로컬 재현본 대신 실제 배포 라이브러리(black-hole-effect,
 // github:H8njo/webgl-black-hole)를 렌더한다(홈과 동일 패턴). 렌더 중 window 접근 → ssr:false.
