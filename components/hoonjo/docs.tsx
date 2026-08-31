@@ -127,8 +127,12 @@ function ProjectVisual({ p }: { p: Project }) {
     <div className="flex flex-col gap-3 mt-4 break-inside-avoid">
       {hasImages && (
         <div
-          className="grid gap-2.5"
-          style={{ gridTemplateColumns: `repeat(${Math.min(p.images!.length, 4)}, 1fr)` }}
+          className={p.images!.length === 1 ? 'w-full' : 'grid gap-2.5'}
+          style={
+            p.images!.length > 1
+              ? { gridTemplateColumns: `repeat(${Math.min(p.images!.length, 4)}, 1fr)` }
+              : undefined
+          }
         >
           {p.images!.map((im, i) => (
             // eslint-disable-next-line @next/next/no-img-element
@@ -136,7 +140,11 @@ function ProjectVisual({ p }: { p: Project }) {
               key={i}
               src={im.src}
               alt={im.alt}
-              className="w-full aspect-[4/3] object-cover rounded-hj-md border border-hj-steel"
+              className={`w-full rounded-hj-md border border-hj-steel bg-hj-paper ${
+                p.images!.length === 1
+                  ? 'h-auto block'
+                  : 'aspect-[16/10] object-cover object-top'
+              }`}
             />
           ))}
         </div>
@@ -259,7 +267,7 @@ function FlagshipBlock() {
         <div className="grid grid-cols-2 gap-2.5 mt-4">
           {flagship.images.map((im, i) => (
             // eslint-disable-next-line @next/next/no-img-element
-            <img key={i} src={im.src} alt={im.alt} className="w-full aspect-[4/3] object-cover rounded-hj-md border border-hj-steel" />
+            <img key={i} src={im.src} alt={im.alt} className="w-full aspect-[16/10] object-cover object-top rounded-hj-md border border-hj-steel" />
           ))}
         </div>
       </div>
