@@ -1,16 +1,17 @@
 "use client";
 
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Tag } from './components';
 import { profile, education } from './content';
 import type { ExpCompany } from './content';
 import {
-  carrotExecutiveImpact,
-  carrotResumeSummary,
-  carrotResumeSkills,
-  carrotResumeExperience,
-  carrotResumeSide,
-} from './carrot-content';
+  carrotJobsExecutiveImpact,
+  carrotJobsResumeSummary,
+  carrotJobsResumeSkills,
+  carrotJobsResumeExperience,
+  carrotJobsResumeSide,
+  carrotJobsPreScreeningAnswers,
+} from './carrot-jobs-content';
 
 const portrait = '/hoonjo/portrait.jpg';
 
@@ -24,8 +25,8 @@ function DocShell({ tab, children }: { tab: string; children: ReactNode }) {
             <span aria-hidden className="font-hj-mono">←</span> 포트폴리오로
           </a>
           <span className="text-hj-line">|</span>
-          <a className="font-hj-serif text-[13px] text-hj-muted hover:text-hj-fg no-underline" href="/resume/carrot-jobs">
-            로컬 잡스(당근알바) 이력서 보기
+          <a className="font-hj-serif text-[13px] text-hj-muted hover:text-hj-fg no-underline" href="/resume/carrot">
+            레슨/과외팀 이력서 보기
           </a>
         </div>
         <span className="font-hj-mono text-[12px] tracking-[0.1em] uppercase text-hj-muted max-[720px]:hidden">{tab}</span>
@@ -51,11 +52,11 @@ function DocSection({ label, flow, breakBefore, children }: { label: string; flo
   );
 }
 
-/* ── 1페이지: 당근 로컬잡스 맞춤 4대 핵심 엔지니어링 임팩트 ── */
+/* ── 1페이지: 당근 로컬 잡스 맞춤 4대 핵심 엔지니어링 임팩트 ── */
 function ExecutiveImpactGrid() {
   return (
     <div className="grid grid-cols-2 gap-3 my-4 print:my-2.5 print:gap-2 max-[600px]:grid-cols-1">
-      {carrotExecutiveImpact.map((item) => (
+      {carrotJobsExecutiveImpact.map((item) => (
         <div key={item.title} className="p-3 bg-hj-cloud border border-hj-line rounded-hj-md flex flex-col justify-between break-inside-avoid print:p-2.5">
           <div className="flex items-start justify-between gap-2">
             <div>
@@ -77,7 +78,7 @@ function ExecutiveImpactGrid() {
 }
 
 /* ── 1페이지: 프로필 헤더 + 요약 ── */
-function CarrotResumeHeader() {
+function CarrotJobsResumeHeader() {
   return (
     <header className="pb-5 border-b-2 border-hj-fg break-inside-avoid print:pb-3.5">
       <div className="flex gap-[18px] items-start">
@@ -103,7 +104,7 @@ function CarrotResumeHeader() {
 
       {/* 압축 요약문 */}
       <div className="mt-3.5 flex flex-col gap-1.5">
-        {carrotResumeSummary.filter((line) => line.kind !== 'lead').map((line, i) => {
+        {carrotJobsResumeSummary.filter((line) => line.kind !== 'lead').map((line, i) => {
           if (line.kind === 'close') {
             return (
               <p key={i} className="font-hj-serif text-[12px] leading-[1.5] text-hj-fg font-medium mt-0.5">
@@ -123,10 +124,10 @@ function CarrotResumeHeader() {
   );
 }
 
-function CarrotResumeSkills() {
+function CarrotJobsResumeSkills() {
   return (
     <div className="grid grid-cols-1 gap-3.5 print:grid-cols-2 print:gap-x-5 print:gap-y-2">
-      {carrotResumeSkills.map((s) => (
+      {carrotJobsResumeSkills.map((s) => (
         <div key={s.label} className="break-inside-avoid">
           <div className="font-hj-serif text-[11px] font-semibold text-hj-fg mb-1">{s.label}</div>
           <div className="flex flex-wrap gap-1">
@@ -142,8 +143,8 @@ function getCaseLink(head: string): { label: string; href: string } | null {
   if (head.includes('Delta2') || head.includes('검수 콘솔')) return { label: '케이스: Delta2 초고속 검수', href: '/work/delta2' };
   if (head.includes('디자인 시스템')) return { label: '케이스: 디자인 시스템 & 코드젠', href: '/work/design-system' };
   if (head.includes('column-pager')) return { label: '케이스: 다단 레이아웃 엔진', href: '/work/column-count-layout' };
-  if (head.includes('위저드') || head.includes('주문제작') || head.includes('퍼널') || head.includes('단일폼')) return { label: '케이스: 주문 퍼널 단일폼 전환', href: '/work/pod-order-flow' };
-  if (head.includes('CLAUDE.md') || head.includes('PR 리뷰')) return { label: '케이스: 컨벤션 & 리뷰 툴링', href: '/work/expert-conventions' };
+  if (head.includes('위저드') || head.includes('주문제작') || head.includes('퍼널') || head.includes('단일폼') || head.includes('지불')) return { label: '케이스: 주문 퍼널 단일폼 전환', href: '/work/pod-order-flow' };
+  if (head.includes('CLAUDE.md') || head.includes('PR 리뷰') || head.includes('하네스') || head.includes('린트')) return { label: '케이스: 컨벤션 & 리뷰 툴링', href: '/work/expert-conventions' };
   if (head.includes('300p') || head.includes('튜터 뷰어')) return { label: '케이스: 대용량 PDF 488배 가속', href: '/work/pdf-memory' };
   if (head.includes('에러 핸들링')) return { label: '케이스: 계층형 에러 아키텍처', href: '/work/frontend-error-handling' };
   if (head.includes('DDD')) return { label: '케이스: 프론트엔드 DDD 제거', href: '/work/frontend-ddd-removal' };
@@ -219,7 +220,7 @@ function ExperienceBlock({ c, first = false }: { c: ExpCompany; first?: boolean 
   );
 }
 
-function CarrotSideProject({ p, first }: { p: (typeof carrotResumeSide)[number]; first?: boolean }) {
+function CarrotJobsSideProject({ p, first }: { p: (typeof carrotJobsResumeSide)[number]; first?: boolean }) {
   return (
     <section className={`break-inside-avoid ${first ? 'pt-1' : 'pt-4 print:pt-2 border-t border-hj-line'}`}>
       <div className="flex items-baseline gap-2 flex-wrap">
@@ -264,15 +265,85 @@ function Education() {
   );
 }
 
-export function CarrotResume() {
-  const bookipsExp = carrotResumeExperience.filter((c) => c.company === 'Bookips');
-  const pastAllExp = carrotResumeExperience.filter((c) => c.company !== 'Bookips');
+/* ── 🥕 웹 전용: 당근 로컬잡스 서류 사전 질문 3문항 답변 가이드 모달/블록 ── */
+function PreScreeningAnswersSection() {
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+
+  const handleCopy = (text: string, index: number) => {
+    navigator.clipboard.writeText(text);
+    setCopiedIndex(index);
+    setTimeout(() => setCopiedIndex(null), 2000);
+  };
 
   return (
-    <DocShell tab="이력서 · 당근 (로컬잡스 레슨/과외)">
+    <div className="mt-12 p-6 bg-[#fffaf5] border-2 border-[#ff6f0f]/30 rounded-hj-lg print:hidden">
+      <div className="flex items-center justify-between gap-3 flex-wrap pb-3 border-b border-[#ff6f0f]/20">
+        <div className="flex items-center gap-2">
+          <span className="text-[18px]">🥕</span>
+          <h3 className="font-hj-serif text-[15px] font-bold text-[#d85800]">
+            당근 로컬 잡스 서류 전형 필수 3대 사전 질문 모범 답변
+          </h3>
+        </div>
+        <span className="font-hj-mono text-[11px] text-hj-muted bg-white border border-[#ff6f0f]/20 rounded-hj-xs px-2 py-0.5">
+          지원서 제출 폼에 바로 복사하여 활용하세요
+        </span>
+      </div>
+
+      <div className="flex flex-col gap-6 mt-5">
+        {carrotJobsPreScreeningAnswers.map((item, idx) => {
+          const fullText = `[질문: ${item.question}]\n\n${item.paragraphs.join('\n\n')}`;
+          const isCopied = copiedIndex === idx;
+
+          return (
+            <div key={item.questionNumber} className="bg-white border border-[#ff6f0f]/15 rounded-hj-md p-4 shadow-sm">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <span className="font-hj-mono text-[12px] font-bold text-[#ff6f0f] bg-[#fff5ee] rounded px-1.5 py-0.5">
+                    Q{item.questionNumber}
+                  </span>
+                  <h4 className="font-hj-serif text-[13.5px] font-bold text-hj-fg">
+                    {item.question}
+                  </h4>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleCopy(item.paragraphs.join('\n\n'), idx)}
+                  className={`font-hj-mono text-[11px] font-medium px-2.5 py-1 rounded transition-colors flex-none ${
+                    isCopied
+                      ? 'bg-hj-green text-white'
+                      : 'bg-[#fff5ee] text-[#d85800] hover:bg-[#ffe8d6] border border-[#ff6f0f]/30'
+                  }`}
+                >
+                  {isCopied ? '✓ 복사 완료' : '답변 복사'}
+                </button>
+              </div>
+
+              <div className="mt-2 text-[11.5px] font-hj-serif font-medium text-[#d85800] bg-[#fffaf5] px-2.5 py-1.5 rounded">
+                💡 핵심 포인트: {item.summary}
+              </div>
+
+              <div className="mt-3 flex flex-col gap-2 font-hj-serif text-[12px] leading-[1.55] text-hj-fg-secondary whitespace-pre-line">
+                {item.paragraphs.map((p, pIdx) => (
+                  <p key={pIdx} className="m-0">{p}</p>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+export function CarrotJobsResume() {
+  const bookipsExp = carrotJobsResumeExperience.filter((c) => c.company === 'Bookips');
+  const pastAllExp = carrotJobsResumeExperience.filter((c) => c.company !== 'Bookips');
+
+  return (
+    <DocShell tab="이력서 · 당근 (로컬 잡스)">
       {/* ── Page 1: 10초 장악 프로필 & 4대 임팩트 & 주력 경력 (Bookips) ── */}
       <section className="break-inside-avoid">
-        <CarrotResumeHeader />
+        <CarrotJobsResumeHeader />
       </section>
 
       {/* ── Page 1 연속: 주력 마켓플레이스 & 결제 — (주)북아이피스 ── */}
@@ -294,16 +365,19 @@ export function CarrotResume() {
       </DocSection>
 
       {/* ── Page 3: AI 에이전트 & 오픈소스 & 기술 역량 & 학력 ── */}
-      <DocSection label="오픈소스 & 사이드 프로젝트 (AI 에이전트)" breakBefore flow>
+      <DocSection label="오픈소스 & 사이드 프로젝트 (AI 에이전트 & 하네스)" breakBefore flow>
         <div className="flex flex-col gap-4 print:gap-2">
-          {carrotResumeSide.map((p, i) => (
-            <CarrotSideProject key={p.name} p={p} first={i === 0} />
+          {carrotJobsResumeSide.map((p, i) => (
+            <CarrotJobsSideProject key={p.name} p={p} first={i === 0} />
           ))}
         </div>
       </DocSection>
 
-      <DocSection label="전문 기술 역량 상세 (당근 맞춤 스택)" flow><CarrotResumeSkills /></DocSection>
+      <DocSection label="전문 기술 역량 상세 (당근 로컬잡스 맞춤 스택)" flow><CarrotJobsResumeSkills /></DocSection>
       <DocSection label="학력 · 교육" flow><Education /></DocSection>
+
+      {/* ── 웹 전용: 당근 로컬잡스 서류 사전 질문 3문항 답변 가이드 ── */}
+      <PreScreeningAnswersSection />
     </DocShell>
   );
 }
