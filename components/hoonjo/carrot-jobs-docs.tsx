@@ -40,13 +40,13 @@ function DocShell({ tab, children }: { tab: string; children: ReactNode }) {
 }
 
 function DocSection({ label, flow, breakBefore, children }: { label: string; flow?: boolean; breakBefore?: boolean; children: ReactNode }) {
-  const topPad = breakBefore ? 'print:pt-[10mm]' : 'print:pt-[12px]';
+  const topPad = breakBefore ? 'print:pt-[7mm]' : 'print:pt-[8px]';
   return (
     <section
       style={breakBefore ? { breakBefore: 'page', pageBreakBefore: 'always' } : undefined}
       className={`mt-[36px] print:mt-0 ${topPad} ${flow ? '' : 'break-inside-avoid'} ${breakBefore ? 'print:break-before-page' : ''}`}
     >
-      <h2 className="font-hj-mono text-[11px] tracking-[0.12em] uppercase text-hj-muted mt-0 mb-3.5 pb-2 print:mb-2 print:pb-1.5 border-b border-hj-line break-after-avoid">{label}</h2>
+      <h2 className="font-hj-mono text-[11px] tracking-[0.12em] uppercase text-hj-muted mt-0 mb-3.5 pb-2 print:mb-1.5 print:pb-1 border-b border-hj-line break-after-avoid">{label}</h2>
       {children}
     </section>
   );
@@ -126,7 +126,7 @@ function CarrotJobsResumeHeader() {
 
 function CarrotJobsResumeSkills() {
   return (
-    <div className="grid grid-cols-1 gap-3.5 print:grid-cols-2 print:gap-x-5 print:gap-y-2">
+    <div className="grid grid-cols-1 gap-3.5 print:grid-cols-2 print:gap-x-5 print:gap-y-1">
       {carrotJobsResumeSkills.map((s) => (
         <div key={s.label} className="break-inside-avoid">
           <div className="font-hj-serif text-[11px] font-semibold text-hj-fg mb-1">{s.label}</div>
@@ -222,7 +222,7 @@ function ExperienceBlock({ c, first = false }: { c: ExpCompany; first?: boolean 
 
 function CarrotJobsSideProject({ p, first }: { p: (typeof carrotJobsResumeSide)[number]; first?: boolean }) {
   return (
-    <section className={`break-inside-avoid ${first ? 'pt-1' : 'pt-4 print:pt-2 border-t border-hj-line'}`}>
+    <section className={`break-inside-avoid ${first ? 'pt-1' : 'pt-4 print:pt-1.5 border-t border-hj-line'}`}>
       <div className="flex items-baseline gap-2 flex-wrap">
         <h3 className="font-hj-serif text-[13.5px] font-semibold tracking-[-0.01em] text-hj-fg">{p.name}</h3>
         <span className="font-hj-mono text-[10px] text-hj-muted">{p.meta}</span>
@@ -233,8 +233,8 @@ function CarrotJobsSideProject({ p, first }: { p: (typeof carrotJobsResumeSide)[
           </a>
         )}
       </div>
-      <p className="font-hj-serif text-[11.5px] font-medium leading-[1.4] text-hj-fg mt-1">{p.what}</p>
-      <ul className="list-none m-0 p-0 mt-1 flex flex-col gap-0.5">
+      <p className="font-hj-serif text-[11.5px] font-medium leading-[1.4] text-hj-fg mt-1 print:mt-0.5">{p.what}</p>
+      <ul className="list-none m-0 p-0 mt-1 flex flex-col gap-0.5 print:mt-0.5">
         {p.points.map((pt, i) => (
           <li key={i} className="grid grid-cols-[auto_1fr] gap-1.5 font-hj-serif text-[11.2px] leading-[1.4] text-hj-fg-secondary">
             <span aria-hidden className="text-hj-faint">–</span>
@@ -242,7 +242,7 @@ function CarrotJobsSideProject({ p, first }: { p: (typeof carrotJobsResumeSide)[
           </li>
         ))}
       </ul>
-      <div className="flex flex-wrap gap-1 mt-2 print:mt-1">
+      <div className="flex flex-wrap gap-1 mt-2 print:mt-0.5">
         {p.stack.map((s) => <Tag key={s}>{s}</Tag>)}
       </div>
     </section>
@@ -251,9 +251,9 @@ function CarrotJobsSideProject({ p, first }: { p: (typeof carrotJobsResumeSide)[
 
 function Education() {
   return (
-    <div className="flex flex-col gap-3 print:gap-1.5">
+    <div className="flex flex-col gap-3 print:gap-1">
       {education.map((e) => (
-        <div key={e.school} className="grid grid-cols-[120px_1fr] gap-3 print:gap-2 break-inside-avoid max-[720px]:grid-cols-1 max-[720px]:gap-0.5">
+        <div key={e.school} className="grid grid-cols-[120px_1fr] gap-3 print:gap-1 break-inside-avoid max-[720px]:grid-cols-1 max-[720px]:gap-0.5">
           <div className="font-hj-mono text-[11px] text-hj-muted pt-0.5">{e.period}</div>
           <div>
             <div className="font-hj-serif text-[12.5px] font-semibold text-hj-fg">{e.school}</div>
