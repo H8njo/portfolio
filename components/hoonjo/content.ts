@@ -681,7 +681,7 @@ export type Timeline = {
 
 export const timeline: Timeline[] = [
   {
-    period: '2024 — 현재',
+    period: '2024.08 — 2026.08',
     role: 'Senior Frontend Engineer',
     org: '@Bookips',
     scope: '디자인 시스템 · PDF 레이아웃 렌더러 핵심 개발자',
@@ -692,7 +692,7 @@ export const timeline: Timeline[] = [
       '이 엔진을 축으로 **콘텐츠 저작툴을 새 프로젝트로 단독 구축** (프론트 아키텍처 단독 소유)',
       '저작툴을 기반으로 파생된 **쏠북패스 출시 — 회사 메인 매출 제품의 프론트 담당**',
       '기존 어드민의 극심한 검수 비효율을 해결하기 위해 **초고속 검수 SPA(Delta2) 자발적 구축 — 마법봉 원클릭 일괄 교정으로 일일 검수량 1,000건 → 8,000건(8배) 폭증**',
-      '공용 **디자인 시스템(@bookips/sds) 공동 메인테이너** — 릴리스·PR 리뷰 공동 운영',
+      '공용 **디자인 시스템 공동 메인테이너** — 릴리스·PR 리뷰 공동 운영',
       '룰도 없던 코드베이스를 **상태관리(XState→Zustand)·컨벤션·강제 게이트·오류 모니터링까지 표준화**하고, 그 표준을 형제 서비스로 확산',
       'AI 코딩 에이전트 협업을 위한 **도메인별 CLAUDE.md 분할 문서 아키텍처** 정립',
     ],
@@ -703,7 +703,6 @@ export const timeline: Timeline[] = [
       'svgr 코드젠',
       'semantic-release',
     ],
-    current: true,
     cases: [
       { label: 'column-pager 오픈소스', href: '/work/column-count-layout' },
       { label: 'Delta2 초고속 검수 콘솔', href: '/work/delta2' },
@@ -714,7 +713,7 @@ export const timeline: Timeline[] = [
     ],
   },
   {
-    period: '2023 — 2024',
+    period: '2023.11 — 2024.02',
     role: 'Frontend Engineer',
     org: '@Sling',
     scope: '미들·시니어',
@@ -734,7 +733,7 @@ export const timeline: Timeline[] = [
     ],
   },
   {
-    period: '2020 — 2023',
+    period: '2020.05 — 2023.03',
     role: 'Frontend → Tech Lead',
     org: '@Zipida',
     scope: '프론트 주도 → 풀스택 기술 리드',
@@ -762,7 +761,7 @@ export const timeline: Timeline[] = [
     ],
   },
   {
-    period: '2019 — 2020',
+    period: '2019.01 — 2020.01',
     role: 'Frontend Engineer',
     org: '@옐로오투오',
     description: '클라이언트 사이트 주문을 받아 개발하는 웹 에이전시.',
@@ -908,7 +907,7 @@ export const resumeLeadership: {
     },
     {
       at: '코드베이스 표준화 & 확산',
-      t: 'MUI→Radix 디자인 시스템 재설계(@bookips/sds 메인테이너), XState→Zustand 통일, Git 품질 게이트 수립 후 형제 서비스 확산',
+      t: 'MUI→Radix 디자인 시스템 재설계(핵심 메인테이너), XState→Zustand 통일, Git 품질 게이트 수립 후 형제 서비스 확산',
     },
     {
       at: 'AI 코딩 에이전트 워크플로',
@@ -991,11 +990,10 @@ export type ExpCompany = {
 
 export const resumeExperience: ExpCompany[] = [
   {
-    period: '2024 — 현재',
+    period: '2024.08 — 2026.08',
     company: 'Bookips',
     product: 'Solvook · 교육 콘텐츠 플랫폼',
     role: '시니어 프론트엔드 엔지니어',
-    current: true,
     stack: [
       'Next.js',
       'React',
@@ -1059,7 +1057,7 @@ export const resumeExperience: ExpCompany[] = [
         ],
       },
       {
-        head: 'MUI 기반 v1을 Radix + Tailwind v2로 재설계 (공용 디자인 시스템 @bookips/sds 공동 메인테이너)',
+        head: 'MUI 기반 v1을 Radix + Tailwind v2로 재설계 (공용 디자인 시스템 공동 메인테이너)',
         points: [
           'v1(MUI): 개발자가 Figma만 보고 수동으로 맞추던 구조 — 실제 개발에 필요한 기능·커스터마이징·확장성 부족',
           'v2 근거 — 제각각인 디자인·인터랙션 요구를 라이브러리와 싸우지 않고 흡수하려면 마크업·스타일 소유권이 필수. 헤드리스(Radix)로 접근성·키보드·포커스는 공짜로 얻고, Tailwind + CVA로 디자인 토큰·variant는 선언적으로 — 커스터마이징 100%, 확장은 컴포넌트 교체 없이',
@@ -1083,7 +1081,7 @@ export const resumeExperience: ExpCompany[] = [
     ],
   },
   {
-    period: '2023 — 2024',
+    period: '2023.11 — 2024.02',
     company: 'Sling',
     product: 'ORZO · 튜터 수업 관리',
     role: '프론트엔드 엔지니어 (미들·시니어)',
@@ -1119,7 +1117,7 @@ export const resumeExperience: ExpCompany[] = [
     ],
   },
   {
-    period: '2020 — 2023',
+    period: '2020.05 — 2023.03',
     company: 'Zipida',
     product: '정부·기업 보안관제 SI',
     role: '프론트 주도 → 풀스택 기술 리드',
@@ -1177,7 +1175,7 @@ export const resumeExperience: ExpCompany[] = [
     ],
   },
   {
-    period: '2019 — 2020',
+    period: '2019.01 — 2020.01',
     company: '옐로오투오',
     product: '웹 에이전시',
     role: '프론트엔드',
