@@ -21,9 +21,15 @@ function DocShell({ tab, children }: { tab: string; children: ReactNode }) {
   return (
     <div className="min-h-screen bg-hj-cloud [print-color-adjust:exact] [-webkit-print-color-adjust:exact] print:bg-white print:min-h-0">
       <header className="sticky top-0 z-20 flex items-center justify-between gap-3 h-14 px-5 bg-[rgba(255,255,255,0.85)] backdrop-blur-[10px] backdrop-saturate-[1.8] border-b border-hj-line print:hidden">
-        <a className="inline-flex items-center gap-[7px] font-hj-serif text-[14px] text-hj-fg-secondary no-underline transition-colors duration-150 hover:text-hj-fg" href="/">
-          <span aria-hidden className="font-hj-mono">←</span> 포트폴리오로
-        </a>
+        <div className="flex items-center gap-4">
+          <a className="inline-flex items-center gap-[7px] font-hj-serif text-[14px] text-hj-fg-secondary no-underline transition-colors duration-150 hover:text-hj-fg" href="/">
+            <span aria-hidden className="font-hj-mono">←</span> 포트폴리오로
+          </a>
+          <span className="text-hj-line">|</span>
+          <a className="font-hj-serif text-[13px] text-hj-muted hover:text-hj-fg no-underline" href="/resume/toss-place">
+            토스플레이스(POS) 이력서 보기
+          </a>
+        </div>
         <span className="font-hj-mono text-[12px] tracking-[0.1em] uppercase text-hj-muted max-[720px]:hidden">{tab}</span>
         <button type="button" className="font-hj-serif text-[13px] font-semibold text-white bg-hj-blue border-0 rounded-hj-button px-4 py-[9px] cursor-pointer transition-colors duration-150 hover:bg-hj-blue-hover" onClick={() => window.print()}>
           인쇄 · PDF 저장
